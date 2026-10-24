@@ -10,6 +10,7 @@ import {
   idle,
   strayAssets,
 } from "./host-helpers";
+import { cfBeacon } from "./cf-beacon";
 import { SHEET, sheet } from "./sheet-base";
 
 test(`R1.a ${SHEET} shows the overlay card and the CastleSiege window @live`, async ({
@@ -48,7 +49,8 @@ test(`R2.a ${SHEET} makes only same-origin requests and loads no old-OS code`, a
   expect(strayAssets(urls, await appAssets(page), apps)).toEqual([]);
 });
 
-// 007 R11: the part of R2.a that needs no test-build file (host-assets.json)
+// 007 R11: the part of R2.a that needs no test-build file (host-assets.json);
+// 010 R9: Cloudflare's own Web Analytics beacon (added at the edge) is allowed
 test(`R2.a ${SHEET} makes only same-origin requests @live`, async ({
   page,
   baseURL,
@@ -59,7 +61,7 @@ test(`R2.a ${SHEET} makes only same-origin requests @live`, async ({
   await idle(page);
   const origin = new URL(baseURL!).origin;
   expect(urls.length).toBeGreaterThan(0);
-  for (const url of urls) {
+  for (const url of urls.filter((u) => !cfBeacon(u))) {
     expect(new URL(url).origin, url).toBe(origin);
     expect(url).not.toContain("system.img.json");
   }

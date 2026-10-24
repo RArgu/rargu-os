@@ -77,3 +77,4 @@ Decisions the owner made outside a spec. Newest last. A spec that goes against a
 | 2026-10-24 | GitHub repo | **Owner:** a public repo `RArgu/rargu-os` with a fresh history of the site files only; `design/`, `plan/`, `tools/`, `docs/archive/`, `docs/handoffs/` stay local (spec 010 R4). G-push given for it. |
 | 2026-10-24 | Merge into `main` | **Owner:** fast-forward (spec 010 R6). |
 | 2026-10-24 | Deploy (007 T12) | **Owner:** "G-deploy OK", for the commit that passes all checks (spec 010 R5). |
+| 2026-10-24 | Cloudflare Web Analytics beacon on rargu.dev (G-net) | **Owner:** allow it (spec 010 R9): `static.cloudflareinsights.com/beacon.min.js` and `cloudflareinsights.com/cdn-cgi/rum`, added by Cloudflare at the edge. No other third-party call. |

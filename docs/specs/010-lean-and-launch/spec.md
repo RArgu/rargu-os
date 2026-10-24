@@ -38,6 +38,7 @@ owner has mocked it in Blender.
 | R5 | The release SHA is deployed with `npm run deploy:live` from a clean checkout of that SHA. 007 becomes `Verified (live)` only on success. | [Prop] | live | G-deploy (given) |
 | R6 | `main` moves to the release SHA by fast-forward only; that full history is then kept as the local branch `main-full-history`, and local `main` becomes the public root commit tracking `origin/main`. | [Prop] | review | — |
 | R7 | All suites pass on the release SHA with a clean tree: `npm run lint`, `npm test`, `CI=1 npm run e2e:all`, `CI=1 npm run e2e:routing`; budget OK. | [Prop] | unit + e2e | — |
+| R9 | The live same-origin check (`tests/e2e/sheet.spec.ts`, 001 R2.a, `@live`) accepts Cloudflare Web Analytics, which Cloudflare adds at the edge: `https://static.cloudflareinsights.com/beacon.min.js…` and `https://cloudflareinsights.com/cdn-cgi/rum`. Every other request stays same-origin. The site code adds no network call. Amendment 1. | [Prop] | e2e + live | G-net (given 2026-10-24) |
 | R8 | Release order: all code, content and spec docs are committed first as the release SHA; R7 runs on it; then R6, R4, R5 on that same SHA. Ledger and status commits after R5 are evidence only and are pushed after the deploy (same G-push). Amends 007 T12/T13. | [Prop] | review | — |
 
 ### Acceptance
@@ -76,6 +77,9 @@ owner has mocked it in Blender.
   --json visibility` is `PUBLIC`; `git ls-remote origin` shows `main` at the published SHA and no tags.
 - **R5.a** The ledger has the release SHA, the previous Worker version id, the deploy output, the new version id and
   the live check results; on failure, the rollback result.
+- **R9.a** The check fails on a request to any other third-party origin or path (for example
+  `https://static.cloudflareinsights.com/other.js`), and passes with the two beacon URLs (unit test of the filter).
+  Locally (no beacon) it passes as before; live it passes with the beacon.
 - **R6.a** The ledger records old `main` (`442672d`) and the 009 tip (`b7c33c8`); both are ancestors of the release
   SHA; `git merge --ff-only <release SHA>` on `main`; then `git rev-parse main` equals the release SHA.
 
@@ -119,3 +123,7 @@ owner has mocked it in Blender.
 merge "I'll take your suggestion" (fast-forward); morning report 1 "We want the tilt back", 2 "revisit later, mocking
 in Blender first", 3–7 "Good"/"Correct". Choices: "Lean only, no grow", "Deploy after checks pass", "Create public repo
 rargu-os". Then "Fresh history, site only (Recommended)" and spec 010 "Approve".
+
+2026-10-24 — **Amendment 1 (R9), G-net.** Deploy attempt 1 rolled back: the live check found
+`static.cloudflareinsights.com/beacon.min.js`, which Cloudflare Web Analytics adds at the edge. Owner chose "Allow
+the beacon" (over turning analytics off). This approves that one third-party call; no other.
