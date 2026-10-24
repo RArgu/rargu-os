@@ -18,13 +18,13 @@ Ordered by dependency. Check a box only after its verification has run.
   - Verify: review; `git ls-files` check (R4.c).
   - Files: `docs/specs/001-sheet/spec.md`, `docs/OWNER_QUESTIONS.md`, `docs/specs/009-preview-polish/spec.md`,
     `docs/specs/007-switch-over/spec.md`, `content/identity.json`, `content/README.md`, `.gitignore`.
-- [ ] **T4** Release SHA and full checks (R7, R8)
+- [x] **T4** Release SHA and full checks (R7, R8)
   - Verify: clean tree; `npm run lint`; `npm test`; `CI=1 npm run e2e:all`; `CI=1 npm run e2e:routing`.
-- [ ] **T5** Fast-forward `main` (R6)
+- [x] **T5** Fast-forward `main` (R6)
   - Verify: R6.a.
-- [ ] **T6** Publication scan, repo, push (R4) — G-push (given)
+- [x] **T6** Publication scan, repo, push (R4) — G-push (given)
   - Verify: R4.a, then `gh repo create`, root commit, push; R4.b, R4.c.
-- [ ] **T7** Deploy (R5) — G-deploy (given)
+- [x] **T7** Deploy (R5) — G-deploy (given)
   - Verify: `npm run deploy:live` from the release tree; R5.a.
-- [ ] **T8** Evidence commit and push (R8)
+- [x] **T8** Evidence commit and push (R8)
   - Verify: ledger, 007/010 status; `git push origin main`.

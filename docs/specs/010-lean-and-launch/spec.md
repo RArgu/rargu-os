@@ -1,6 +1,6 @@
 # 010: Held lean back, 404 tip removed, public repo, deploy, merge
 
-**Status:** Implementing · **Owner approval:** 2026-10-24 · **Gates needed:** G-deploy (R5, given 2026-10-24 for the
+**Status:** Verified (live) 2026-10-24 (release `b686b0e`, Worker `f9745fa4`) · **Owner approval:** 2026-10-24 · **Gates needed:** G-deploy (R5, given 2026-10-24 for the
 release SHA that passes R7), G-push (R4, given 2026-10-24: create public `RArgu/rargu-os` and push `main`; fresh history, site files only)
 **Related:** 009 R2 (replaced by R1 here), 009 R3 and R6.d (amended), 007 R11/R12 and T11–T13 (order amended by
 R8), OWNER_QUESTIONS 2026-10-24 "Wobble and held drag", morning report 2026-10-24,

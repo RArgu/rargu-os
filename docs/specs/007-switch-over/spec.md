@@ -1,6 +1,6 @@
 # 007: Switch-over (RArgu OS becomes rargu.dev)
 
-**Status:** Verified (local) (branch `spec-007-switchover`; T11 owner preview next); Approved · **Owner approval:** 2026-10-22 · **Gates needed:** G-deploy (R11), G-push (R12, owner)
+**Status:** Verified (live) 2026-10-24 (spec 010: release `b686b0e`, Worker `f9745fa4`, previous `6e23c85f`); Approved · **Owner approval:** 2026-10-22 · **Gates needed:** G-deploy (R11), G-push (R12, owner)
 **Related:** specs 001–006 (all Verified (local) first); OWNER_QUESTIONS 2026-10-22 (old OS deleted with a tag,
 renames, repo rename by owner, Worker name kept); `wrangler.jsonc`; `public/_redirects`; `public/404.html`;
 `vite.config.ts`; critique `docs/review/spec-007-critique-codex.md` (10 findings, all accepted).

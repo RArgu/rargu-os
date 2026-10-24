@@ -86,7 +86,7 @@ fail, then implement (ponytail), then run lint, unit and the named e2e. Start af
     `npx wrangler dev`); the result, date, commit and serving command go into 007's approval record.
   - Verify: R10.a in the spec's approval record (owner check).
   - Files: `docs/specs/007-switch-over/spec.md` (approval record only), `docs/ledger/`.
-- [ ] **T12** Deploy to rargu.dev (R5, R11) — **G-deploy**
+- [x] **T12** Deploy to rargu.dev (R5, R11) — **G-deploy** (done 2026-10-24 by spec 010 T7: `b686b0e`, Worker `f9745fa4`)
   - Acceptance: ask the owner for G-deploy with the exact commit, the T9/T10 check results and the recorded previous
     Worker version id. The owner approves G-deploy at that time; spec approval does not count. Only then run
     `npm run deploy` through the T8 script, then the live checks. On failure, roll back to the recorded version and
@@ -95,7 +95,7 @@ fail, then implement (ponytail), then run lint, unit and the named e2e. Start af
     the R5 routing checks with `curl -sI`; the ledger has the previous version id, deploy output, new version id and
     live results, or the rollback output and re-check results (R11.a). Status `Verified (live)` only on success.
   - Files: `docs/ledger/`, `docs/specs/README.md`.
-- [ ] **T13** Repo rename follow-up (R12) — **G-push**
+- [x] **T13** Repo rename follow-up (R12) — **G-push** (done 2026-10-24 by spec 010 T6: new public repo `RArgu/rargu-os`)
   - Acceptance: after the owner renames the GitHub repo, update `identity.json` `repoUrl`, `content/README.md` and
     the local `origin` URL. Pushing commits or the `devpageos-final` tag is a separate G-push request; the owner
     approves G-push at that time.
