@@ -81,7 +81,7 @@ fail, then implement (ponytail), then run lint, unit and the named e2e. Start af
     to `Verified (local)`. This review comes before the gated tasks, so nothing unreviewed is deployed.
   - Verify: review file; full `npm run lint && npm test && npm run e2e:all`.
   - Files: `docs/review/`, `docs/specs/README.md`, `docs/ledger/`.
-- [ ] **T11** Owner preview (R10)
+- [x] **T11** Owner preview (R10) (second run approved 2026-10-24, see the approval record)
   - Acceptance: the owner checks the build at a named commit (`npm run build && npm run preview`, or
     `npx wrangler dev`); the result, date, commit and serving command go into 007's approval record.
   - Verify: R10.a in the spec's approval record (owner check).
