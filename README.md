@@ -13,7 +13,10 @@ The sheet has eight windows:
 - **Paint**, **Music** (Tracker) and **Notes** (Writer): the quick tools.
 
 The site is static. It has no server code, no accounts and no browser storage. Files that a visitor makes stay in
-memory until the page reloads, or the visitor downloads them.
+memory until the page reloads, or the visitor downloads them. The site's own code makes no third-party request.
+Cloudflare adds its Web Analytics beacon at the edge (owner approval, spec 010 R9).
+
+The source is public at https://github.com/RArgu/rargu-os.
 
 The approved layout is the mock in [`docs/mockups/`](docs/mockups/README.md). The changes and their status are in
 [`docs/specs/`](docs/specs/README.md). See [`docs/README.md`](docs/README.md) for the documentation map.
@@ -111,7 +114,8 @@ the same with live checks and an automatic rollback (`scripts/deploy-live.ts`).
 **WARNING:** Run `npm run deploy` or `npm run deploy:live` only with the owner's OK (gate G-deploy in `AGENTS.md`).
 Both change the live site.
 
-`www` goes to the apex by a zone rule outside this repo. `public/_redirects` sends `/next` and the old site's pages
+The live check (`tests/e2e/sheet.spec.ts`, `@live`) allows only same-origin requests and the Cloudflare beacon
+(`tests/e2e/cf-beacon.ts`). `www` goes to the apex by a zone rule outside this repo. `public/_redirects` sends `/next` and the old site's pages
 to `/`. `public/404.html` answers unknown paths. `public/_headers` sets the cache for the hashed bundles. `npx
 wrangler deployments list --name rargu-devpage` shows the versions. `npx wrangler rollback <version-id> --name
 rargu-devpage` restores one.
@@ -120,7 +124,8 @@ rargu-devpage` restores one.
 
 Before RArgu OS, this repo was DevPageOS, a browser OS with a kernel, a filesystem and a window server. Its code is
 in the local git tag `devpageos-final`. Its docs are in `docs/archive/`, which is local only (not in the public
-repo).
+repo). The public repo starts on 2026-10-24 with the site files only (spec 010); the full earlier history is the
+local branch `main-full-history`.
 
 ## Licenses
 

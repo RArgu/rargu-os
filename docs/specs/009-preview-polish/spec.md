@@ -1,6 +1,6 @@
 # 009: Preview polish (smooth drag, hint, 404, phone mark)
 
-**Status:** Verified (live) 2026-10-24 (with spec 010; R2 replaced by 010 R1) · **Owner approval:** scope by owner request 2026-10-24 (see Approval record) · **Gates needed:**
+**Status:** Archived 2026-10-24; was Verified (live) 2026-10-24 (with spec 010; R2 replaced by 010 R1) · **Owner approval:** scope by owner request 2026-10-24 (see Approval record) · **Gates needed:**
 none
 **Related:** 007 T11 preview (approval record of `docs/specs/007-switch-over/spec.md`); 001 R7–R10, R12, R17, R22 and
 Approach "Physics"; OWNER_QUESTIONS "Wobble" (2026-10-22); mock v0.7 (`docs/mockups/rargu-os-v0.7.html`); Fable
