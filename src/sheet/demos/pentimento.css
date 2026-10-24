@@ -1,0 +1,110 @@
+/* Spec 005 R6, R9: the Pentimento sketch, as in the mock (part1.html .pent,
+   .layers, .cmd, .tb, .wfoot). The demo area is the mock's .wbody; the
+   window has the mock's after-run height (005 option C). */
+.pent-demo {
+  --term-bg: #000000;
+  --term-ink: #00e436;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  min-width: 0;
+}
+.pent {
+  flex: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 170px;
+  gap: 12px;
+}
+.pent canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 2px solid var(--outline);
+}
+.pent .layers {
+  border: 2px solid var(--outline);
+  font-size: 13px;
+}
+.pent .layers div {
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--chrome);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.pent .layers div.new {
+  background: var(--chip);
+  animation: pent-pop 0.4s;
+}
+.pent .eye {
+  font-family: var(--font-display);
+}
+@keyframes pent-pop {
+  from {
+    transform: scale(0.96);
+    opacity: 0.3;
+  }
+}
+/* holds the five lines of a run (mock after a run: 132 px); scroll is only a
+   fallback */
+.pent-demo .cmd {
+  flex: none;
+  height: calc(5 * 1.55em + 16px);
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  line-height: 1.55;
+  background: var(--term-bg);
+  color: var(--term-ink);
+  padding: 8px 10px;
+  margin-top: 10px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.pent-demo .tb {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  margin-top: 10px;
+}
+.pent-demo .tb button {
+  font-family: var(--font-display);
+  font-size: 15px;
+  border: 2px solid var(--outline);
+  background: var(--chrome);
+  color: var(--ink);
+  padding: 2px 9px 1px;
+  cursor: pointer;
+}
+/* 001 R19: rings in the sheet stay ≥ 2 screen px at any zoom (--ring:
+   view.ts), as on Castle Wars' buttons */
+.pent-demo .tb button:focus-visible,
+.pent-demo .cmd:focus-visible {
+  outline-width: var(--ring, 2px);
+  outline-offset: 0;
+}
+.pent-demo .tb button:focus-visible {
+  outline-color: var(--ink);
+}
+.pent-demo .sketch {
+  font-size: 13px;
+  color: var(--ink-dim);
+}
+.pent-demo .sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+[data-win="pentimento"] .wfoot {
+  flex: none;
+  border-top: 2px solid var(--outline);
+  background: var(--paper-2);
+  font-family: var(--font-display);
+  font-size: 15px;
+  padding: 3px 10px 2px;
+}

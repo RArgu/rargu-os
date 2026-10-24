@@ -1,0 +1,122 @@
+/* 002 R3, R4: modal panels (child windows and dialogs) inside a hosted app's
+   demo area. They are part of the window's DOM, so they scale and clip with
+   it at any zoom. No animation (reduced motion needs none to switch off).
+   T6 scopes these with the other host styles. */
+.demo-area[data-host] {
+  position: relative;
+}
+.host-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  background: color-mix(in srgb, var(--paper, #fff) 45%, transparent);
+}
+.host-panel {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  background: var(--paper, #fff);
+  border: 2px solid var(--outline, #000);
+  box-shadow: 4px 4px 0 var(--shadow, #0003);
+}
+.host-panel-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 2px 2px 8px;
+  border-bottom: 2px solid var(--outline, #000);
+  font-weight: 700;
+}
+.host-panel-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.host-panel-x {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.host-panel-body {
+  min-height: 0;
+  overflow: auto;
+}
+/* a child window's content scrolls in its own (fixed) size, so nothing the
+   app puts in is clipped */
+.host-panel-body > .host-child {
+  overflow: auto;
+}
+/* the ui dialogs: 260 px wide, as on the old OS (wm/dialogs.ts) */
+.host-msg > .dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 260px;
+  max-width: 100%;
+  padding: 10px;
+}
+.host-msg > .dialog .dialog-message {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.host-msg > .dialog .dialog-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+/* 002 R5: the menu row above the app's root; the root keeps the rest of
+   the demo area */
+.demo-area[data-host].host-menu {
+  display: flex;
+  flex-direction: column;
+}
+.demo-area[data-host].host-menu > .host-root {
+  flex: 1 1 0;
+  min-height: 0;
+}
+.demo-area[data-host].host-menu > .host-bar {
+  flex: none;
+  height: auto;
+}
+/* 002 R6: the "Download <name>" link of the latest save, over the bottom
+   right of the demo area (the window keeps its size); sheet ink on paper
+   (001 R18) */
+.host-dl {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  max-width: calc(100% - 8px);
+  padding: 0 0 0 8px;
+  background: var(--paper);
+  color: var(--ink);
+  border: 2px solid var(--outline);
+  box-shadow: 2px 2px 0 var(--shadow);
+}
+.host-dl > a {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: inherit;
+}
+.host-dl > :focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}

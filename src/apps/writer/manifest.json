@@ -1,0 +1,12 @@
+{
+  "id": "writer",
+  "name": "Writer",
+  "version": "1.0.0",
+  "icon": "icon.png",
+  "entry": "main.js",
+  "window": { "width": 420, "height": 300, "minWidth": 240, "minHeight": 160, "resizable": true },
+  "singleton": false,
+  "exitOnLastWindowClose": true,
+  "opens": [".md", ".txt", ".json", ".js", ".trk", ".log"],
+  "category": "tools"
+}

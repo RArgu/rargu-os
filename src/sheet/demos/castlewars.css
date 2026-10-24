@@ -1,0 +1,77 @@
+/* Spec 005 R1, R8, R9: the Castle Wars window, as in the mock (part1.html
+   .wbody, .tb, canvas, .wfoot). The demo area is the mock's .wbody; the unit
+   names (an allowed difference) take the space under the canvas, so the
+   window keeps the layout table's height. */
+.cw {
+  padding: 12px 12px 0;
+  min-width: 0;
+}
+.cw .tb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 5px;
+}
+.cw-tabs {
+  display: contents;
+}
+.cw button {
+  font-family: var(--font-display);
+  font-size: 15px;
+  border: 2px solid var(--outline);
+  background: var(--chrome);
+  color: var(--ink);
+  padding: 2px 9px 1px;
+  cursor: pointer;
+}
+.cw button[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--title-ink);
+}
+.cw button:focus-visible {
+  outline-color: var(--ink);
+  outline-width: var(--ring, 2px);
+  outline-offset: 0;
+}
+.cw-pause {
+  margin-left: auto;
+}
+.cw-stage {
+  position: relative;
+}
+.cw canvas {
+  display: block;
+  max-width: 100%;
+  image-rendering: pixelated;
+}
+.cw-state {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 17px;
+}
+.cw-state[hidden],
+.cw-state [hidden] {
+  display: none;
+}
+.cw-units {
+  margin: 2px 0 0;
+  font-size: 13px;
+  line-height: 14px;
+  color: var(--ink-dim);
+}
+[data-win="castlewars"] .wfoot {
+  flex: none;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 2px solid var(--outline);
+  background: var(--paper-2);
+  font-family: var(--font-display);
+  font-size: 15px;
+  padding: 3px 10px 2px;
+}

@@ -1,0 +1,688 @@
+/* Tracker. Sizes are logical px; the grid is DOM text in the mono pixel font. */
+
+.trk {
+  position: relative;
+  --trk-bg: var(--term-bg);
+  --trk-fg: var(--term-fg);
+}
+
+/* ---------- transport ---------- */
+
+.trk-transport.toolbar {
+  padding: calc(var(--u) * 2) calc(var(--u) * 3);
+}
+.trk-transport .btn.stack {
+  flex: none;
+  min-width: calc(var(--u) * 34);
+  padding: var(--u) calc(var(--u) * 5);
+  gap: var(--u);
+}
+.trk-transport .btn.stack.on .icon {
+  /* the icon sits on a pressed plum button */
+  background-color: transparent;
+}
+.trk-sep {
+  flex: none;
+  align-self: stretch;
+  width: var(--u);
+  margin: 0 calc(var(--u) * 4);
+  background: var(--chrome-dark);
+  box-shadow: var(--u) 0 0 var(--chrome-light);
+}
+.trk-field {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: calc(var(--u) * 4);
+}
+
+/* ---------- desktop layout ---------- */
+
+.trk-main {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: calc(var(--u) * 4);
+  padding: calc(var(--u) * 3);
+}
+.trk-order {
+  flex: none;
+  width: calc(var(--u) * 62);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--u) * 3);
+  min-height: 0;
+}
+.trk-orderlist {
+  position: relative;
+  flex: 1;
+  min-height: calc(var(--u) * 24);
+  overflow-y: auto;
+  background: var(--trk-bg);
+  color: var(--trk-fg);
+  border: var(--u) solid var(--outline);
+  font-family: var(--font-mono);
+}
+.trk-entry {
+  display: block;
+  width: 100%;
+  padding: var(--u) calc(var(--u) * 6);
+  border: none;
+  background: none;
+  color: inherit;
+  text-align: left;
+}
+.trk-entry.loop,
+.trk-chip.loop {
+  box-shadow: inset calc(var(--u) * 3) 0 0 var(--accent);
+}
+.trk-entry.on,
+.trk-chip.on {
+  background: var(--title-active);
+  color: var(--text-inverse);
+}
+.trk-order-btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--u) * 2);
+}
+.trk-order-btns .btn {
+  min-width: 0;
+  padding: 0;
+}
+.trk-order .trk-field {
+  flex-direction: column;
+  align-items: stretch;
+  gap: calc(var(--u) * 2);
+}
+.trk-order .stepper-value {
+  flex: 1;
+}
+.trk-center {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--u) * 3);
+}
+.trk-side {
+  flex: none;
+  width: calc(var(--u) * 146);
+  overflow-y: auto;
+  padding: calc(var(--u) * 4);
+  border: var(--u) solid var(--chrome-dark);
+  box-shadow:
+    inset var(--u) var(--u) 0 var(--chrome-light),
+    var(--u) var(--u) 0 var(--chrome-light);
+}
+.trk.narrow .trk-side {
+  display: none;
+}
+.trk-pianorow {
+  flex: none;
+  display: flex;
+  align-items: flex-end;
+  gap: calc(var(--u) * 4);
+}
+
+/* ---------- pattern grid ---------- */
+
+.trk-grid {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  background: var(--trk-bg);
+  color: var(--trk-fg);
+  border: var(--u) solid var(--outline);
+  font-family: var(--font-mono);
+}
+.dpos .trk-grid:focus-visible {
+  outline: none;
+}
+.trk-head,
+.trk-row {
+  display: flex;
+  width: max-content;
+  min-width: 100%;
+}
+.trk-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--trk-bg);
+  font-family: var(--font-ui);
+  font-weight: 700;
+  box-shadow: inset 0 calc(var(--u) * -1) 0 var(--text-dim);
+}
+.trk-num {
+  flex: none;
+  width: calc(2ch + var(--u) * 8);
+  text-align: center;
+}
+.trk-head .trk-num {
+  font-family: var(--font-mono);
+}
+.trk-cell {
+  flex: 1 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 calc(var(--u) * 4);
+  border-left: var(--u) solid var(--text-dim);
+  white-space: pre;
+}
+.trk-head .trk-cell {
+  gap: calc(var(--u) * 6);
+}
+.trk-row.beat {
+  box-shadow: inset 0 var(--u) 0 var(--text-dim);
+}
+.trk-cell .i,
+.trk-cell .v,
+.trk-cell .f0 {
+  margin-left: 1ch;
+}
+.trk-cell .z {
+  color: var(--hover);
+}
+/* a selected row range is inverse video, which reads in every theme */
+.trk-cell.sel {
+  background: var(--trk-fg);
+  color: var(--trk-bg);
+}
+.trk-cell.sel .z {
+  color: var(--trk-bg);
+}
+.trk-row.play {
+  background: var(--title-active);
+  color: var(--text-inverse);
+}
+.trk-row.play .z {
+  color: inherit;
+}
+.trk:not(.compact) .trk-cell .at {
+  background: var(--selection-bg);
+  color: var(--selection-fg);
+}
+.trk-short,
+.trk-dot,
+.trk-chdot {
+  display: none;
+}
+
+/* ---------- piano ---------- */
+
+.trk-piano {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  height: calc(var(--u) * 24);
+  border: var(--u) solid var(--outline);
+  border-right: none;
+  background: var(--outline);
+  touch-action: none;
+}
+.trk-key {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  border-right: var(--u) solid var(--outline);
+  /* light in every theme, unlike --document */
+  background: var(--chrome-light);
+}
+.trk-key.black {
+  position: absolute;
+  top: 0;
+  height: 60%;
+  flex: none;
+  border: none;
+  background: var(--outline);
+}
+.trk-key:active {
+  background: var(--hover);
+}
+.trk-key.on {
+  background: var(--accent);
+}
+
+/* ---------- instrument panel ---------- */
+
+.trk-inst {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--u) * 3);
+}
+.trk-inst-title {
+  font-weight: 700;
+}
+.trk-inst .segmented {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+}
+.trk-inst .segmented > button {
+  min-width: 0;
+  min-height: max(calc(var(--text-size) + var(--u) * 4), var(--hit));
+  padding: 0 calc(var(--u) * 2);
+}
+.trk-inst-row {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 4);
+}
+.trk-inst-row > .trk-inst-label {
+  flex: none;
+  min-width: calc(var(--u) * 36);
+  white-space: nowrap;
+}
+.trk-inst-row input[type="text"] {
+  flex: 1;
+  min-height: max(calc(var(--text-size) + var(--u) * 4), var(--hit));
+  padding: 0 calc(var(--u) * 3);
+}
+.trk-inst-row input[type="range"] {
+  flex: 1;
+  min-width: 0;
+}
+.trk-sweep-value {
+  flex: none;
+  width: 3ch;
+  text-align: right;
+}
+.trk-adsr {
+  display: flex;
+  justify-content: space-around;
+  height: calc(var(--u) * 62);
+}
+.trk-vs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--u) * 2);
+}
+.trk-vs-track {
+  position: relative;
+  flex: 1;
+  width: max(calc(var(--u) * 16), var(--hit));
+  touch-action: none;
+  --v: 0;
+}
+.trk-vs-track::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(50% - var(--u) * 3);
+  width: calc(var(--u) * 6);
+  border: var(--u) solid var(--outline);
+  background: var(--chrome-dark);
+}
+.trk-vs-fill {
+  position: absolute;
+  left: calc(50% - var(--u) * 2);
+  width: calc(var(--u) * 4);
+  bottom: var(--u);
+  height: calc((100% - var(--u) * 2) * var(--v));
+}
+.trk-vs-thumb {
+  position: absolute;
+  left: calc(50% - var(--u) * 7);
+  width: calc(var(--u) * 14);
+  height: calc(var(--u) * 6);
+  bottom: calc((100% - var(--u) * 6) * var(--v));
+  border: var(--u) solid var(--outline);
+  background: var(--chrome);
+  box-shadow:
+    inset var(--u) var(--u) 0 var(--chrome-light),
+    inset calc(var(--u) * -1) calc(var(--u) * -1) 0 var(--chrome-dark);
+}
+.trk-vs-value {
+  min-width: calc(1ch + var(--u) * 8);
+  padding: 0 calc(var(--u) * 3);
+  border: var(--u) solid var(--outline);
+  background: var(--document);
+  color: var(--document-text);
+  font-family: var(--font-mono);
+  text-align: center;
+}
+
+/* ---------- sheets inside the window ---------- */
+
+.trk-sheet {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  background: var(--chrome);
+}
+.trk-sheet-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(var(--u) * 4) calc(var(--u) * 8);
+  border-bottom: var(--u) solid var(--outline);
+  font-weight: 700;
+}
+.trk-sheet-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: calc(var(--u) * 8);
+}
+.trk-sheet .trk-inst {
+  gap: calc(var(--u) * 8);
+  max-width: calc(var(--u) * 400);
+}
+.trk-sheet .trk-adsr {
+  height: calc(var(--u) * 130);
+}
+.trk-fxlist {
+  border: var(--u) solid var(--outline);
+  background: var(--document);
+  color: var(--document-text);
+}
+.trk-fxrow {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 8);
+  width: 100%;
+  min-height: max(calc(var(--text-size) + var(--u) * 8), var(--hit));
+  padding: 0 calc(var(--u) * 8);
+  border: none;
+  background: none;
+  color: inherit;
+  font-family: var(--font-mono);
+  text-align: left;
+  white-space: pre;
+}
+.trk-fxrow.on {
+  background: var(--title-active);
+  color: var(--text-inverse);
+}
+.trk-nocheck {
+  flex: none;
+  width: calc(var(--u) * 8);
+}
+.trk-fxparam {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: calc(var(--u) * 12);
+}
+.trk-fxparam label {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 6);
+}
+
+/* ---------- compact (phone) layout ---------- */
+
+.trk-scroll {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.trk.compact .trk-transport {
+  flex: none;
+  display: flex;
+  align-items: stretch;
+  gap: calc(var(--u) * 4);
+  padding: calc(var(--u) * 6);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.trk.compact .trk-transport .btn.stack {
+  flex: 1 0 auto;
+  min-width: var(--hit);
+  padding: calc(var(--u) * 5) calc(var(--u) * 4);
+}
+.trk-bpm {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--u) * 2);
+  padding: calc(var(--u) * 2) calc(var(--u) * 4);
+  border: var(--u) solid var(--chrome-dark);
+  box-shadow: inset var(--u) var(--u) 0 var(--chrome-light);
+}
+.trk-patrow {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 4);
+  padding: 0 calc(var(--u) * 6) calc(var(--u) * 6);
+}
+.trk-patlabel {
+  flex: none;
+  font-weight: 700;
+}
+.trk-chips {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  margin-left: calc(var(--u) * 4);
+  overflow-x: auto;
+  scrollbar-width: none;
+  border: var(--u) solid var(--outline);
+  background: var(--document);
+}
+.trk-chips::-webkit-scrollbar,
+.trk.compact .trk-transport::-webkit-scrollbar {
+  display: none;
+}
+.trk-chip {
+  flex: none;
+  min-width: max(calc(var(--u) * 36), var(--hit));
+  min-height: var(--hit);
+  padding: 0 calc(var(--u) * 6);
+  border: none;
+  border-right: var(--u) solid var(--outline);
+  background: var(--document);
+  color: var(--document-text);
+  font-family: var(--font-mono);
+}
+.trk-chip.loop {
+  box-shadow: inset 0 calc(var(--u) * -3) 0 var(--accent);
+}
+.trk.compact .trk-grid {
+  /* the grid gives up height first, so the piano strip always fits (C20);
+     two rows stay, since the Cell card's 44 px steppers wrap on a 320 px phone */
+  flex: 1 1 calc(var(--u) * 150);
+  min-height: calc(var(--u) * 56);
+  margin: 0 calc(var(--u) * 6);
+  font-size: max(16px, var(--text-size));
+  overflow-x: hidden;
+}
+.trk.compact .trk-head,
+.trk.compact .trk-row {
+  width: 100%;
+}
+.trk.compact .trk-cell {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: calc(var(--u) * 28);
+  padding: 0;
+  gap: calc(var(--u) * 6);
+}
+.trk.compact .trk-num {
+  align-self: center;
+}
+.trk.compact .trk-cell .i,
+.trk.compact .trk-cell .v,
+.trk.compact .trk-cell .f,
+.trk.compact .trk-full {
+  display: none;
+}
+.trk.compact .trk-short {
+  display: inline;
+}
+.trk.compact .trk-dot,
+.trk.compact .trk-chdot {
+  display: block;
+  flex: none;
+  width: calc(var(--u) * 6);
+  height: calc(var(--u) * 6);
+  /* a stepped 6x6 dot from three centered blocks; clip-path would anti-alias */
+  --block: linear-gradient(var(--c, transparent), var(--c, transparent));
+  background: var(--block), var(--block), var(--block);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size:
+    calc(var(--u) * 6) calc(var(--u) * 2),
+    calc(var(--u) * 2) calc(var(--u) * 6),
+    calc(var(--u) * 4) calc(var(--u) * 4);
+}
+.trk-chdot.c0 {
+  --c: var(--p8);
+}
+.trk-chdot.c1 {
+  --c: var(--p9);
+}
+.trk-chdot.c2 {
+  --c: var(--p12);
+}
+.trk-chdot.c3 {
+  --c: var(--p10);
+}
+.trk-dot.i0 {
+  --c: var(--p8);
+}
+.trk-dot.i1 {
+  --c: var(--p9);
+}
+.trk-dot.i2 {
+  --c: var(--p10);
+}
+.trk-dot.i3 {
+  --c: var(--p11);
+}
+.trk-dot.i4 {
+  --c: var(--p12);
+}
+.trk-dot.i5 {
+  --c: var(--p13);
+}
+.trk-dot.i6 {
+  --c: var(--p14);
+}
+.trk-dot.i7 {
+  --c: var(--p15);
+}
+.trk.compact .trk-row.play {
+  background: var(--error);
+}
+.trk.compact .trk-cell.cur {
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 3) var(--title-active),
+    inset 0 0 0 calc(var(--u) * 4) var(--text-inverse);
+}
+.trk-card {
+  flex: none;
+  margin-top: calc(var(--u) * 6);
+  padding: calc(var(--u) * 4) calc(var(--u) * 8) calc(var(--u) * 6);
+  background: var(--document);
+  color: var(--document-text);
+  border-top: var(--u) solid var(--outline);
+  border-bottom: var(--u) solid var(--outline);
+}
+.trk-card-title {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 6);
+  margin-bottom: calc(var(--u) * 4);
+  color: var(--heading);
+}
+.trk-card-title::after {
+  content: "";
+  flex: 1;
+  height: var(--u);
+  background: var(--rule);
+}
+/* the Cell card's three steppers keep stacked arrows, 44 wide and 22 tall: three
+   44 px keys do not fit abreast on a phone (REPORT carry-over 3, exception) */
+.trk.compact .trk-card .stepper-arrows {
+  flex-direction: column;
+}
+.trk.compact .trk-card .stepper-arrows button {
+  min-height: 0;
+  min-width: var(--hit);
+}
+.trk.compact .trk-card .stepper-arrows button:first-child {
+  border-left: none;
+  border-bottom: var(--u) solid var(--outline);
+}
+.trk-card-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: calc(var(--u) * 6);
+}
+.trk-card .trk-field {
+  flex-direction: column;
+  gap: calc(var(--u) * 2);
+}
+.trk-card .btn {
+  flex: 1;
+  max-width: calc(var(--u) * 90);
+}
+.trk-keys {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--u) * 6);
+  padding: calc(var(--u) * 6);
+}
+.trk-keys-row {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 4);
+}
+.trk-keys-row .btn {
+  padding: 0 calc(var(--u) * 10);
+}
+.trk-oct {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 calc(var(--u) * 8);
+  white-space: nowrap;
+}
+.trk.compact .trk-piano {
+  flex: none;
+  height: calc(var(--u) * 84);
+}
+/* the shared label class .check also matches .glyph.check and stretches it */
+.trk-fxrow .glyph.check {
+  display: inline-block;
+  min-height: 0;
+}
+
+/* ---------- RArgu OS sheet (004 D2) ---------- */
+
+/* The sheet runs Tracker at 16 px text and --u 1px (the old OS at scale 1
+   looks the same; it stays as it is). The instrument panel then needs a
+   few px more than its 144 px: the Noise row overflows and "Periodic" is
+   cut. Here the segment buttons size to their labels and the panel's gaps
+   are 1 px smaller, so it fits without a sideways or vertical scroll. */
+.trk.on-sheet .trk-inst {
+  gap: calc(var(--u) * 2);
+}
+.trk.on-sheet .trk-inst-row {
+  gap: calc(var(--u) * 2);
+}
+.trk.on-sheet .trk-inst .segmented > button {
+  flex: auto;
+  padding: 0 var(--u);
+}

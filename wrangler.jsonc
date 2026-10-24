@@ -1,0 +1,19 @@
+// RArgu OS on rargu.dev: the same Cloudflare Worker the Astro site used
+// (`rargu-devpage`, account f02cc387…), now serving this repo's dist/. No Worker
+// script: the site is static. Deploy with `npm run deploy` (builds first).
+// Roll back with `npx wrangler rollback <version-id> --name rargu-devpage`.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "rargu-devpage",
+  "compatibility_date": "2026-10-03",
+  // the apex only; www → apex is a zone-level redirect rule, not part of this Worker
+  "routes": [{ "pattern": "rargu.dev", "custom_domain": true }],
+  "assets": {
+    "directory": "./dist/",
+    // the default: "/" serves index.html; "/resume.html" answers 307 to "/resume",
+    // which serves the same page
+    "html_handling": "auto-trailing-slash",
+    // unknown paths get dist/404.html with a 404 status (public/404.html)
+    "not_found_handling": "404-page"
+  }
+}

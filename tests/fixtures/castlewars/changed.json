@@ -1,0 +1,19 @@
+{ "frames": {
+   "test 0.aseprite": { "frame": { "x": 0, "y": 0, "w": 12, "h": 7 }, "duration": 90 },
+   "test 1.aseprite": { "frame": { "x": 12, "y": 0, "w": 12, "h": 7 }, "duration": 110 },
+   "test 2.aseprite": { "frame": { "x": 24, "y": 0, "w": 12, "h": 7 }, "duration": 130 },
+   "test 3.aseprite": { "frame": { "x": 36, "y": 0, "w": 12, "h": 7 }, "duration": 150 },
+   "test 4.aseprite": { "frame": { "x": 48, "y": 0, "w": 12, "h": 7 }, "duration": 170 },
+   "test 5.aseprite": { "frame": { "x": 60, "y": 0, "w": 12, "h": 7 }, "duration": 190 }
+ },
+ "meta": {
+  "size": { "w": 72, "h": 7 },
+  "frameTags": [
+   { "name": "idle", "from": 0, "to": 0, "direction": "forward" },
+   { "name": "walk", "from": 1, "to": 2, "direction": "forward" },
+   { "name": "attack", "from": 3, "to": 3, "direction": "forward" },
+   { "name": "death", "from": 4, "to": 4, "direction": "forward" },
+   { "name": "victory", "from": 5, "to": 5, "direction": "forward" }
+  ]
+ }
+}

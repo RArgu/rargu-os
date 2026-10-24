@@ -1,0 +1,34 @@
+.writer textarea {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  border: none;
+  box-shadow: none;
+  font-family: var(--font-mono);
+  font-size: calc(var(--text-size) * var(--writer-zoom, 1));
+  padding: calc(var(--u) * 4);
+  overflow: auto;
+  tab-size: 2;
+}
+.writer textarea.nowrap {
+  white-space: pre;
+}
+.writer-banner {
+  flex: none;
+  padding: calc(var(--u) * 3) calc(var(--u) * 6);
+  background: var(--p10);
+  color: var(--p0);
+  border-bottom: var(--u) solid var(--outline);
+}
+.writer-find {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(var(--u) * 3);
+  padding: calc(var(--u) * 3);
+  border-top: var(--u) solid var(--chrome-dark);
+}
+.writer-find input {
+  flex: 1 1 calc(var(--u) * 60);
+}

@@ -1,0 +1,22 @@
+# Specs
+
+Every change to site code, build config, scripts, content structure or deploy starts here. Workflow:
+[`.agents/skills/spec-driven`](../../.agents/skills/spec-driven/SKILL.md). Layout baseline:
+[docs/mockups](../mockups/README.md). Owner decisions: [OWNER_QUESTIONS](../OWNER_QUESTIONS.md).
+
+**Independent critic:** Codex, read-only, model `gpt-6.1-sol`, run with the ChatGPT.app-bundled CLI
+(`/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex`). Owner choice for this repo 2026-10-22 (same
+setup as RETVController).
+
+| ID | Title | Status | Gates | Notes |
+|---|---|---|---|---|
+| [001](001-sheet/spec.md) | The sheet: page, pan, zoom, minimap, overlay card, window physics, project text | **Archived** 2026-10-24 (007 T7); was Verified (local) 2026-10-23 (T1–T9, branch `spec-001-sheet`); approved 2026-10-22; Amendment 1 (R2.c sprites) approved 2026-10-22; Amendment 2 (R2.a app chunks after 002) approved 2026-10-22 | none | [tasks](001-sheet/tasks.md) (T1–T9); split approved 2026-10-22; mock v0.6; [critique](../review/spec-001-critique-codex.md) (17, all accepted) |
+| [002](002-app-host/spec.md) | App host: run CastleSiege, Paint, Tracker, Writer in sheet windows without the kernel | **Archived** 2026-10-24 (007 T7); was Verified (local) 2026-10-23 (T1–T9, branch `spec-002-host`); approved 2026-10-22 | none | [tasks](002-app-host/tasks.md); [critique](../review/spec-002-critique-codex.md) (17, all accepted); amended 001 R2.b |
+| [003](003-castlesiege-live/spec.md) | CastleSiege live: real engine and bot, side panel, menus, sound and save rules | **Archived** 2026-10-24 (007 T7); was Verified (local) 2026-10-23 (T1–T9, branch `spec-003-castlesiege`); approved 2026-10-22 | none | [tasks](003-castlesiege-live/tasks.md); [critique](../review/spec-003-critique-codex.md) (13, all accepted) |
+| [004](004-quick-tools/spec.md) | Quick tools: Paint, Music (Tracker + demo song), Notes (Writer, .txt) | **Archived** 2026-10-24 (007 T7); was Verified (local) (mock v0.7 approved 2026-10-24; branch `spec-004-tools`); approved 2026-10-22 | none | [tasks](004-quick-tools/tasks.md); [critique](../review/spec-004-critique-codex.md) (13, all accepted); amended 002 R6/R15 |
+| [005](005-wip-windows/spec.md) | WIP windows: Castle Wars sprite viewer, Pentimento sketch | **Archived** 2026-10-24 (007 T7); was Verified (local) 2026-10-23 (T1–T8, branch `spec-005-wip`); approved 2026-10-22 | none | [tasks](005-wip-windows/tasks.md); [critique](../review/spec-005-critique-codex.md) (11, all accepted) |
+| [006](006-data-demos/spec.md) | Data demos: crawler and Insider Trading, dummy data as in the mock | **Archived** 2026-10-24 (007 T7); was Verified (local) 2026-10-23 (T1–T7, branch `spec-006-demos`); approved 2026-10-22 | none | [tasks](006-data-demos/tasks.md); [critique](../review/spec-006-critique-codex.md) (10, all accepted) |
+| [007](007-switch-over/spec.md) | Switch-over: sheet to `/`, delete old OS, rename, deploy | **Verified (local)** (branch `spec-007-switchover`; T11 owner preview next); approved 2026-10-22 | G-deploy, G-push (owner) | [tasks](007-switch-over/tasks.md); [critique](../review/spec-007-critique-codex.md) (10, all accepted) |
+| [008](008-old-os-castlesiege-fixes/spec.md) | Old-OS CastleSiege fixes: Hot-seat cancel, menu Undo state, live reduced motion, music follows Music | **Archived** 2026-10-24 (007 T7: 007 deletes the old OS that 008 fixed; old code in the local tag `devpageos-final`, set in 007 T9); was Verified (local) 2026-10-24 (T1–T3, branch `spec-008-oldos`) | none | [tasks](008-old-os-castlesiege-fixes/tasks.md); owner request 2026-10-24; [critique](../review/spec-008-critique-codex.md) (8, all accepted) |
+| [009](009-preview-polish/spec.md) | Preview polish: smooth drag (layer, no held tilt, smaller wobble), music hint removed, new 404, phone card mark | **Verified (local)**; scope by owner request 2026-10-24 | none | [tasks](009-preview-polish/tasks.md); [critique](../review/spec-009-critique-codex.md) (11, all accepted) |
+| [010](010-lean-and-launch/spec.md) | Held lean back (no grow), 404 tip removed, public repo `rargu-os`, deploy, fast-forward `main` | **Implementing** (approved 2026-10-24) | G-deploy, G-push (given 2026-10-24) | owner answers 2026-10-24; [critique](../review/spec-010-critique-codex.md) (8, all accepted) |

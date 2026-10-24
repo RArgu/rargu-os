@@ -1,0 +1,430 @@
+/* CastleSiege: a wood board in palette slots (SPEC §7.14). */
+.cs {
+  --cs-cell: calc(var(--u) * 24);
+  --cs-sprite: calc(var(--u) * 18);
+  --cs-ref: calc(var(--u) * 8);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.cs-main {
+  flex: 1;
+  display: flex;
+  gap: calc(var(--u) * 4);
+  min-height: 0;
+  padding: calc(var(--u) * 4);
+}
+.cs-boardwrap {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+.cs-frame {
+  position: relative;
+  flex: none;
+  border: calc(var(--u) * 3) solid var(--p5);
+  box-shadow: 0 0 0 var(--u) var(--p0);
+}
+.cs-board {
+  display: grid;
+  grid-template-columns: repeat(var(--cs-cols, 7), var(--cs-cell));
+  grid-auto-rows: var(--cs-cell);
+}
+.cs-cell {
+  position: relative;
+  padding: 0;
+  border: none;
+  background: var(--p15);
+  outline: none;
+}
+.cs-cell.dark {
+  background: var(--p4);
+}
+/* a move target: a yellow dot with a dark edge */
+.cs-cell.t-move::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--cs-cell) / 4);
+  height: calc(var(--cs-cell) / 4);
+  transform: translate(-50%, -50%);
+  background: var(--p10);
+  box-shadow: 0 0 0 var(--u) var(--p0);
+  z-index: 2;
+}
+/* an attack target: red corner brackets */
+.cs-cell.t-attack::before,
+.cs-ref-cell.t-attack::before {
+  content: "";
+  position: absolute;
+  inset: var(--u);
+  z-index: 2;
+  --c: var(--p8);
+  --l: 30%;
+  --t: calc(var(--u) * 2);
+  background:
+    linear-gradient(var(--c), var(--c)) top left / var(--l) var(--t) no-repeat,
+    linear-gradient(var(--c), var(--c)) top left / var(--t) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / var(--l) var(--t) no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / var(--t) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / var(--l) var(--t)
+      no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / var(--t) var(--l)
+      no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / var(--l) var(--t)
+      no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / var(--t) var(--l)
+      no-repeat;
+}
+.cs-cell.last {
+  box-shadow: inset 0 0 0 var(--u) var(--p9);
+}
+.cs-cell.sel {
+  box-shadow: inset 0 0 0 calc(var(--u) * 2) var(--p12);
+}
+.cs-cell:focus-visible {
+  outline: var(--u) dashed var(--p12);
+  outline-offset: calc(var(--u) * -3);
+}
+.cs-pieces {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.cs-piece {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  width: var(--cs-cell);
+  height: var(--cs-cell);
+  background: center / var(--cs-sprite) var(--cs-sprite) no-repeat;
+  image-rendering: pixelated;
+  transition: transform 120ms linear;
+}
+.cs.no-motion .cs-piece,
+[data-motion="reduced"] .cs-piece {
+  transition: none;
+}
+
+/* side panel */
+.cs-side {
+  flex: 0 0 calc(var(--u) * 110);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--u) * 3);
+  min-width: 0;
+  min-height: 0;
+}
+.cs-turn {
+  font-weight: 700;
+  line-height: 1.1;
+}
+.cs.thinking .cs-turn {
+  color: var(--heading);
+}
+.cs-captured {
+  display: flex;
+  flex-direction: column;
+  gap: var(--u);
+}
+.cs-lost {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: calc(var(--u) * 9);
+}
+.cs-mini {
+  width: calc(var(--u) * 9);
+  height: calc(var(--u) * 9);
+  background: center / calc(var(--u) * 9) no-repeat;
+  image-rendering: pixelated;
+}
+.cs-moves {
+  flex: 1 1 0;
+  min-height: calc(var(--u) * 30);
+  margin: 0;
+  padding: var(--u);
+  overflow-y: auto;
+  list-style: none;
+  border: var(--u) solid var(--outline);
+  background: var(--document);
+  color: var(--document-text);
+}
+.cs-moves li {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 3);
+  padding: 0 calc(var(--u) * 2);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.cs-moves li.on {
+  background: var(--title-active);
+  color: var(--text-inverse);
+}
+.cs-side-dot {
+  flex: none;
+  width: calc(var(--u) * 4);
+  height: calc(var(--u) * 4);
+  border: var(--u) solid var(--p0);
+}
+.cs-side-dot.white {
+  background: var(--p7);
+}
+.cs-side-dot.black {
+  background: var(--p0);
+}
+.cs-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--u) * 2);
+}
+.cs-actions .btn {
+  flex: 1 1 auto;
+}
+.cs-ref {
+  display: none;
+  flex-wrap: wrap;
+  gap: calc(var(--u) * 4);
+}
+.cs.wide .cs-side .cs-ref {
+  display: flex;
+}
+.cs.wide .cs-side {
+  flex-basis: calc(var(--u) * 210);
+}
+.cs.wide .cs-moves {
+  min-height: calc(var(--u) * 60);
+}
+/* Larger windows group the board with a readable reference panel. */
+.cs.roomy .cs-main {
+  width: 100%;
+  max-width: calc(var(--u) * 600);
+  margin-inline: auto;
+  gap: calc(var(--u) * 12);
+}
+.cs.roomy .cs-side {
+  flex-basis: calc(var(--u) * 280);
+}
+.cs.roomy .cs-side .cs-ref {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.cs.roomy .cs-ref-item {
+  max-width: none;
+}
+.cs-ref-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--u);
+  max-width: calc(var(--u) * 70);
+}
+.cs-ref-grid {
+  display: grid;
+  border: var(--u) solid var(--p5);
+  align-self: flex-start;
+}
+.cs-ref-cell {
+  position: relative;
+  width: var(--cs-ref);
+  height: var(--cs-ref);
+  background: var(--p15);
+}
+.cs-ref-cell:nth-child(even) {
+  background: var(--p4);
+}
+.cs-ref-cell.t-move::after {
+  content: "";
+  position: absolute;
+  inset: 30%;
+  background: var(--p10);
+  box-shadow: 0 0 0 var(--u) var(--p0);
+}
+.cs-ref-cell.me {
+  background: var(--p12) center / 100% no-repeat;
+  image-rendering: pixelated;
+}
+.cs-line,
+.cs-statusbar {
+  flex: none;
+}
+.cs-line {
+  display: none;
+}
+
+/* dialogs */
+.cs-dlg {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--u) * 4);
+  padding: calc(var(--u) * 6);
+}
+.cs-dlg-row {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--u) * 3);
+}
+
+/* phone: the board spans the width, a status line, a bottom bar and two sheets */
+.cs .bottombar {
+  display: none;
+}
+.cs.compact .cs-main {
+  flex: none;
+  flex-direction: column;
+  padding: 8px 0 0;
+}
+.cs.compact .cs-boardwrap {
+  flex: none;
+}
+.cs.compact .cs-side,
+.cs.compact .cs-statusbar {
+  display: none;
+}
+.cs.compact .cs-line {
+  display: block;
+  padding: calc(var(--u) * 6) 8px;
+  font-weight: 700;
+  text-align: center;
+}
+.cs.compact .bottombar {
+  display: flex;
+  margin-top: auto;
+}
+.cs.compact {
+  --cs-ref: 16px;
+}
+.cs-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  max-height: 70%;
+  border-top: var(--u) solid var(--outline);
+  background: var(--chrome);
+}
+.cs-sheet.hidden {
+  display: none;
+}
+.cs-sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(var(--u) * 4) 8px;
+}
+.cs-sheet-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 8px 8px;
+}
+.cs-sheet .cs-ref {
+  display: flex;
+}
+.cs-sheet .cs-moves li {
+  min-height: 44px;
+}
+.cs:focus-visible {
+  outline: none;
+}
+
+/* the victory title screen: over the whole game, a two-pixel dither of
+   black over the board, and a wood-framed card with the winner's King */
+.cs-victory {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--u) * 8);
+  background: repeating-conic-gradient(var(--p0) 0 25%, transparent 0 50%) 0 0 /
+    calc(var(--u) * 2) calc(var(--u) * 2);
+}
+.cs-victory.hidden {
+  display: none;
+}
+.cs-victory-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--u) * 4);
+  max-width: 100%;
+  padding: calc(var(--u) * 8) calc(var(--u) * 12);
+  border: calc(var(--u) * 3) solid var(--p5);
+  box-shadow:
+    0 0 0 var(--u) var(--p0),
+    calc(var(--u) * 3) calc(var(--u) * 3) 0 var(--u) var(--p0);
+  background: var(--p0);
+  text-align: center;
+}
+.cs-victory-king {
+  width: calc(var(--u) * 64);
+  height: calc(var(--u) * 64);
+  background: center / 100% 100% no-repeat;
+  image-rendering: pixelated;
+}
+.cs-victory-title {
+  font-size: calc(var(--text-size) * 2);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--p10);
+  text-shadow: calc(var(--u) * 2) calc(var(--u) * 2) 0 var(--p8);
+}
+.cs-victory-why {
+  font-weight: 700;
+  color: var(--p15);
+}
+.cs-victory-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: calc(var(--u) * 4);
+  margin-top: calc(var(--u) * 4);
+}
+.cs.compact .cs-victory-buttons .btn {
+  min-height: 44px;
+}
+/* the King drops in four steps and the title flashes twice; nothing moves
+   with reduced motion */
+.cs-victory:not(.hidden) .cs-victory-king {
+  animation: cs-king-drop 320ms steps(4, end) both;
+}
+.cs-victory:not(.hidden) .cs-victory-title {
+  animation: cs-title-flash 640ms steps(1, end) 320ms both;
+}
+@keyframes cs-king-drop {
+  from {
+    transform: translateY(calc(var(--u) * -32));
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes cs-title-flash {
+  0%,
+  50% {
+    visibility: hidden;
+  }
+  25%,
+  75%,
+  100% {
+    visibility: visible;
+  }
+}
+.cs.no-motion .cs-victory *,
+[data-motion="reduced"] .cs-victory * {
+  animation: none !important;
+}
+.cs.compact .cs-victory-king {
+  width: 96px;
+  height: 96px;
+}

@@ -1,0 +1,339 @@
+.paint-main {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ---------- tool palette ---------- */
+
+.paint-side {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--u) * 6);
+  padding: calc(var(--u) * 4);
+  overflow: hidden;
+}
+.paint-tools {
+  display: grid;
+  grid-template-columns: repeat(2, calc(var(--u) * 24));
+  flex: none;
+}
+/* .btn so the padding beats .btn.stack's: the 32px icon overflowed its 20px content box */
+.btn.paint-tool {
+  min-width: 0;
+  min-height: 0;
+  height: calc(var(--u) * 24);
+  padding: 0;
+  margin: 0 calc(var(--u) * -1) calc(var(--u) * -1) 0;
+}
+.paint-tool-label {
+  display: none;
+}
+.paint-tool.active {
+  --d1: var(--chrome);
+  --d2: var(--chrome-light);
+  background: repeating-conic-gradient(var(--d1) 0% 25%, var(--d2) 0% 50%) 0 0 /
+    calc(var(--u) * 2) calc(var(--u) * 2);
+  box-shadow:
+    inset var(--u) var(--u) 0 var(--chrome-dark),
+    inset calc(var(--u) * -1) calc(var(--u) * -1) 0 var(--chrome-light);
+  padding-top: var(--u);
+}
+.paint-options {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--u) * 3);
+}
+.paint-option-row {
+  display: flex;
+}
+.paint-option {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  height: calc(var(--u) * 16);
+  padding: 0;
+  margin-right: calc(var(--u) * -1);
+}
+.paint-option.pressed {
+  background: var(--chrome-light);
+}
+.paint-option:disabled > * {
+  color: var(--text-dim);
+}
+.paint-dot {
+  background: currentColor;
+}
+.paint-hollow {
+  width: calc(var(--u) * 6);
+  height: calc(var(--u) * 6);
+  border: var(--u) solid currentColor;
+}
+
+/* ---------- canvas ---------- */
+
+.paint-view {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  overflow: auto;
+  padding: calc(var(--u) * 3);
+  border: var(--u) solid var(--outline);
+  --d1: var(--chrome-dark);
+  --d2: var(--outline);
+  background: repeating-conic-gradient(var(--d1) 0% 25%, var(--d2) 0% 50%) 0 0 /
+    calc(var(--u) * 2) calc(var(--u) * 2);
+}
+/* base.css sets scrollbar-color on everything, which makes Chromium ignore the
+   beveled ::-webkit-scrollbar parts and fall back to overlay bars */
+@media (pointer: fine) {
+  .paint-view {
+    scrollbar-color: auto;
+  }
+}
+.paint-view:focus-visible {
+  outline: none;
+}
+.paint-stage {
+  position: relative;
+  flex: none;
+  /* centers when smaller than the view, scrolls from the top left when larger */
+  margin: auto;
+  overflow: hidden;
+}
+.paint-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: crosshair;
+}
+.paint-grid,
+.paint-marquee,
+.paint-cross {
+  position: absolute;
+  pointer-events: none;
+}
+/* one line per picture pixel at 4x */
+.paint-grid {
+  inset: 0;
+  --line: var(--chrome-dark);
+  background-image:
+    linear-gradient(to right, var(--line) var(--u), transparent var(--u)),
+    linear-gradient(to bottom, var(--line) var(--u), transparent var(--u));
+  background-size: calc(var(--u) * 4) calc(var(--u) * 4);
+}
+.paint-marquee {
+  --a: var(--p0);
+  --b: var(--p7);
+  --dash-x: repeating-linear-gradient(
+    90deg,
+    var(--a) 0 calc(var(--u) * 3),
+    var(--b) 0 calc(var(--u) * 6)
+  );
+  --dash-y: repeating-linear-gradient(
+    180deg,
+    var(--a) 0 calc(var(--u) * 3),
+    var(--b) 0 calc(var(--u) * 6)
+  );
+  background:
+    var(--dash-x) top / 100% var(--u) no-repeat,
+    var(--dash-x) bottom / 100% var(--u) no-repeat,
+    var(--dash-y) left / var(--u) 100% no-repeat,
+    var(--dash-y) right / var(--u) 100% no-repeat;
+}
+/* a light plus with a dark core, centered on the touched pixel */
+.paint-cross {
+  width: calc(var(--u) * 15);
+  height: calc(var(--u) * 15);
+  margin: calc(var(--u) * -7) 0 0 calc(var(--u) * -7);
+  --dark: linear-gradient(var(--p0), var(--p0));
+  --light: linear-gradient(var(--p7), var(--p7));
+  background:
+    var(--dark) center / calc(var(--u) * 13) var(--u) no-repeat,
+    var(--dark) center / var(--u) calc(var(--u) * 13) no-repeat,
+    var(--light) center / 100% calc(var(--u) * 3) no-repeat,
+    var(--light) center / calc(var(--u) * 3) 100% no-repeat;
+}
+
+/* ---------- colors ---------- */
+
+.paint-colors {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 8);
+  padding: calc(var(--u) * 4) calc(var(--u) * 6);
+  border-top: var(--u) solid var(--chrome-light);
+  box-shadow: inset 0 var(--u) 0 var(--chrome-dark);
+}
+.paint-pair {
+  position: relative;
+  flex: none;
+  width: calc(var(--u) * 24);
+  height: calc(var(--u) * 22);
+  padding: 0;
+  border: none;
+  background: none;
+}
+.paint-fg,
+.paint-bg {
+  position: absolute;
+  width: calc(var(--u) * 15);
+  height: calc(var(--u) * 14);
+  border: var(--u) solid var(--outline);
+  box-shadow: inset 0 0 0 var(--u) var(--chrome-light);
+}
+.paint-fg {
+  left: 0;
+  top: 0;
+}
+.paint-bg {
+  right: 0;
+  bottom: 0;
+}
+.paint-swatch-col {
+  flex: 1;
+  min-width: 0;
+}
+.paint-swatches {
+  display: flex;
+  gap: calc(var(--u) * 2);
+}
+.paint-swatch {
+  flex: 1 1 0;
+  min-width: calc(var(--u) * 8);
+  max-width: calc(var(--u) * 22);
+  height: calc(var(--u) * 16);
+  padding: 0;
+  border: var(--u) solid var(--outline);
+  box-shadow: inset var(--u) var(--u) 0 var(--chrome-dark);
+}
+.paint-caption {
+  display: none;
+}
+
+/* ---------- compact ---------- */
+
+.paint-actions {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 6);
+  padding: calc(var(--u) * 4) calc(var(--u) * 8);
+  border-bottom: var(--u) solid var(--chrome-dark);
+}
+.paint-actions .btn.icon-only {
+  min-width: max(var(--hit), calc(var(--u) * 48));
+}
+.paint-gridtoggle {
+  gap: calc(var(--u) * 8);
+  flex-direction: row-reverse;
+}
+.paint-gridtoggle.disabled {
+  color: var(--text-dim);
+}
+
+.paint.compact .paint-view {
+  flex: 1 1 0;
+  min-height: calc(var(--u) * 110);
+  /* no side padding: a 320 px canvas fits a 320 px phone without scrolling (C21) */
+  padding: calc(var(--u) * 4) 0;
+  border-width: var(--u) 0;
+}
+.paint-lower {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--document);
+  color: var(--document-text);
+}
+.paint.compact .paint-colors {
+  align-items: flex-start;
+  padding: calc(var(--u) * 8) calc(var(--u) * 8) calc(var(--u) * 6);
+  border-top: none;
+  box-shadow: none;
+  border-bottom: var(--u) solid var(--chrome-dark);
+}
+.paint.compact .paint-pair {
+  width: calc(var(--u) * 40);
+  height: max(var(--hit), calc(var(--u) * 36));
+}
+.paint.compact .paint-fg,
+.paint.compact .paint-bg {
+  width: calc(var(--u) * 27);
+  height: calc(var(--u) * 27);
+  box-shadow: none;
+}
+.paint.compact .paint-swatches {
+  overflow-x: auto;
+  scrollbar-width: none;
+  touch-action: pan-x;
+}
+.paint.compact .paint-swatches::-webkit-scrollbar {
+  display: none;
+}
+.paint.compact .paint-swatch {
+  flex: none;
+  /* 36 px swatches, 44 px tall (C30) */
+  width: max(calc(var(--u) * 30), 36px);
+  max-width: none;
+  height: max(calc(var(--u) * 28), var(--hit));
+}
+.paint.compact .paint-caption {
+  display: block;
+  margin-top: calc(var(--u) * 4);
+  text-align: center;
+  white-space: pre;
+  overflow: hidden;
+  color: var(--link);
+}
+
+.paint.compact .paint-tools {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: calc(var(--u) * 6);
+  padding: calc(var(--u) * 8) calc(var(--u) * 8) 0;
+}
+.paint.compact .paint-tool {
+  height: auto;
+  min-height: max(var(--hit), calc(var(--u) * 50));
+  margin: 0;
+  padding: calc(var(--u) * 4) calc(var(--u) * 2);
+  gap: calc(var(--u) * 4);
+  background: var(--chrome);
+  color: var(--text);
+}
+.paint.compact .paint-tool-label {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 4);
+}
+.paint.compact .paint-tool.active {
+  border-color: var(--title-active);
+  box-shadow: inset 0 0 0 calc(var(--u) * 2) var(--title-active);
+}
+.paint-brush {
+  flex: none;
+  align-self: center;
+  width: min(100% - var(--u) * 16, calc(var(--u) * 260));
+  margin: calc(var(--u) * 8) 0;
+}
+
+/* ---------- New dialog ---------- */
+
+.paint-new-label {
+  font-weight: 700;
+}
+.paint-new-buttons {
+  display: flex;
+  justify-content: center;
+  gap: calc(var(--u) * 6);
+}
+.paint-new-buttons .btn {
+  flex: 0 1 calc(var(--u) * 120);
+  min-width: calc(var(--u) * 56);
+}

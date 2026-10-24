@@ -1,0 +1,19 @@
+{
+  "id": "paint",
+  "name": "Paint",
+  "version": "1.0.0",
+  "icon": "icon.png",
+  "entry": "main.js",
+  "window": {
+    "width": 430,
+    "height": 286,
+    "minWidth": 320,
+    "minHeight": 240,
+    "resizable": true
+  },
+  "singleton": false,
+  "exitOnLastWindowClose": true,
+  "opens": [".png"],
+  "category": "toys",
+  "hidden": false
+}

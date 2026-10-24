@@ -1,0 +1,44 @@
+/* Spec 006 R1, R3: the crawler window's layout, as in the mock (part1.html
+   .wbody, .crawl, .col, .note, .wfoot). The demo area is the mock's .wbody;
+   the footer is below it. Text colours are in demos.css (R8). No row pop-in:
+   the mock's pop fades rows from opacity .3, under the R8 limit. */
+.crawl-demo {
+  padding: 12px;
+  min-width: 0;
+}
+.crawl {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+.crawl .col {
+  border: 2px solid var(--outline);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.crawl .col ul {
+  list-style: none;
+  margin: 0;
+  padding: 4px 6px;
+  height: 178px;
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.35;
+}
+.crawl-demo .note {
+  font-size: 13px;
+  margin: 8px 0 0;
+}
+[data-win="crawler"] .wfoot {
+  flex: none;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 2px solid var(--outline);
+  background: var(--paper-2);
+  font-family: var(--font-display);
+  font-size: 15px;
+  padding: 3px 10px 2px;
+}

@@ -1,0 +1,63 @@
+/* Spec 006 R2, R3, R9: the insider window's layout, as in the mock
+   (part1.html .wbody, .ins, .flags, .note, .wfoot). The demo area is the
+   mock's .wbody; text colours are in demos.css (R8), the chart's colours in
+   the --chart-* properties there. The window has the mock's height with all
+   four flagged entries shown (006 T4, as 005 did for Pentimento). No pop-in:
+   the mock's pop fades from opacity .3, under the R8 limit. */
+.ins-demo {
+  padding: 12px;
+  min-width: 0;
+}
+.ins {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 200px;
+  gap: 12px;
+  align-items: start;
+}
+.ins canvas {
+  display: block;
+  /* the mock's 900:420 on the content box (436 × 203.5 in a 440 column) */
+  box-sizing: content-box;
+  width: calc(100% - 4px);
+  height: auto;
+  aspect-ratio: 900 / 420;
+  border: 2px solid var(--outline);
+}
+.ins .flags {
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ins .flags div {
+  border: 2px solid var(--outline);
+  padding: 5px 7px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+}
+.ins .flags .note {
+  margin: 0;
+}
+.ins-demo .note {
+  font-size: 13px;
+  margin: 8px 0 0;
+}
+.ins-demo .sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+[data-win="insider"] .wfoot {
+  flex: none;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 2px solid var(--outline);
+  background: var(--paper-2);
+  font-family: var(--font-display);
+  font-size: 15px;
+  padding: 3px 10px 2px;
+}

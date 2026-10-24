@@ -1,0 +1,19 @@
+{
+  "id": "castlesiege",
+  "name": "CastleSiege",
+  "shortName": "Siege",
+  "version": "1.0.0",
+  "icon": "icon.png",
+  "entry": "main.js",
+  "window": {
+    "width": 300,
+    "height": 264,
+    "minWidth": 220,
+    "minHeight": 240,
+    "resizable": true
+  },
+  "singleton": false,
+  "exitOnLastWindowClose": true,
+  "opens": [".siege"],
+  "category": "projects"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "tracker",
+  "name": "Tracker",
+  "version": "1.0.0",
+  "icon": "icon.png",
+  "entry": "main.js",
+  "window": {
+    "width": 552,
+    "height": 284,
+    "minWidth": 320,
+    "minHeight": 240,
+    "resizable": true
+  },
+  "singleton": false,
+  "exitOnLastWindowClose": true,
+  "opens": [".trk"],
+  "category": "tools"
+}

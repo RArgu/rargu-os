@@ -1,0 +1,10 @@
+{
+  "name": "Test Person",
+  "title": "Test Role",
+  "tagline": "Builds <b>things</b> & \"stuff\"",
+  "email": "test@example.com",
+  "links": {
+    "github": "https://github.com/test",
+    "linkedin": "https://linkedin.com/in/test"
+  }
+}

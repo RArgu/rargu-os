@@ -1,0 +1,4 @@
+/* 007 T3: a stand-in for the deleted old-OS window manager CSS (src/wm/) */
+#display {
+  display: block;
+}

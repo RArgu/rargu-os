@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <meta name="color-scheme" content="light dark" />
+    <title>404 · RArgu OS</title>
+    <!-- spec 009 R6: a corner of the blueprint sheet. Static: inline CSS and
+         JS, fonts from /fonts/, no other request, no storage. -->
+    <style>
+      @font-face {
+        font-family: "Pixel Operator";
+        src: url("/fonts/PixelOperator.ttf") format("truetype");
+        font-weight: 400;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Pixel Operator";
+        src: url("/fonts/PixelOperator-Bold.ttf") format("truetype");
+        font-weight: 700;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Instrument Sans";
+        src: url("/fonts/instrument-sans-latin-400-normal.woff2") format("woff2");
+        font-weight: 400;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Instrument Sans";
+        src: url("/fonts/instrument-sans-latin-600-normal.woff2") format("woff2");
+        font-weight: 600;
+        font-display: swap;
+      }
+      /* the sheet's tokens (src/sheet/sheet.css; tests/unit/page-404.test.ts) */
+      :root {
+        --paper: #fff1e8;
+        --ink: #1d2b53;
+        --ink-dim: #5f574f;
+        --accent: #7e2553;
+        --win-bg: #ffffff;
+        --outline: #1d2b53;
+        --shadow: #1d2b53;
+        --grid: rgba(29, 43, 83, 0.07);
+        --grid-major: rgba(29, 43, 83, 0.14);
+        --title-ink: #fff1e8;
+        --focus: #1d2b53;
+        --font-display: "Pixel Operator", "Courier New", monospace;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --paper: #111a33;
+          --ink: #fff1e8;
+          --ink-dim: #c2c3c7;
+          --accent: #ff77a8;
+          --win-bg: #1d2b53;
+          --outline: #000000;
+          --shadow: #000000;
+          --grid: rgba(255, 241, 232, 0.05);
+          --grid-major: rgba(255, 241, 232, 0.11);
+          --title-ink: #111a33;
+          --focus: #29adff;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background-color: var(--paper);
+        background-image:
+          linear-gradient(var(--grid-major) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
+          linear-gradient(var(--grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+        background-size:
+          120px 120px,
+          120px 120px,
+          24px 24px,
+          24px 24px;
+        color: var(--ink);
+        font:
+          1rem/1.55 "Instrument Sans",
+          ui-sans-serif,
+          system-ui,
+          sans-serif;
+      }
+      /* the paper the digits move on; the page scrolls when it is taller
+         than the view (R6.e) */
+      main {
+        position: relative;
+        overflow: hidden;
+        overflow: clip;
+        min-height: 100vh;
+        min-height: 100dvh;
+        padding: clamp(24px, 8vh, 72px) 16px 96px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2.25rem;
+      }
+      /* the three digits, in a row on any width; without JS they stay here */
+      .digits {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.5em;
+        padding: 0.75em 1.5em 1.5em 0.75em;
+        font-size: min(1rem, 2.6vw);
+      }
+      .win {
+        position: relative;
+        width: 9.25em;
+        border: 2px solid var(--outline);
+        background: var(--win-bg);
+        box-shadow: 5px 5px 0 var(--shadow);
+        cursor: grab;
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+        transition: box-shadow 0.15s;
+      }
+      .win.lifted {
+        cursor: grabbing;
+        box-shadow: 14px 18px 0 color-mix(in srgb, var(--shadow) 55%, transparent);
+      }
+      /* the ring on a paper band (as sheet.css .sheet-win:focus-visible), so it
+         never sits on the digit's own shadow or on another digit (R6.d) */
+      .win:focus-visible {
+        outline: 2px solid var(--focus);
+        outline-offset: 2px;
+        box-shadow: 0 0 0 6px var(--paper);
+        transition: none;
+      }
+      .bar {
+        display: flex;
+        gap: 0.5em;
+        background: var(--accent);
+        color: var(--title-ink);
+        font: 1.0625em/1.3 var(--font-display);
+        padding: 0.2em 0.5em 0.1em;
+        border-bottom: 2px solid var(--outline);
+      }
+      .bar :first-child {
+        opacity: 0.7;
+        letter-spacing: -2px;
+      }
+      .digit {
+        font: 700 7em/1 var(--font-display);
+        text-align: center;
+        padding: 0.16em 0 0.12em;
+      }
+      .note {
+        max-width: 34em;
+        text-align: center;
+      }
+      .k {
+        margin: 0 0 6px;
+        font: 0.9375rem/1 var(--font-display);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--ink-dim);
+      }
+      h1 {
+        margin: 0 0 10px;
+        font: 600 clamp(1.375rem, 3.4vw, 1.875rem) / 1.2 "Instrument Sans", system-ui, sans-serif;
+      }
+      p {
+        margin: 0 0 18px;
+      }
+      /* above any digit thrown over them (R6.e) */
+      .links {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+      }
+      .btn {
+        padding: 6px 14px;
+        border: 2px solid var(--outline);
+        background: var(--win-bg);
+        color: var(--ink);
+        font: 1.0625rem/1.3 var(--font-display);
+        text-decoration: none;
+        box-shadow: 3px 3px 0 var(--shadow);
+      }
+      .btn.go {
+        background: var(--accent);
+        color: var(--title-ink);
+      }
+      .btn:focus-visible {
+        outline: 2px solid var(--focus);
+        outline-offset: 2px;
+        box-shadow: 0 0 0 6px var(--paper);
+      }
+      .btn:active {
+        transform: translate(2px, 2px);
+        box-shadow: 1px 1px 0 var(--shadow);
+      }
+      .titleblock {
+        position: absolute;
+        right: 24px;
+        bottom: 24px;
+        border: 2px solid var(--ink-dim);
+        font: 0.9375rem/1.3 var(--font-display);
+        color: var(--ink-dim);
+        display: grid;
+        grid-template-columns: auto auto;
+        pointer-events: none;
+      }
+      .titleblock div {
+        padding: 4px 10px;
+        border: 1px solid var(--grid-major);
+      }
+      .titleblock b {
+        color: var(--ink);
+      }
+      @media (max-width: 720px), (max-height: 500px) {
+        .titleblock {
+          display: none;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="digits">
+        <div class="win">
+          <div class="bar" aria-hidden="true"><span>⋮⋮</span><span>four</span></div>
+          <div class="digit">4</div>
+        </div>
+        <div class="win">
+          <div class="bar" aria-hidden="true"><span>⋮⋮</span><span>zero</span></div>
+          <div class="digit">0</div>
+        </div>
+        <div class="win">
+          <div class="bar" aria-hidden="true"><span>⋮⋮</span><span>four</span></div>
+          <div class="digit">4</div>
+        </div>
+      </div>
+      <section class="note">
+        <p class="k">Not found</p>
+        <h1>There is nothing pinned at this address.</h1>
+        <p>Everything on this site is on one sheet. The resume is one page.</p>
+        <p class="links">
+          <a class="btn go" href="/">Open RArgu OS</a>
+          <a class="btn" href="/resume">Read the resume</a>
+        </p>
+        <p id="tip" hidden>Arrows move it. Enter or Space throws it. Home brings it back.</p>
+      </section>
+      <div class="titleblock" aria-hidden="true">
+        <div>sheet</div><div><b>404</b></div>
+        <div>status</div><div><b>not found</b></div>
+      </div>
+    </main>
+    <script>
+      // A copy of the sheet's window physics (src/sheet/physics.ts, 001
+      // Approach "Physics", 009 R3, 010 R1), checked by tests/unit/page-404.test.ts.
+      // Held: a lean about the grab point toward −SWAY·torque. Released: x(t) = x0 + v·τ·(1 − e^(−t/τ)), at most
+      // 360 px, cut at 2τ (the pin), then a damped swing about the grab point.
+      // Reduced motion: the same landing, at once, no swing.
+      (() => {
+        const TAU = 0.12, MAX_THROW = 360, NORM = 1 - Math.exp(-2);
+        const OMEGA = 2 * Math.PI * 2.6, ZETA_FREE = 0.45, KICK = 2.5, SOFT = 150;
+        const ZETA_HELD = 0.65, SWAY = 0.012, SWAY_MAX = 12;
+        const STEP = 24, KEY_THROW = 4000; // px per arrow key; px/s for Enter/Space: a capped throw
+        const NAMES = ["Digit 4, first", "Digit 0", "Digit 4, last"];
+        const rm = matchMedia("(prefers-reduced-motion: reduce)");
+        const main = document.querySelector("main");
+        document.documentElement.classList.add("js");
+        const wins = [...document.querySelectorAll(".win")].map((el, i) => {
+          el.setAttribute("role", "button");
+          el.tabIndex = 0;
+          el.setAttribute("aria-label", NAMES[i]);
+          el.setAttribute("aria-describedby", "tip");
+          return { el, x: 0, y: 0, th: 0, v: 0, g: [0, 0], ptr: null, c: [0, 0], d0: [0, 0], s: [], fl: null };
+        });
+        const order = [...wins];
+        let held = null, raf = 0, last = 0;
+        const size = (w) => [w.el.offsetWidth, w.el.offsetHeight];
+        const draw = (w) => {
+          const s = w.el.style;
+          s.transformOrigin = `${w.g[0]}px ${w.g[1]}px`;
+          s.transform = `translate(${w.x}px, ${w.y}px)` + (w.th ? ` rotate(${w.th}deg)` : "");
+          s.willChange = w.ptr !== null || w.fl || w.th || w.v ? "transform" : "";
+        };
+        // a focused or held digit in front of the others (links stay above all)
+        const front = (w) => {
+          order.splice(order.indexOf(w), 1);
+          order.push(w);
+          order.forEach((o, i) => (o.el.style.zIndex = i + 1));
+        };
+        // offsets from the digit's place in the layout, kept 8 px inside the paper
+        const clamp = (w, p) => {
+          const [bw, bh] = size(w), hx = w.el.offsetLeft, hy = w.el.offsetTop;
+          const c = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+          return [c(p[0], 8 - hx, main.clientWidth - bw - 8 - hx), c(p[1], 8 - hy, main.clientHeight - bh - 8 - hy)];
+        };
+        const velocity = (w, now) => {
+          const k = w.s.filter((p) => now - p[0] < 80), a = k[0], b = k[k.length - 1];
+          if (k.length < 2 || now - b[0] > 50 || b[0] === a[0]) return [0, 0];
+          const dt = (b[0] - a[0]) / 1000;
+          return [(b[1] - a[1]) / dt, (b[2] - a[2]) / dt];
+        };
+        // where a throw at v stops: at most MAX_THROW px (clamped in fly)
+        const landing = (w, v) => {
+          const d = Math.hypot(v[0], v[1]) * TAU * NORM, k = d > MAX_THROW ? MAX_THROW / d : 1;
+          return [w.x + v[0] * TAU * NORM * k, w.y + v[1] * TAU * NORM * k];
+        };
+        const torque = (r, vx, vy) => (r[0] * vy - r[1] * vx) / (Math.hypot(r[0], r[1]) + 1);
+        const fly = (w, to) => {
+          to = clamp(w, to);
+          w.fl = null; // a new move replaces any flight under way
+          if (to[0] === w.x && to[1] === w.y) return w.th || w.v ? run() : draw(w);
+          if (rm.matches) {
+            [w.x, w.y] = to;
+            w.th = w.v = 0;
+            return draw(w);
+          }
+          const d = Math.hypot(to[0] - w.x, to[1] - w.y);
+          const tau = d > MAX_THROW ? Math.min(0.3, (TAU * d) / MAX_THROW) : TAU;
+          // the velocity at the pin; its torque about the grab point (r = centre − grab)
+          const pin = Math.exp(-2) / (tau * NORM), [bw, bh] = size(w);
+          const r = [bw / 2 - w.g[0], bh / 2 - w.g[1]], vx = (to[0] - w.x) * pin, vy = (to[1] - w.y) * pin;
+          const t = torque(r, vx, vy);
+          w.fl = { from: [w.x, w.y], to, tau, t0: performance.now(), kick: Math.sign(t) * KICK * Math.log1p(Math.abs(t) / SOFT) * OMEGA };
+          run();
+        };
+        function tick(now) {
+          const dt = last ? Math.min(0.05, Math.max(0, now - last) / 1000) : 0;
+          last = now;
+          let busy = false;
+          for (const w of wins) {
+            const hold = w.ptr !== null;
+            if (!hold && !w.fl && !w.th && !w.v) continue;
+            // held: lean toward −SWAY·torque of the pointer's velocity (0 with reduced motion)
+            let target = 0;
+            if (hold && !rm.matches) {
+              const [bw, bh] = size(w), v = velocity(w, now);
+              target = Math.max(-SWAY_MAX, Math.min(SWAY_MAX, -SWAY * torque([bw / 2 - w.g[0], bh / 2 - w.g[1]], v[0], v[1])));
+            }
+            const f = w.fl;
+            if (f) {
+              const t = Math.max(0, now - f.t0) / 1000;
+              if (t >= 2 * f.tau) {
+                [w.x, w.y] = f.to;
+                w.v += f.kick;
+                w.fl = null;
+              } else {
+                const k = (1 - Math.exp(-t / f.tau)) / NORM;
+                w.x = f.from[0] + (f.to[0] - f.from[0]) * k;
+                w.y = f.from[1] + (f.to[1] - f.from[1]) * k;
+              }
+            }
+            w.v += (-OMEGA * OMEGA * (w.th - target) - 2 * (hold ? ZETA_HELD : ZETA_FREE) * OMEGA * w.v) * dt;
+            w.th += w.v * dt;
+            if (rm.matches || (!w.fl && !target && Math.abs(w.th) < 0.05 && Math.abs(w.v) < 0.5)) w.th = w.v = 0;
+            draw(w);
+            busy ||= !!w.fl || target !== 0 || w.th !== 0 || w.v !== 0;
+          }
+          raf = busy ? requestAnimationFrame(tick) : 0;
+        }
+        const run = () => {
+          if (!raf) {
+            last = 0;
+            raf = requestAnimationFrame(tick);
+          }
+        };
+        // the one gesture ends with no throw: blur, cancel, lost capture, Home
+        const drop = () => {
+          const w = held;
+          if (!w) return;
+          held = null;
+          try {
+            w.el.releasePointerCapture(w.ptr);
+          } catch {}
+          w.ptr = null;
+          w.s = [];
+          w.el.classList.remove("lifted");
+          draw(w);
+          if (w.th || w.v) run(); // a lean swings back to 0
+        };
+        addEventListener("blur", drop);
+        for (const w of wins) {
+          const el = w.el;
+          el.addEventListener("focus", () => front(w));
+          el.addEventListener("pointerdown", (e) => {
+            if (e.button !== 0 || held) return;
+            e.preventDefault();
+            el.setPointerCapture(e.pointerId);
+            el.focus({ preventScroll: true });
+            front(w);
+            held = w;
+            // catch it: no flight, no swing, the pivot where the pointer landed
+            w.fl = null;
+            w.th = w.v = 0;
+            w.ptr = e.pointerId;
+            const r = el.getBoundingClientRect();
+            w.g = [e.clientX - r.left, e.clientY - r.top];
+            w.c = [e.pageX, e.pageY];
+            w.d0 = [w.x, w.y];
+            w.s = [[e.timeStamp, 0, 0]];
+            el.classList.add("lifted");
+            draw(w);
+          });
+          el.addEventListener("pointermove", (e) => {
+            if (held !== w || e.pointerId !== w.ptr) return;
+            const dx = e.pageX - w.c[0], dy = e.pageY - w.c[1];
+            w.x = w.d0[0] + dx;
+            w.y = w.d0[1] + dy;
+            w.s.push([e.timeStamp, dx, dy]);
+            if (w.s.length > 16) w.s.shift();
+            draw(w);
+            if (!rm.matches) run(); // the lean needs frames; reduced motion has none
+          });
+          el.addEventListener("pointerup", (e) => {
+            if (held !== w || e.pointerId !== w.ptr) return;
+            const v = velocity(w, e.timeStamp);
+            drop();
+            fly(w, landing(w, v));
+          });
+          for (const type of ["pointercancel", "lostpointercapture"])
+            el.addEventListener(type, (e) => held === w && e.pointerId === w.ptr && drop());
+          el.addEventListener("keydown", (e) => {
+            if (e.altKey || e.ctrlKey || e.metaKey) return;
+            const d = { ArrowLeft: [-STEP, 0], ArrowRight: [STEP, 0], ArrowUp: [0, -STEP], ArrowDown: [0, STEP] }[e.key];
+            const home = e.key === "Home", go = e.key === "Enter" || e.key === " ";
+            if (!d && !home && !go) return;
+            e.preventDefault();
+            if (home) drop();
+            if (w.ptr !== null) return;
+            w.g = [el.offsetWidth / 2, 0]; // the pivot of a key move: top centre
+            if (home) return fly(w, [0, 0]);
+            if (go) {
+              const a = Math.random() * 2 * Math.PI;
+              return fly(w, landing(w, [KEY_THROW * Math.cos(a), KEY_THROW * Math.sin(a)]));
+            }
+            // a flight under way ends at its landing; the move starts there
+            if (w.fl) [w.x, w.y] = w.fl.to;
+            w.fl = null;
+            [w.x, w.y] = clamp(w, [w.x + d[0], w.y + d[1]]);
+            draw(w);
+          });
+          draw(w);
+        }
+        // R6.c: reduced motion turned on mid-motion ends each motion at its target
+        rm.addEventListener("change", (e) => {
+          if (!e.matches) return;
+          cancelAnimationFrame(raf);
+          raf = 0;
+          for (const w of wins) {
+            if (w.fl) [w.x, w.y] = w.fl.to;
+            w.fl = null;
+            w.th = w.v = 0;
+            draw(w);
+          }
+        });
+        // a smaller view: resting digits and landings back inside the paper
+        addEventListener("resize", () => {
+          for (const w of wins)
+            // a flight starts again from where the digit is: new duration, time and kick
+            if (w.fl) fly(w, w.fl.to);
+            else if (w.ptr === null) {
+              [w.x, w.y] = clamp(w, [w.x, w.y]);
+              draw(w);
+            }
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "default",
+  "label": "Classic 16",
+  "palette": ["#000000", "#1d2b53", "#7e2553", "#008751", "#ab5236", "#5f574f", "#c2c3c7", "#fff1e8",
+              "#ff004d", "#ffa300", "#ffec27", "#00e436", "#29adff", "#83769c", "#ff77a8", "#ffccaa"],
+  "roles": {
+    "desktop": 1, "desktop-alt": 0, "desktop-text": 7,
+    "chrome": 6, "chrome-dark": 5, "chrome-light": 7, "outline": 0,
+    "title-active": 2, "title-inactive": 5,
+    "text": 0, "text-inverse": 7, "text-dim": 5,
+    "accent": 12, "error": 8, "selection-bg": 12, "selection-fg": 0,
+    "document": 7, "document-text": 0, "link": 1, "heading": 2, "rule": 1,
+    "hover": 13, "highlight": 14,
+    "term-bg": 0, "term-fg": 7, "term-dir": 12, "felt": 3
+  }
+}

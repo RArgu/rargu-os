@@ -1,0 +1,99 @@
+/* Design tokens. Every visual constant lives here; /etc/themes/<name>.json
+   mirrors the palette and roles so the OS can switch themes at runtime by
+   writing the --p* and --t-* variables. */
+
+@font-face {
+  font-family: "Pixel Operator";
+  src: url("/fonts/PixelOperator.ttf") format("truetype");
+  font-weight: 400;
+  font-display: block;
+}
+@font-face {
+  font-family: "Pixel Operator";
+  src: url("/fonts/PixelOperator-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-display: block;
+}
+@font-face {
+  font-family: "Pixel Operator Mono";
+  src: url("/fonts/PixelOperatorMono.ttf") format("truetype");
+  font-weight: 400;
+  font-display: block;
+}
+@font-face {
+  font-family: "Pixel Operator Mono";
+  src: url("/fonts/PixelOperatorMono-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-display: block;
+}
+
+:root {
+  /* scale unit, set by the window server: 1px, 2px or 3px */
+  --u: 2px;
+  --font-ui: "Pixel Operator", monospace;
+  --font-mono: "Pixel Operator Mono", monospace;
+  /* fonts step 16 / 24 / 32 px with the scale */
+  --text-size: 24px;
+  --bevel: var(--u);
+
+  /* Classic 16 palette */
+  --p0: #000000;
+  --p1: #1d2b53;
+  --p2: #7e2553;
+  --p3: #008751;
+  --p4: #ab5236;
+  --p5: #5f574f;
+  --p6: #c2c3c7;
+  --p7: #fff1e8;
+  --p8: #ff004d;
+  --p9: #ffa300;
+  --p10: #ffec27;
+  --p11: #00e436;
+  --p12: #29adff;
+  --p13: #83769c;
+  --p14: #ff77a8;
+  --p15: #ffccaa;
+
+  /* roles */
+  --desktop: var(--t-desktop, var(--p1));
+  --desktop-alt: var(--t-desktop-alt, var(--p0));
+  --desktop-text: var(--t-desktop-text, var(--p7));
+  --chrome: var(--t-chrome, var(--p6));
+  --chrome-dark: var(--t-chrome-dark, var(--p5));
+  --chrome-light: var(--t-chrome-light, var(--p7));
+  --outline: var(--t-outline, var(--p0));
+  --title-active: var(--t-title-active, var(--p2));
+  --title-inactive: var(--t-title-inactive, var(--p5));
+  --text: var(--t-text, var(--p0));
+  --text-inverse: var(--t-text-inverse, var(--p7));
+  --text-dim: var(--t-text-dim, var(--p5));
+  --accent: var(--t-accent, var(--p12));
+  --error: var(--t-error, var(--p8));
+  --selection-bg: var(--t-selection-bg, var(--p12));
+  --selection-fg: var(--t-selection-fg, var(--p0));
+  --document: var(--t-document, var(--p7));
+  --document-text: var(--t-document-text, var(--p0));
+  --link: var(--t-link, var(--p1));
+  --heading: var(--t-heading, var(--p2));
+  --rule: var(--t-rule, var(--p1));
+  --hover: var(--t-hover, var(--p13));
+  --highlight: var(--t-highlight, var(--p14));
+  --term-bg: var(--t-term-bg, var(--p0));
+  --term-fg: var(--t-term-fg, var(--p7));
+  --term-dir: var(--t-term-dir, var(--p12));
+  --felt: var(--t-felt, var(--p3));
+
+  /* window server metrics, logical px */
+  --taskbar-height: 28;
+  --status-height: 24;
+  --nav-height: 40;
+  --tile: 68;
+  --tile-radius: 8;
+  --sheet-radius: 8;
+  --dock-radius: 12;
+
+  /* derived sizes */
+  --bar-h: calc(var(--text-size) + var(--u) * 6);
+  --pad: calc(var(--u) * 4);
+  --hit: 0px;
+}

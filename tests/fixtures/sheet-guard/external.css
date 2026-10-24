@@ -1,0 +1,4 @@
+/* R2 fixture: a third-party image */
+.x {
+  background: url("https://example.com/a.png");
+}

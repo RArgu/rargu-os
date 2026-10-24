@@ -1,0 +1,58 @@
+/* Spec 006: text styles of the data demos, ported from the mock
+   (part1.html .col, .flags, the insider chart colours in reused.js).
+   R8: the mock dims rejected rows with opacity .45 (2.62:1 light, 3.75:1
+   dark); here they use --ink-dim with no opacity and keep ✗ and the
+   strike-through. tests/unit/demo-contrast.test.ts checks every text style.
+   The canvas reads its colours from the --chart-* properties. */
+.crawl-demo .col h4 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 15px;
+  padding: 3px 6px 2px;
+  color: var(--ink);
+  background: var(--paper-2);
+  border-bottom: 2px solid var(--outline);
+  display: flex;
+  justify-content: space-between;
+}
+.crawl-demo .col li {
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.crawl-demo .col li i {
+  font-style: normal;
+  color: var(--accent);
+}
+.crawl-demo .col li.no {
+  color: var(--ink-dim);
+  text-decoration: line-through;
+}
+.crawl-demo .col li.no i {
+  color: var(--ink-dim);
+}
+.crawl-demo .note {
+  color: var(--ink-dim);
+}
+.ins-demo .note {
+  color: var(--ink-dim);
+}
+.ins-demo .flags div {
+  color: var(--ink);
+}
+.ins-demo .flags b {
+  color: var(--accent);
+  font-weight: 400;
+}
+.ins-demo canvas {
+  --chart-bg: var(--win-bg);
+  --chart-axis: var(--ink-dim);
+  --chart-spike: var(--warn);
+  --chart-band: rgba(255, 163, 0, 0.15);
+  --chart-grid: var(--grid);
+  --chart-line: var(--ink);
+  --chart-dot: rgba(41, 173, 255, 0.4);
+  --chart-flag: rgba(255, 0, 77, 0.75);
+}

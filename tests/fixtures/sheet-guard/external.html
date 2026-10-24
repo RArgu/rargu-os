@@ -1,0 +1,12 @@
+<!doctype html>
+<!-- R2 fixture: a third-party script in the entry page fails; a link to
+     another site is not a resource and passes -->
+<html>
+  <head>
+    <script src="https://example.com/s.js"></script>
+  </head>
+  <body>
+    <a href="https://example.com/">a link</a>
+    <script type="module" src="./clean-plain.ts"></script>
+  </body>
+</html>

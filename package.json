@@ -1,0 +1,42 @@
+{
+  "name": "rargu-os",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "gen:assets": "node scripts/gen-icons.ts",
+    "image": "node scripts/build-resume-html.ts",
+    "dev": "npm run image && vite",
+    "build": "npm run image && tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .ts --max-warnings 0 && prettier --check \"src/**/*.{ts,css}\" \"tests/**/*.ts\" \"scripts/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.{ts,css}\" \"tests/**/*.ts\" \"scripts/**/*.ts\"",
+    "test": "npm run image && vitest run",
+    "e2e": "playwright test --project=chromium --project=mobile",
+    "e2e:all": "playwright test",
+    "e2e:routing": "playwright test -c playwright.routing.config.ts",
+    "deploy": "npm run build && wrangler deploy",
+    "deploy:live": "node scripts/deploy-live.ts --deploy"
+  },
+  "devDependencies": {
+    "@fontsource/instrument-sans": "^5.3.0",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^22.20.5",
+    "@typescript-eslint/eslint-plugin": "^8.71.0",
+    "@typescript-eslint/parser": "^8.71.0",
+    "eslint": "8.57",
+    "fake-indexeddb": "^6.2.5",
+    "jsdom": "^30.1.1",
+    "prettier": "^3.9.9",
+    "typescript": "5.9",
+    "vite": "^6.4.3",
+    "vitest": "^5.0.3",
+    "wrangler": "^4.147.0"
+  },
+  "dependencies": {
+    "marked": "^18.0.14"
+  }
+}

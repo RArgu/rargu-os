@@ -1,0 +1,5 @@
+/* R2 fixture: same-origin font URL */
+@font-face {
+  font-family: "X";
+  src: url("/fonts/PixelOperator.ttf");
+}

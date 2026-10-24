@@ -1,0 +1,346 @@
+<title>RArgu OS</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+@font-face{font-family:"Pixel Operator";src:url(data:font/ttf;base64,__FONT_PX__) format("truetype");font-weight:400;font-display:swap}
+@font-face{font-family:"Pixel Operator";src:url(data:font/ttf;base64,__FONT_PXB__) format("truetype");font-weight:700;font-display:swap}
+@font-face{font-family:"Pixel Operator Mono";src:url(data:font/ttf;base64,__FONT_MONO__) format("truetype");font-weight:400;font-display:swap}
+
+/* Layout: one oversized drafting sheet that pans in every direction. Projects are windows
+   pinned across it in a loose grid; a pinned identity card and a minimap float above. */
+:root{
+  --paper:#fff1e8;        /* p7 */
+  --paper-2:#f7e2d3;
+  --ink:#1d2b53;          /* p1 */
+  --ink-dim:#5f574f;      /* p5 */
+  --accent:#7e2553;       /* p2, window title */
+  --accent-2:#29adff;     /* p12 */
+  --chrome:#c2c3c7;       /* p6 */
+  --win-bg:#ffffff;
+  --outline:#1d2b53;
+  --shadow:#1d2b53;
+  --grid:rgba(29,43,83,.07);
+  --grid-major:rgba(29,43,83,.14);
+  --chip:#ffe3cf;
+  --ok:#008751; --warn:#ab5236;
+  --title-ink:#fff1e8;    /* text on --accent */
+  --focus:#1d2b53;
+  --font-display:"Pixel Operator","Courier New",monospace;
+  --font-body:"Instrument Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"Pixel Operator Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#111a33;--paper-2:#18234a;--ink:#fff1e8;--ink-dim:#c2c3c7;--accent:#ff77a8;--accent-2:#29adff;
+  --chrome:#5f574f;--win-bg:#1d2b53;--outline:#000;--shadow:#000;--grid:rgba(255,241,232,.05);--grid-major:rgba(255,241,232,.11);--chip:#2a3563;--ok:#00e436;--warn:#ffa300;--title-ink:#111a33;--focus:#29adff;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#111a33;--paper-2:#18234a;--ink:#fff1e8;--ink-dim:#c2c3c7;--accent:#ff77a8;--accent-2:#29adff;
+  --chrome:#5f574f;--win-bg:#1d2b53;--outline:#000;--shadow:#000;--grid:rgba(255,241,232,.05);--grid-major:rgba(255,241,232,.11);--chip:#2a3563;--ok:#00e436;--warn:#ffa300;--title-ink:#111a33;--focus:#29adff;color-scheme:dark}
+
+*{box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.55}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+/* the sheet */
+#vp{position:fixed;inset:0;overflow:auto;overscroll-behavior:none;cursor:grab;scrollbar-width:thin;touch-action:none}
+#sizer{position:relative;width:3000px;height:1640px;overflow:hidden}
+#vp.panning{cursor:grabbing}
+#world{position:absolute;left:0;top:0;transform-origin:0 0;width:3000px;height:1640px;
+  background-color:var(--paper);
+  background-image:linear-gradient(var(--grid-major) 1px,transparent 1px),linear-gradient(90deg,var(--grid-major) 1px,transparent 1px),
+    linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:120px 120px,120px 120px,24px 24px,24px 24px;
+  border-right:2px solid var(--grid-major);border-bottom:2px solid var(--grid-major)}
+.titleblock{position:absolute;right:40px;bottom:40px;border:2px solid var(--ink-dim);font-family:var(--font-display);color:var(--ink-dim);font-size:15px;display:grid;grid-template-columns:auto auto;user-select:none;pointer-events:none}
+.titleblock div{padding:4px 10px;border:1px solid var(--grid-major)}
+.titleblock b{font-weight:700;color:var(--ink)}
+
+/* pinned identity card */
+.rail{position:fixed;z-index:5000;left:max(16px,env(safe-area-inset-left,0px));top:calc(16px + env(safe-area-inset-top,0px));width:280px;max-height:calc(100% - 32px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow:auto;
+  background:var(--paper);border:2px solid var(--outline);box-shadow:5px 5px 0 var(--shadow);padding:18px 18px 14px;display:flex;flex-direction:column;gap:14px;cursor:auto}
+.rail::before{content:"";position:absolute;top:6px;left:50%;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 2px var(--outline)}
+.logo{font-family:var(--font-display);font-weight:700;font-size:40px;line-height:.9;letter-spacing:-.5px;margin:6px 0 0}
+.logo span{color:var(--accent)}
+.who{display:flex;flex-direction:column;gap:0}
+.who b{font-size:17px}
+.who small{color:var(--ink-dim);font-size:14px}
+.tag{margin:0;font-size:15px}
+.cta{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font-family:var(--font-display);font-size:17px;display:inline-flex;align-items:center;gap:6px;padding:4px 11px 3px;border:2px solid var(--outline);
+  background:var(--win-bg);box-shadow:3px 3px 0 var(--shadow);text-decoration:none;cursor:pointer;line-height:1.1;transition:transform .08s,box-shadow .08s}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--shadow)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--shadow)}
+.btn.primary{background:var(--accent);color:var(--title-ink)}
+.email{font-family:var(--font-mono);font-size:15px;user-select:all}
+.index{display:flex;flex-direction:column;gap:1px;border-top:2px solid var(--outline);padding-top:10px}
+.index h3{font-family:var(--font-display);font-size:14px;margin:0 0 2px;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.08em;font-weight:400}
+.index button{all:unset;cursor:pointer;display:flex;justify-content:space-between;align-items:baseline;padding:2px 6px;margin-inline:-6px;font-size:15px}
+.index button:hover,.index button.on{background:var(--chip)}
+.index button:focus-visible{outline:2px solid var(--accent-2)}
+.index em{font-style:normal;font-family:var(--font-display);font-size:14px;color:var(--ink-dim)}
+.apps{display:flex;gap:6px;flex-wrap:wrap}
+.app{all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;width:72px;padding:6px 2px 4px;font-family:var(--font-display);font-size:14px;text-align:center;line-height:1}
+.app img{width:32px;height:32px;image-rendering:pixelated}
+.app:hover{background:var(--chip)}
+.app:focus-visible{outline:2px solid var(--accent-2)}
+.app:active img{transform:translateY(1px)}
+.railrow{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.hint{font-size:13px;color:var(--ink-dim);margin:0}
+.railtoggle{display:none}
+.more{display:contents}
+
+/* minimap */
+.mapbox{position:fixed;z-index:5000;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));border:2px solid var(--outline);box-shadow:4px 4px 0 var(--shadow);background:var(--paper);width:200px}
+#mini{display:block;width:100%;height:auto;cursor:pointer;image-rendering:auto;touch-action:none}
+.zoom{display:flex;border-bottom:2px solid var(--outline);font-family:var(--font-display);font-size:15px}
+.zoom button{all:unset;cursor:pointer;padding:2px 9px 1px;border-right:2px solid var(--outline)}
+.zoom button:hover{background:var(--chip)}
+.zoom button:focus-visible{outline:2px solid var(--accent-2);outline-offset:-2px}
+.zoom output{flex:1;text-align:center;padding:2px 0 1px;font-variant-numeric:tabular-nums}
+.zoom button:last-child{border-right:0;border-left:2px solid var(--outline)}
+
+/* windows */
+.win{position:absolute;left:0;top:0;border:2px solid var(--outline);background:var(--win-bg);box-shadow:5px 5px 0 var(--shadow);
+  will-change:transform;display:flex;flex-direction:column;transition:box-shadow .15s;cursor:auto}
+.win.lifted{box-shadow:14px 18px 0 color-mix(in srgb,var(--shadow) 55%,transparent)}
+.bar{display:flex;align-items:center;gap:8px;background:var(--accent);color:var(--title-ink);font-family:var(--font-display);font-size:17px;
+  padding:3px 4px 2px 8px;cursor:grab;touch-action:none;user-select:none;border-bottom:2px solid var(--outline)}
+.win.lifted .bar{cursor:grabbing}
+.bar .t{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .grip{opacity:.7;letter-spacing:-2px}
+.bar button{width:20px;height:18px;border:2px solid var(--outline);background:var(--chrome);padding:0;font-family:var(--font-display);font-size:13px;line-height:1;cursor:pointer;color:var(--ink)}
+.about{padding:12px 14px 12px;border-bottom:2px solid var(--outline);background:var(--paper);display:flex;flex-direction:column;gap:8px}
+.phead{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.phead h2{font-family:var(--font-display);font-weight:700;font-size:28px;line-height:1;margin:0}
+.phead .yr{font-family:var(--font-display);color:var(--ink-dim);font-size:17px}
+.status{font-family:var(--font-display);font-size:13px;padding:1px 7px 0;border:2px solid;color:var(--ink);text-transform:uppercase;letter-spacing:.06em}
+.status.live{border-color:var(--ok)} .status.wip{border-color:var(--warn)} .status.ph{border-color:var(--accent-2)}
+.blurb{margin:0;font-size:15px}
+.meta{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.chip{font-size:12px;padding:1px 7px;background:var(--chip);border-radius:2px}
+.meta a{font-size:13px;margin-left:4px}
+.wbody{padding:12px;min-width:0}
+.wfoot{border-top:2px solid var(--outline);background:var(--paper-2);font-family:var(--font-display);font-size:15px;padding:3px 10px 2px;display:flex;justify-content:space-between;gap:10px}
+canvas{display:block;image-rendering:pixelated;max-width:100%}
+.tb{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.tb button,.tb .b{font-family:var(--font-display);font-size:15px;border:2px solid var(--outline);background:var(--chrome);padding:2px 9px 1px;cursor:pointer}
+.tb button[aria-pressed="true"]{background:var(--accent);color:var(--title-ink)}
+.note{font-size:13px;color:var(--ink-dim);margin:8px 0 0}
+
+.cs{display:flex;gap:16px;align-items:flex-start}
+.cs canvas{cursor:pointer;border:2px solid var(--outline)}
+.cs .side{font-size:14px;max-width:230px;display:flex;flex-direction:column;gap:8px}
+.cs .side b{font-family:var(--font-display);font-size:18px;font-weight:400}
+.pent{display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:12px}
+.layers{border:2px solid var(--outline);font-size:13px}
+.layers div{padding:5px 8px;border-bottom:1px solid var(--chrome);display:flex;gap:6px;align-items:center}
+.layers div.new{background:var(--chip);animation:pop .4s}
+.layers .eye{font-family:var(--font-display)}
+.cmd{font-family:var(--font-mono);font-size:15px;background:#000;color:#00e436;padding:8px 10px;margin-top:10px;white-space:pre-wrap;overflow-wrap:anywhere}
+@keyframes pop{from{transform:scale(.96);opacity:.3}}
+.crawl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.col{border:2px solid var(--outline);min-width:0;display:flex;flex-direction:column}
+.col h4{margin:0;font-family:var(--font-display);font-weight:400;font-size:15px;padding:3px 6px 2px;background:var(--paper-2);border-bottom:2px solid var(--outline);display:flex;justify-content:space-between}
+.col ul{list-style:none;margin:0;padding:4px 6px;height:178px;overflow:hidden;font-family:var(--font-mono);font-size:13px;line-height:1.35}
+.col li{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;animation:pop .3s}
+.col li.no{opacity:.45;text-decoration:line-through}
+.col li i{font-style:normal;color:var(--accent)}
+.ins{display:grid;grid-template-columns:minmax(0,1fr) 200px;gap:12px}
+.ins canvas{width:100%;height:auto;border:2px solid var(--outline);image-rendering:auto}
+.flags{font-size:13px;display:flex;flex-direction:column;gap:6px}
+.flags div{border:2px solid var(--outline);padding:5px 7px;font-family:var(--font-mono);font-size:14px;animation:pop .3s}
+.flags div b{color:var(--accent);font-weight:400}
+.pal{display:grid;grid-template-columns:repeat(8,18px);gap:2px}
+.pal button{width:18px;height:18px;border:1px solid var(--outline);padding:0;cursor:pointer}
+.pal button[aria-pressed="true"]{outline:2px solid var(--accent-2);outline-offset:1px}
+.paint canvas{border:2px solid var(--outline);cursor:crosshair;touch-action:none;background:#fff}
+.seq{display:grid;grid-template-columns:52px repeat(16,1fr);gap:3px;align-items:center}
+.seq span{font-family:var(--font-display);font-size:14px}
+.seq button{aspect-ratio:1;border:2px solid var(--outline);background:var(--paper-2);padding:0;cursor:pointer;min-width:0}
+.seq button.on{background:var(--accent)}
+.seq button.q{border-left-width:3px}
+.seq button.now{box-shadow:inset 0 0 0 3px var(--accent-2)}
+textarea#notes{width:100%;height:170px;resize:vertical;border:2px solid var(--outline);background:var(--paper);color:var(--ink);font-family:var(--font-mono);font-size:16px;padding:8px}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,120px);background:var(--ink);color:var(--paper);
+  font-family:var(--font-display);font-size:17px;padding:8px 14px;border:2px solid var(--outline);transition:transform .25s;z-index:9999;max-width:calc(100% - 32px)}
+.toast.show{transform:translate(-50%,0)}
+
+/* phone: the identity card folds into a bar; tap to open it */
+@media (max-width:760px){
+  .rail{width:auto;right:max(16px,env(safe-area-inset-right,0px));padding:10px 14px;gap:10px}
+  .rail::before{display:none}
+  .logo{font-size:28px;margin:0}
+  .railtop{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .railtoggle{display:inline-flex}
+  .rail:not(.open) .more{display:none}
+  .mapbox{width:140px}
+}
+@media (min-width:761px){.railtop{display:contents}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<aside class="rail" id="rail" aria-label="About Rodrigo">
+  <div class="railtop">
+    <h1 class="logo">RArgu<span>OS</span></h1>
+    <button class="btn railtoggle" id="railToggle" aria-expanded="false" aria-controls="rail">about ▾</button>
+  </div>
+  <div class="more">
+    <div class="who"><b>Rodrigo Arguello</b><small>Software Engineer · New York</small></div>
+    <p class="tag">Software engineer who builds games, creative tools, and data pipelines.</p>
+    <div class="cta">
+      <a class="btn primary" href="https://rargu.dev/resume" target="_blank" rel="noopener">Resume ↗</a>
+      <a class="btn" href="https://github.com/RArgu" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn" href="https://linkedin.com/in/rodrigo-arguello" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+    <div><span class="email" id="email">r.arguello.h@gmail.com</span> <button class="btn" id="copy" style="font-size:14px;padding:1px 8px;box-shadow:2px 2px 0 var(--shadow)">copy</button></div>
+    <nav class="index" aria-label="Go to">
+      <h3>On this sheet</h3>
+      <button data-go="castlesiege">CastleSiege <em>play</em></button>
+      <button data-go="castlewars">Castle Wars <em>wip</em></button>
+      <button data-go="pentimento">Pentimento <em>wip</em></button>
+      <button data-go="crawler">Focused Crawler <em>demo</em></button>
+      <button data-go="insider">Insider Trading <em>demo</em></button>
+    </nav>
+    <div class="index"><h3>Quick tools</h3>
+      <div class="apps">
+        <button class="app" data-tool="paintwin"><img src="__ICON_PAINT__" alt="">Paint</button>
+        <button class="app" data-tool="musicwin"><img src="__ICON_MUSIC__" alt="">Music</button>
+        <button class="app" data-tool="noteswin"><img src="__ICON_NOTES__" alt="">Notes</button>
+      </div>
+    </div>
+    <div class="railrow">
+      <p class="hint">Drag the paper to look around, pinch or ⌘/Ctrl-scroll to zoom. Throw any window anywhere; double-click its title bar to send it home.</p>
+    </div>
+    <button class="btn" id="reset" style="align-self:flex-start">↺ Reset page</button>
+  </div>
+</aside>
+<div class="mapbox">
+  <div class="zoom" role="group" aria-label="Zoom"><button id="zOut" aria-label="Zoom out">−</button><output id="zPct">100%</output><button id="zIn" aria-label="Zoom in">+</button><button id="zFit">fit</button></div>
+  <canvas id="mini" width="400" height="219" aria-label="Map of the sheet; click or drag to jump"></canvas>
+</div>
+
+<div id="vp">
+<div id="sizer">
+<div id="world">
+  <div class="titleblock">
+    <div>Drawing</div><div><b>RArgu OS</b></div>
+    <div>Drawn by</div><div>R. Arguello</div>
+    <div>Sheet</div><div>1 of 1 · scale 1:1</div>
+    <div>Rev.</div><div>Mockup v0.6 · 2026-10</div>
+  </div>
+
+  <!-- CastleSiege -->
+  <div class="win" id="castlesiege" data-x="360" data-y="100" style="width:620px">
+    <div class="bar"><span class="grip">⠿</span><span class="t">castlesiege — vs. bot</span><button aria-label="Reset board" id="csReset">↺</button></div>
+    <div class="about">
+      <div class="phead"><h2>CastleSiege</h2><span class="yr">2026</span><span class="status live">Playable</span></div>
+      <p class="blurb">Two-player turn-based strategy on a 7×9 board. Fewer pieces than chess, with mismatched move and attack ranges. Online with ranked matchmaking, or against a bot that runs in your browser.</p>
+      <div class="meta"><span class="chip">TypeScript</span><span class="chip">React Native / Expo</span><span class="chip">Node.js</span><span class="chip">WebSocket</span><span class="chip">PostgreSQL</span><a href="https://castlesiege.fly.dev" target="_blank" rel="noopener">castlesiege.fly.dev ↗</a></div>
+    </div>
+    <div class="wbody cs">
+      <canvas id="board" width="280" height="360" aria-label="CastleSiege board"></canvas>
+      <div class="side">
+        <b id="csTurn">White to move</b>
+        <span>Click one of your pieces, then a highlighted square. The black side answers on its own.</span>
+        <span class="note">Mockup stand-in: pieces step one square and Black moves at random. The real engine and bot mount here unchanged.</span>
+      </div>
+    </div>
+    <div class="wfoot"><span id="csLog">new game</span><span>7×9 · 13 pieces a side</span></div>
+  </div>
+
+  <!-- Castle Wars -->
+  <div class="win" id="castlewars" data-x="1040" data-y="140" style="width:600px">
+    <div class="bar"><span class="grip">⠿</span><span class="t">castlewars — barracks</span></div>
+    <div class="about">
+      <div class="phead"><h2>Castle Wars</h2><span class="yr">2026</span><span class="status wip">In progress</span></div>
+      <p class="blurb">An auto-battler set in CastleSiege's world. The units are hand-animated pixel art; the battle engine is next. These are the real sprite sheets.</p>
+      <div class="meta"><span class="chip">Aseprite</span><span class="chip">TypeScript</span><span class="chip">Canvas</span></div>
+    </div>
+    <div class="wbody">
+      <div class="tb" id="cwTabs" role="group" aria-label="Animation"></div>
+      <canvas id="cw" width="560" height="250" aria-label="Castle Wars unit animations"></canvas>
+    </div>
+    <div class="wfoot"><span id="cwInfo">idle</span><span>6 units · 19–21 frames each</span></div>
+  </div>
+
+  <!-- Pentimento -->
+  <div class="win" id="pentimento" data-x="1720" data-y="80" style="width:600px">
+    <div class="bar"><span class="grip">⠿</span><span class="t">pentimento — the workflow it's built for</span></div>
+    <div class="about">
+      <div class="phead"><h2>Pentimento</h2><span class="yr">2026</span><span class="status wip">Planning</span></div>
+      <p class="blurb">A native macOS raster editor in the spirit of Paint.NET, built so AI agents can drive it with real tools. It follows PaintDotMac, a Swift/Metal prototype whose compositor matched Paint.NET pixel for pixel.</p>
+      <div class="meta"><span class="chip">Swift 6</span><span class="chip">AppKit</span><span class="chip">Metal</span><span class="chip">Claude Agent SDK</span></div>
+    </div>
+    <div class="wbody">
+      <div class="pent">
+        <canvas id="pentC" width="400" height="200" style="width:100%;height:auto;border:2px solid var(--outline);image-rendering:auto" aria-label="Sample image with text"></canvas>
+        <div class="layers" id="layers"><div><span class="eye">◉</span> Background</div></div>
+      </div>
+      <div class="cmd" id="pentCmd">agent&gt; pull the text in this image onto its own layer</div>
+      <div class="tb" style="margin:10px 0 0"><button id="pentRun">▶ Run the agent</button></div>
+    </div>
+    <div class="wfoot"><span>sketch of the planned agent CLI</span><span>nothing built yet</span></div>
+  </div>
+
+  <!-- Crawler -->
+  <div class="win" id="crawler" data-x="400" data-y="860" style="width:680px">
+    <div class="bar"><span class="grip">⠿</span><span class="t">crawl — topic: "protein structure prediction"</span><button aria-label="Pause" id="crPause">❚❚</button></div>
+    <div class="about">
+      <div class="phead"><h2>Focused Web Crawler</h2><span class="yr">2025</span><span class="status ph">Demo coming</span></div>
+      <p class="blurb">Give it a topic and four strategies crawl side by side: URL keywords, static similarity, adaptive similarity, and an LLM judge. One evaluator scores precision, domain diversity, and overlap. I built the LLM strategy and the evaluation layer.</p>
+      <div class="meta"><span class="chip">Python</span><span class="chip">asyncio</span><span class="chip">Anthropic API</span><span class="chip">scikit-learn</span><a href="https://github.com/MacroMozilla/WSEProject" target="_blank" rel="noopener">repo ↗</a></div>
+    </div>
+    <div class="wbody"><div class="crawl" id="crawl"></div>
+      <p class="note">Placeholder: simulated pages and scores. The real version steps through our recorded crawl.</p></div>
+    <div class="wfoot"><span id="crStat">0 pages</span><span>✓ relevant · ✗ rejected</span></div>
+  </div>
+
+  <!-- Insider -->
+  <div class="win" id="insider" data-x="1160" data-y="800" style="width:680px">
+    <div class="bar"><span class="grip">⠿</span><span class="t">spike-scan — example market</span><button aria-label="Replay" id="inReplay">↺</button></div>
+    <div class="about">
+      <div class="phead"><h2>Insider Trading on Polymarket</h2><span class="yr">2026</span><span class="status ph">Demo coming</span></div>
+      <p class="blurb">A PySpark pipeline over 226K+ on-chain fills across 6 geopolitical markets ($240M+ volume). It finds sharp price moves, traces the wallets that bet big just before them, and scores those wallets against a GDELT news timeline. It flags candidates; it doesn't prove anything.</p>
+      <div class="meta"><span class="chip">PySpark</span><span class="chip">Spark MLlib</span><span class="chip">BigQuery</span><span class="chip">GraphQL</span><a href="https://github.com/RArgu/CS-GY6513-FinalProject" target="_blank" rel="noopener">repo ↗</a></div>
+    </div>
+    <div class="wbody"><div class="ins">
+      <canvas id="inC" width="900" height="420" aria-label="Price chart with flagged trades"></canvas>
+      <div class="flags" id="flags"><span class="note" style="margin:0">Wallets that bought big before the spike show up here.</span></div></div>
+      <p class="note">Placeholder: an invented market with simulated trades. The real version steps through a market from our dataset.</p></div>
+    <div class="wfoot"><span id="inStat">t = 0h</span><span>dot size = trade size</span></div>
+  </div>
+
+  <!-- the desk -->
+  <div class="win" id="paintwin" data-x="1960" data-y="720" style="width:372px">
+    <div class="bar"><span class="grip">⠿</span><span class="t">quick paint</span></div>
+    <div class="wbody paint">
+      <div class="tb"><div class="pal" id="pal"></div></div>
+      <div class="tb"><button data-size="2">thin</button><button data-size="5" aria-pressed="true">mid</button><button data-size="12">fat</button><button id="pClear">clear</button><button id="pSave">save .png</button></div>
+      <canvas id="paint" width="340" height="200" aria-label="Drawing canvas"></canvas>
+    </div>
+  </div>
+  <div class="win" id="musicwin" data-x="2380" data-y="700" style="width:440px">
+    <div class="bar"><span class="grip">⠿</span><span class="t">music maker</span></div>
+    <div class="wbody">
+      <div class="tb"><button id="mPlay">▶ play</button><button id="mClear">clear</button><span class="b" id="mBpm" style="background:none;border:0">112 bpm</span></div>
+      <div class="seq" id="seq"></div>
+    </div>
+  </div>
+  <div class="win" id="noteswin" data-x="2400" data-y="960" style="width:360px">
+    <div class="bar"><span class="grip">⠿</span><span class="t">notes.txt</span></div>
+    <div class="wbody">
+      <textarea id="notes" aria-label="Notes">Things to check out on rargu.dev
+- play a round of CastleSiege
+- the Castle Wars wizard's victory dance
+- throw every window across the sheet</textarea>
+      <div class="tb" style="margin:8px 0 0"><button id="nSave">save .txt</button><span class="b" id="nCount" style="background:none;border:0"></span></div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<div class="toast" id="toast" role="status"></div>

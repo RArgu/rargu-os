@@ -1,0 +1,692 @@
+/* RArgu OS sheet. Palettes from mock v0.6 (docs/mockups/rargu-os-v0.6.html). */
+
+@font-face {
+  font-family: "Pixel Operator";
+  src: url("/fonts/PixelOperator.ttf") format("truetype");
+  font-weight: 400;
+  font-display: block;
+}
+@font-face {
+  font-family: "Pixel Operator";
+  src: url("/fonts/PixelOperator-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-display: block;
+}
+@font-face {
+  font-family: "Pixel Operator Mono";
+  src: url("/fonts/PixelOperatorMono.ttf") format("truetype");
+  font-weight: 400;
+  font-display: block;
+}
+@font-face {
+  font-family: "Instrument Sans";
+  src: url("/fonts/instrument-sans-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Instrument Sans";
+  src: url("/fonts/instrument-sans-latin-500-normal.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Instrument Sans";
+  src: url("/fonts/instrument-sans-latin-600-normal.woff2") format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+
+:root {
+  --paper: #fff1e8;
+  --paper-2: #f7e2d3;
+  --ink: #1d2b53;
+  --ink-dim: #5f574f;
+  --accent: #7e2553;
+  --accent-2: #29adff;
+  --chrome: #c2c3c7;
+  --win-bg: #ffffff;
+  --outline: #1d2b53;
+  --shadow: #1d2b53;
+  --grid: rgba(29, 43, 83, 0.07);
+  --grid-major: rgba(29, 43, 83, 0.14);
+  --chip: #ffe3cf;
+  --ok: #008751;
+  --warn: #ab5236;
+  --title-ink: #fff1e8;
+  --focus: #1d2b53;
+  --font-display: "Pixel Operator", "Courier New", monospace;
+  --font-body:
+    "Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  --font-mono: "Pixel Operator Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #111a33;
+    --paper-2: #18234a;
+    --ink: #fff1e8;
+    --ink-dim: #c2c3c7;
+    --accent: #ff77a8;
+    --accent-2: #29adff;
+    --chrome: #5f574f;
+    --win-bg: #1d2b53;
+    --outline: #000000;
+    --shadow: #000000;
+    --grid: rgba(255, 241, 232, 0.05);
+    --grid-major: rgba(255, 241, 232, 0.11);
+    --chip: #2a3563;
+    --ok: #00e436;
+    --warn: #ffa300;
+    --title-ink: #111a33;
+    --focus: #29adff;
+    color-scheme: dark;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+}
+a {
+  color: inherit;
+}
+button {
+  font: inherit;
+  color: inherit;
+}
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* the sheet: #vp scrolls, #sizer is the scaled size, #world is scaled by Z */
+#vp {
+  position: fixed;
+  inset: 0;
+  overflow: auto;
+  overscroll-behavior: none;
+  cursor: grab;
+  scrollbar-width: thin;
+  /* touch pans and pinches go through pointer events (view.ts) */
+  touch-action: none;
+}
+#vp:focus-visible {
+  outline-offset: -2px;
+}
+#vp.panning {
+  cursor: grabbing;
+}
+#sizer {
+  position: relative;
+  width: 3000px;
+  height: 1640px;
+  overflow: hidden;
+}
+#world {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  width: 3000px;
+  height: 1640px;
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--grid-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:
+    120px 120px,
+    120px 120px,
+    24px 24px,
+    24px 24px;
+  border-right: 2px solid var(--grid-major);
+  border-bottom: 2px solid var(--grid-major);
+}
+.titleblock {
+  position: absolute;
+  right: 40px;
+  bottom: 40px;
+  border: 2px solid var(--ink-dim);
+  font-family: var(--font-display);
+  color: var(--ink-dim);
+  font-size: 15px;
+  display: grid;
+  grid-template-columns: auto auto;
+  user-select: none;
+  pointer-events: none;
+}
+.titleblock div {
+  padding: 4px 10px;
+  border: 1px solid var(--grid-major);
+}
+.titleblock b {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* windows: size and home position are inline (layout table) */
+.sheet-win {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border: 2px solid var(--outline);
+  background: var(--win-bg);
+  box-shadow: 5px 5px 0 var(--shadow);
+  display: flex;
+  flex-direction: column;
+  /* clip, not hidden: a window must not scroll its own content */
+  overflow: clip;
+  cursor: auto;
+  transition: box-shadow 0.15s;
+}
+.sheet-win.lifted {
+  box-shadow: 14px 18px 0 color-mix(in srgb, var(--shadow) 55%, transparent);
+}
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  background: var(--accent);
+  color: var(--title-ink);
+  font-family: var(--font-display);
+  font-size: 17px;
+  padding: 3px 4px 2px 8px;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  border-bottom: 2px solid var(--outline);
+}
+.bar .t {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bar .grip {
+  opacity: 0.7;
+  letter-spacing: -2px;
+}
+.sheet-win.lifted .bar {
+  cursor: grabbing;
+}
+.bar button {
+  width: 20px;
+  height: 18px;
+  flex: none;
+  border: 2px solid var(--outline);
+  background: var(--chrome);
+  padding: 0;
+  font-family: var(--font-display);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--ink);
+}
+/* R18: the ring sits on the button's own chrome, inside its border (light
+   --ink is the --outline colour), not on the title bar. Ink, not --focus:
+   dark --focus on --chrome is 2.87:1 */
+/* R19: rings in the sheet stay ≥ 2 screen px at any zoom (--ring: view.ts,
+   whole sheet px); this one stays inside the button, so the window's clip
+   never cuts it (at most 6 px: the button is 20 × 18) */
+.bar button:focus-visible {
+  outline-color: var(--ink);
+  outline-width: min(var(--ring, 2px), 6px);
+  outline-offset: calc(-2px - min(var(--ring, 2px), 6px));
+}
+.sheet-win a:focus-visible {
+  outline-width: var(--ring, 2px);
+  outline-offset: 0;
+}
+/* R18: a paper band under the window's ring, so the ring never sits on the
+   window's own shadow (light --focus is the --shadow colour) or on a window
+   below it; at once, with no shadow transition */
+.sheet-win:focus-visible {
+  outline-width: var(--ring, 2px);
+  outline-offset: var(--ring, 2px);
+  box-shadow: 0 0 0 calc(3 * var(--ring, 2px)) var(--paper);
+  transition: none;
+}
+.about {
+  flex: none;
+  padding: 12px 14px;
+  border-bottom: 2px solid var(--outline);
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.phead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+}
+.phead h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1;
+  margin: 0;
+}
+.phead .yr {
+  font-family: var(--font-display);
+  color: var(--ink-dim);
+  font-size: 17px;
+}
+.status {
+  font-family: var(--font-display);
+  font-size: 13px;
+  padding: 1px 7px 0;
+  border: 2px solid;
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.status.play {
+  border-color: var(--ok);
+}
+.status.wip {
+  border-color: var(--warn);
+}
+.status.demo {
+  border-color: var(--accent-2);
+}
+.blurb {
+  margin: 0;
+  font-size: 15px;
+}
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+}
+.chip {
+  font-size: 12px;
+  padding: 1px 7px;
+  background: var(--chip);
+  border-radius: 2px;
+}
+.meta a {
+  font-size: 13px;
+  margin-left: 4px;
+}
+/* reserved for the live demo (specs 002–006) */
+.demo-area {
+  flex: none;
+}
+
+/* minimap and zoom */
+.mapbox {
+  position: fixed;
+  z-index: 5000;
+  right: max(16px, env(safe-area-inset-right, 0px));
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  border: 2px solid var(--outline);
+  box-shadow: 4px 4px 0 var(--shadow);
+  background: var(--paper);
+  width: 200px;
+}
+#mini {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: pointer;
+  touch-action: none;
+}
+#mini:focus-visible {
+  outline-offset: -2px;
+}
+.zoom {
+  display: flex;
+  border-bottom: 2px solid var(--outline);
+  font-family: var(--font-display);
+  font-size: 15px;
+}
+.zoom button {
+  all: unset;
+  cursor: pointer;
+  padding: 2px 9px 1px;
+  border-right: 2px solid var(--outline);
+}
+.zoom button:hover {
+  background: var(--chip);
+}
+.zoom button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+.zoom output {
+  flex: 1;
+  text-align: center;
+  padding: 2px 0 1px;
+  font-variant-numeric: tabular-nums;
+}
+.zoom button:last-child {
+  border-right: 0;
+  border-left: 2px solid var(--outline);
+}
+@media (max-width: 760px) {
+  .mapbox {
+    width: 140px;
+  }
+}
+
+/* pinned identity card */
+.rail {
+  position: fixed;
+  z-index: 5000;
+  left: max(16px, env(safe-area-inset-left, 0px));
+  top: calc(16px + env(safe-area-inset-top, 0px));
+  width: 280px;
+  max-height: calc(
+    100% - 32px - env(safe-area-inset-top, 0px) -
+      env(safe-area-inset-bottom, 0px)
+  );
+  overflow: auto;
+  background: var(--paper);
+  border: 2px solid var(--outline);
+  box-shadow: 5px 5px 0 var(--shadow);
+  padding: 18px 18px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.rail::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 2px var(--outline);
+}
+.railtop {
+  display: contents;
+}
+.more {
+  display: contents;
+}
+.logo {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 0.9;
+  letter-spacing: -0.5px;
+  margin: 6px 0 0;
+}
+.logo span {
+  color: var(--accent);
+}
+.who {
+  display: flex;
+  flex-direction: column;
+}
+.who b {
+  font-size: 17px;
+}
+.who small {
+  color: var(--ink-dim);
+  font-size: 14px;
+}
+.tag {
+  margin: 0;
+  font-size: 15px;
+}
+.cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+/* the card's buttons; an app's .btn is its own (002 R13). :where keeps
+   the specificity of .btn */
+.btn:where(:not(.host-root *)) {
+  font-family: var(--font-display);
+  font-size: 17px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px 3px;
+  border: 2px solid var(--outline);
+  background: var(--win-bg);
+  box-shadow: 3px 3px 0 var(--shadow);
+  text-decoration: none;
+  cursor: pointer;
+  line-height: 1.1;
+  transition:
+    transform 0.08s,
+    box-shadow 0.08s;
+}
+.btn:hover:where(:not(.host-root *)) {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--shadow);
+}
+.btn:active:where(:not(.host-root *)) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--shadow);
+}
+.btn.primary:where(:not(.host-root *)) {
+  background: var(--accent);
+  color: var(--title-ink);
+}
+.btn.small:where(:not(.host-root *)) {
+  font-size: 14px;
+  padding: 1px 8px;
+  box-shadow: 2px 2px 0 var(--shadow);
+}
+#reset {
+  align-self: flex-start;
+}
+.email {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  user-select: all;
+}
+.index {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border-top: 2px solid var(--outline);
+  padding-top: 10px;
+}
+.index h2 {
+  font-family: var(--font-display);
+  font-size: 14px;
+  margin: 0 0 2px;
+  color: var(--ink-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 400;
+}
+.index button {
+  all: unset;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 2px 6px;
+  margin-inline: -6px;
+  font-size: 15px;
+}
+.index button:hover,
+.index button[aria-current] {
+  background: var(--chip);
+}
+.index button:focus-visible,
+.app:focus-visible {
+  outline: 2px solid var(--focus);
+}
+.index em {
+  font-style: normal;
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--ink-dim);
+}
+.apps {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.index .app {
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 3px;
+  width: 72px;
+  margin: 0;
+  padding: 6px 2px 4px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  text-align: center;
+  line-height: 1;
+}
+.app img {
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+}
+.app:active img {
+  transform: translateY(1px);
+}
+.hint {
+  font-size: 13px;
+  color: var(--ink-dim);
+  margin: 0;
+}
+/* added by main.ts; shown on a phone only */
+.railtoggle {
+  display: none;
+}
+.toast {
+  position: fixed;
+  z-index: 9999;
+  left: 50%;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  max-width: calc(100% - 32px);
+  transform: translate(-50%, 120px);
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-size: 17px;
+  padding: 8px 14px;
+  border: 2px solid var(--outline);
+  transition: transform 0.25s;
+}
+.toast.show {
+  transform: translate(-50%, 0);
+}
+
+/* phone: the card is a bar with an about toggle (R15). It folds only once
+   main.ts has added the toggle (.folds), so without JS it stays whole (R3). */
+@media (max-width: 760px) {
+  .rail {
+    width: auto;
+    right: max(16px, env(safe-area-inset-right, 0px));
+    padding: 10px 14px;
+    gap: 10px;
+  }
+  .rail::before {
+    display: none;
+  }
+  .logo {
+    font-size: 28px;
+    margin: 0;
+  }
+  .railtop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .railtoggle {
+    display: inline-flex;
+  }
+  .rail.folds:not(.open) .more {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* 002 R2: an app's content stays in its demo area */
+.demo-area[data-host] {
+  overflow: clip;
+}
+/* 002 R13: a hosted app's root, as the old OS's display (.dpos) and window
+   client: the box, inherited font and colour, no text selection in app
+   chrome (a drag from a window's edge does not select into the app and
+   scroll the sheet). The old role variables, --u and --text-size are set
+   on it (tokens.css and the host's theme, host/styles.ts). */
+.host-root {
+  position: relative;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: clip;
+  background: var(--chrome);
+  font-family: var(--font-ui);
+  font-size: var(--text-size);
+  line-height: 1;
+  color: var(--text);
+  -webkit-font-smoothing: none;
+  text-rendering: optimizeSpeed;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  cursor: default;
+}
+.host-root :is(input, textarea) {
+  user-select: text;
+  -webkit-user-select: text;
+}
+/* 001 R18, R19: every focus inside a running app shows the sheet's ring
+   (solid, at least 2 screen px at any zoom), over the apps' own focus
+   styles (base.css draws a 1 app px dashed ring, or none). It is drawn
+   inside the control, so neither the window's clip nor the control's cuts
+   it, between paper bands, so it keeps 3:1 on any app colour (as a focused
+   window's ring, R18). */
+.host-root :focus-visible:not(input[type="radio"]) {
+  outline: var(--ring, 2px) solid var(--focus) !important;
+  outline-offset: calc(-2 * var(--ring, 2px)) !important;
+  box-shadow: inset 0 0 0 calc(3 * var(--ring, 2px)) var(--paper) !important;
+}
+/* a radio is clipped to a stepped circle (base.css) and sits at its
+   label's edge: the ring is drawn over the label, by a layer above the
+   radio, with half-ring bands so it fits a 16 px label at any zoom */
+.host-root input[type="radio"]:focus-visible {
+  outline: none !important;
+}
+.host-root label:has(input[type="radio"]:focus-visible) {
+  position: relative;
+}
+.host-root label:has(input[type="radio"]:focus-visible)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  outline: var(--ring, 2px) solid var(--focus);
+  outline-offset: calc(-1.5 * var(--ring, 2px));
+  box-shadow: inset 0 0 0 calc(2 * var(--ring, 2px)) var(--paper);
+}

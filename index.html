@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>RArgu OS</title>
+    <meta name="description" content="Rodrigo Arguello's projects on one blueprint sheet." />
+  </head>
+  <body>
+    <aside class="rail" id="card" aria-label="About Rodrigo">
+      <!-- card -->
+    </aside>
+    <main id="vp" tabindex="0" aria-label="Sheet. Drag or use the arrow keys to look around.">
+      <div id="sizer">
+        <div id="world">
+          <div class="titleblock" aria-hidden="true">
+            <div>Drawing</div><div><b>RArgu OS</b></div>
+            <div>Drawn by</div><div>R. Arguello</div>
+            <div>Sheet</div><div>1 of 1 · scale 1:1</div>
+            <div>Rev.</div><div>2026-10</div>
+          </div>
+          <!-- windows -->
+        </div>
+      </div>
+    </main>
+    <div class="mapbox">
+      <div class="zoom" role="group" aria-label="Zoom">
+        <button type="button" id="zOut" aria-label="Zoom out">−</button><output id="zPct">100%</output><button type="button" id="zIn" aria-label="Zoom in">+</button><button type="button" id="zFit" aria-label="Zoom to fit">fit</button>
+      </div>
+      <canvas id="mini" width="400" height="219" tabindex="0" aria-label="Map of the sheet. Click, drag or use the arrow keys to move the view."></canvas>
+    </div>
+    <script type="module" src="/src/sheet/main.ts"></script>
+  </body>
+</html>

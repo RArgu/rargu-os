@@ -1,0 +1,17 @@
+# 007 R5: the old /next preview of RArgu OS now lives at /
+/next /  301
+/next.html /  301
+/next/ /  301
+# The Astro site's pages, so old links land on the home page (Workers static assets)
+/about /  301
+/about/* /  301
+/work /  301
+/work/* /  301
+/projects /  301
+/projects/* /  301
+/contact /  301
+/contact/* /  301
+/writing /  301
+/writing/* /  301
+/terminal /  301
+/terminal/* /  301

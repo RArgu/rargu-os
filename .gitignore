@@ -1,0 +1,23 @@
+node_modules/
+dist/
+dist-e2e/
+.DS_Store
+test-results/
+playwright-report/
+.vite/
+resume.html
+.wrangler/
+
+# local Claude Code files (worktrees, settings); repo skills are tracked
+.claude/*
+!.claude/skills/
+
+# source art archive, kept out of git (owner decision 2026-10-22)
+art-source/
+
+# local only, not in the public repo (spec 010 R4, owner 2026-10-24)
+design/
+plan/
+tools/
+docs/archive/
+docs/handoffs/
