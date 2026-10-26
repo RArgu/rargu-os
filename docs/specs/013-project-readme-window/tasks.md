@@ -14,7 +14,7 @@ a tool registers.
 
 ## Mechanism (buildable now)
 
-- [ ] **T1** Write-up content pipeline [local] (R8, R17)
+- [x] **T1** Write-up content pipeline [local] (R8, R17)
   - Acceptance: `loadProjects` reads `writeup`, `role` and `lede` and the markdown body. `renderMarkdown` takes an
     id prefix (`crawler-sec-…`). With `writeup: true`, the build fails and names the file when: an R8 H2 is missing
     or out of order, a section has no bold claim sentence, the role line is missing, Results has no date and run

@@ -1,13 +1,14 @@
 // R11 / R14: the overlay card, written into index.html at build time from
 // content/identity.json, and the project data as `virtual:sheet-projects`,
 // read from an ordered allowlist of content/projects/*.md.
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { basename, join, resolve } from "node:path";
 import type { Plugin } from "vite";
 import { parseFrontmatter } from "../src/apps/resume/doc.ts";
 import { LAYOUT } from "../src/sheet/layout.ts";
 import { UNITS } from "./castlewars-frames.ts";
 import { requireSheetPage, SHEET_PAGE } from "./sheet-guard.ts";
+import { writeup, type Writeup } from "./writeup.ts";
 import { STRATEGIES } from "../src/sheet/demos/crawler-data.ts";
 import {
   FLAG_MIN,
@@ -49,12 +50,25 @@ export interface Project {
   summary: string;
   stack: string[];
   links: string[];
+  /** 013: only with `writeup: true` (build side; not in the virtual module) */
+  writeup?: Writeup;
 }
 
-export function loadProjects(dir = join(root, "content/projects")): Project[] {
+/** `overlay`: a folder whose `<file>.md` adds its frontmatter fields and
+ * replaces the body (013: the e2e build's fixture write-ups,
+ * tests/fixtures/writeups). */
+export function loadProjects(
+  dir = join(root, "content/projects"),
+  overlay?: string,
+): Project[] {
   return ALLOWLIST.map(([file, id]) => {
     const path = join(dir, `${file}.md`);
-    const { meta } = parseFrontmatter(readFileSync(path, "utf8"));
+    const parsed = parseFrontmatter(readFileSync(path, "utf8"));
+    const own = overlay && join(overlay, `${file}.md`);
+    const over =
+      own && existsSync(own) && parseFrontmatter(readFileSync(own, "utf8"));
+    const meta = over ? { ...parsed.meta, ...over.meta } : parsed.meta;
+    const body = over ? over.body : parsed.body;
     const fail = (field: string): never => {
       throw new Error(`${basename(path)}: bad or missing "${field}"`);
     };
@@ -84,6 +98,11 @@ export function loadProjects(dir = join(root, "content/projects")): Project[] {
       summary: text("summary"),
       stack: list("stack"),
       links,
+      ...(meta.writeup === "true" && {
+        writeup: writeup(id, meta, body, (why) => {
+          throw new Error(`${basename(path)}: write-up: ${why}`);
+        }),
+      }),
     };
   });
 }
@@ -242,6 +261,25 @@ const DEMO: Record<string, (demoH: number) => string> = {
   insider: insiderArea,
 };
 
+/** 013 R8: the Read panel: title block, lede, section nav and the body.
+ * Hidden until its tab opens it (main.ts) or a /p/ page shows it. */
+export function readPanel(p: Project & { writeup: Writeup }): string {
+  const ext = 'target="_blank" rel="noopener"';
+  const w = p.writeup;
+  const nav = w.anchors
+    .map((a) => `<a href="#${a.id}">${esc(a.text)}</a>`)
+    .join("");
+  return `<div class="read-area" id="${p.id}-read" hidden>
+        <header class="r-head"><h2 class="r-title" id="${p.id}-read-title" tabindex="-1">${esc(p.title)}</h2>
+          <p class="r-meta"><span class="yr">${esc(p.year)}</span><span class="status ${STATUS[p.status][1]}">${STATUS[p.status][0]}</span> <span class="r-role">${esc(w.role)}</span></p>
+          <p class="r-lede">${esc(w.lede)}</p>
+          <div class="meta">${p.stack.map((c) => `<span class="chip">${esc(c)}</span>`).join("")}${p.links.map((l) => `<a href="${esc(l)}" ${ext}>${esc(linkText(l, p.links))} ↗</a>`).join("")}</div>
+        </header>
+        <nav class="r-nav" aria-label="Sections">${nav}</nav>
+        <div class="r-body">${w.html}</div>
+      </div>`;
+}
+
 // R7 / R14: the eight windows at their home positions. The inline transform
 // shows the layout without JS; windows.ts owns it after start. R9: each title
 // bar has a Home control.
@@ -260,7 +298,7 @@ function windows(projects: Project[]): string {
     return `<section class="sheet-win" data-win="${s.id}" role="region" aria-label="${esc(name)}" style="width:${s.w}px;height:${s.h}px;transform:translate(${s.x}px, ${s.y}px)">
       <div class="bar"><span class="grip" aria-hidden="true">⠿</span><span class="t">${esc(s.bar)}</span>${s.id === "crawler" ? CRAWLER_PAUSE : ""}${s.id === "insider" ? INSIDER_REPLAY : ""}<button type="button" class="home" aria-label="Send ${esc(name)} home">⌂</button></div>
       ${about}
-      ${DEMO[s.id] ? DEMO[s.id](s.demoH) : `<div class="demo-area" style="height:${s.demoH}px" inert></div>`}${FOOT[s.id] ? `\n      <div class="wfoot">${esc(FOOT[s.id])}</div>` : ""}
+      ${DEMO[s.id] ? DEMO[s.id](s.demoH) : `<div class="demo-area" style="height:${s.demoH}px" inert></div>`}${FOOT[s.id] ? `\n      <div class="wfoot">${esc(FOOT[s.id])}</div>` : ""}${p?.writeup ? `\n      ${readPanel({ ...p, writeup: p.writeup })}` : ""}
     </section>`;
   }).join("\n");
 }
@@ -270,6 +308,7 @@ const VIRTUAL = "virtual:sheet-projects";
 export function sheetContent({
   identity = join(root, "content/identity.json"),
   projects = join(root, "content/projects"),
+  overlay = undefined as string | undefined,
 } = {}): Plugin {
   return {
     name: "sheet-content",
@@ -278,13 +317,17 @@ export function sheetContent({
       if (id !== `\0${VIRTUAL}`) return;
       for (const [file] of ALLOWLIST)
         this.addWatchFile(join(projects, `${file}.md`));
-      return `export default ${JSON.stringify(loadProjects(projects))};`;
+      // 013 R15: the write-ups are HTML in the page, not JS
+      const data = loadProjects(projects, overlay).map(
+        ({ writeup: _, ...p }) => p,
+      );
+      return `export default ${JSON.stringify(data)};`;
     },
     // 007 R3: the card goes into the sheet's page; no page, no build
     buildStart: requireSheetPage("sheet-content"),
     transformIndexHtml(html, ctx) {
       if (!ctx.filename.endsWith(`/${SHEET_PAGE}`)) return html;
-      const list = loadProjects(projects);
+      const list = loadProjects(projects, overlay);
       return (
         html
           // callbacks: a replacement string would expand $' and $& in content

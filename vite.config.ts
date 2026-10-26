@@ -51,7 +51,7 @@ function noTestModules(): Plugin {
   };
 }
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   base: "./",
   plugins: [
     sheetGuard(),
@@ -59,7 +59,12 @@ export default defineConfig({
     hostChunks(),
     // 002 R13: the hosted apps' and widgets' CSS under the host root
     hostCss(),
-    sheetContent(),
+    // 013: the e2e build shows fixture write-ups (no real one ships yet)
+    sheetContent(
+      mode === "e2e"
+        ? { overlay: resolve(root, "tests/fixtures/writeups") }
+        : undefined,
+    ),
     castlewarsFrames(),
     hostResources(),
     {
@@ -100,4 +105,4 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["tests/unit/setup.ts"],
   },
-});
+}));

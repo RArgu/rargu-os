@@ -77,9 +77,10 @@ function safeHref(href: string): string | null {
 
 /**
  * Markdown to sanitized HTML. Raw HTML in the source is dropped, which also
- * strips <!-- --> comments, so TODO(content) notes never show.
+ * strips <!-- --> comments, so TODO(content) notes never show. `idPrefix`
+ * goes before each H2 id.
  */
-export function renderMarkdown(src: string): Rendered {
+export function renderMarkdown(src: string, idPrefix = ""): Rendered {
   const anchors: Anchor[] = [];
   let title: string | null = null;
   const used = new Set<string>();
@@ -97,7 +98,8 @@ export function renderMarkdown(src: string): Rendered {
         const plain = token.text.replace(/[*_`[\]]/g, "");
         if (token.depth === 1 && title === null) title = plain;
         if (token.depth === 2) {
-          let id = "sec-" + (slug(plain) || "section");
+          // 013 R8: a prefix keeps ids unique when several documents share a page
+          let id = idPrefix + "sec-" + (slug(plain) || "section");
           while (used.has(id)) id += "-x";
           used.add(id);
           anchors.push({ id, text: plain });
