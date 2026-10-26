@@ -197,8 +197,9 @@ JSON needs a deploy.) It also says, in one sentence, that copies already saved b
   active.
 - **R10.c** Given a `tool:stage` start sent before Read opens, when Read opens, then that box is active.
 - **R10.d** Given 50 `tool:stage` events in one frame, then 013 updates the diagram once, with the latest state.
-- **R10.e** Given `tool:read-open`, then the real 011 and 012 tools each send their current `tool:status` within one
-  frame.
+- **R10.e** Given `tool:read-open`, then the real 012 tool sends its current `tool:status` within one frame, and the
+  real 011 tool sends its last known status within one frame, or nothing before its first run (coordinator decision
+  2026-10-26).
 - **R11.a** Given a crawler status `offline`, then the `gate-d` box contains "offline". Given an insider status with 3
   waiting, then the status line says 3 requests are waiting. Given no status, then it says "Status not available".
 - **R12.a** Given `/p/crawler/` from `npm run preview` and from local `wrangler dev`, then every asset URL answers 200,
@@ -233,12 +234,12 @@ Events are `CustomEvent`s dispatched on the window's `<section data-win>` node, 
 | Event | Sender | `detail` | Rules |
 |---|---|---|---|
 | `tool:stage` | tool | `{ stage: <stage id> \| null, state: "start" \| "done" \| "error", mode: "live" \| "replay", at: <Date.now()> }` | Send on each stage change only (no repeats while a stage runs). `{ stage: null }` (with any `state`) ends the run or draw and clears all. 013 keeps the latest event and draws at most once per frame. |
-| `tool:status` | tool | crawler `{ judge: "online" \| "offline" \| "busy", at }`; insider `{ lastRun: <ISO>, nextRun: <ISO>, waiting: <int>, at }` | Send at mount, on each change, and as the answer to `tool:read-open`. At most once per second. 013 keeps the latest. |
+| `tool:status` | tool | crawler `{ judge: "online" \| "offline" \| "busy", at }`; insider `{ lastRun: <ISO>, nextRun: <ISO>, waiting: <int>, at }` | Send when the status is first known (insider: at mount; crawler: at the start of its first run, because it has no status route), on each change, and as the answer to `tool:read-open` with the last known status, or nothing if none is known yet (then R11's "no status" state stays). At most once per second. 013 keeps the latest. |
 | `tool:read-open` | 013 | `{}` | Sent when the Read panel opens. The tool answers with its current `tool:status`, and with its current `tool:stage` if a run or draw is under way. |
 
 **What 011 sends:** `tool:stage` with `mode: "live"` and stages `seeds`, `frontier`, `fetch`, `gate-a`, `gate-b`,
-`gate-c`, `gate-d`, `evaluate`, then `{ stage: null }` at run end, stop or failure. `tool:status` with `judge`. It
-answers `tool:read-open`.
+`gate-c`, `gate-d`, `evaluate`, then `{ stage: null }` at run end, stop or failure. `tool:status` with `judge`, from
+the start of its first run and on each change. It answers `tool:read-open` with the last known status, or nothing.
 
 **What 012 sends:** `tool:stage` with `mode: "replay"` and stages `market`, `prices`, `moves`, `candidates`, `news`,
 `score` while a stored result draws (one `start` and one `done` each), then `{ stage: null }`. With reduced motion,

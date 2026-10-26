@@ -56,7 +56,7 @@ a tool registers.
   - Verify: `npm run e2e` (R2.a, R2.b, R5.a–d, R6.a, R7.a); `npm run e2e:all` for WebKit and Firefox.
   - Files: `src/sheet/expand.ts`, `src/sheet/windows.ts`, `index.html`, `src/sheet/sheet.css`,
     `tests/e2e/readme-expand.spec.ts`.
-- [ ] **T7** Modal dialog and focus [local] (R4)
+- [x] **T7** Modal dialog and focus [local] (R4)
   - Acceptance: expanded = `role="dialog"`, `aria-modal`, labelled. Sheet, card, minimap and zoom are `inert`. Tab and
     Shift+Tab stay inside. A capture-phase Esc restores, except in a Try or hosted-app area (002's Esc then Tab rule)
     or after `preventDefault()`. Focus after Restore goes to the Expand control.

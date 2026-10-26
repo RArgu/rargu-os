@@ -219,3 +219,92 @@ test.describe("013 R5 motion", () => {
     expect(frames).toBe(0);
   });
 });
+
+test.describe("013 R4 modal dialog", () => {
+  const inWin = (page: Page, id: string) =>
+    page.evaluate(
+      (id) =>
+        !!document
+          .querySelector(`[data-win="${id}"]`)!
+          .contains(document.activeElement),
+      id,
+    );
+
+  test("R4.a: a labelled modal dialog; Tab and Shift+Tab stay in it; Esc restores to the Expand control", async ({
+    page,
+  }) => {
+    await atZoom(page);
+    await btn(page, "crawler").focus();
+    await page.keyboard.press("Enter");
+    await settled(page);
+    const lift = page.locator("#lift");
+    await expect(lift).toHaveAttribute("role", "dialog");
+    await expect(lift).toHaveAttribute("aria-modal", "true");
+    await expect(lift).toHaveAccessibleName("Generalized Focused Web Crawler");
+    for (const s of ["#vp", "#card", ".mapbox"])
+      expect(
+        await page.locator(s).evaluate((e) => (e as HTMLElement).inert),
+        s,
+      ).toBe(true);
+    await expect(btn(page, "crawler")).toBeFocused();
+    for (let i = 0; i < 50; i++) {
+      await page.keyboard.press("Tab");
+      expect(await inWin(page, "crawler"), `Tab ${i + 1}`).toBe(true);
+    }
+    for (let i = 0; i < 50; i++) {
+      await page.keyboard.press("Shift+Tab");
+      expect(await inWin(page, "crawler"), `Shift+Tab ${i + 1}`).toBe(true);
+    }
+    await page.keyboard.press("Escape");
+    await settled(page);
+    await expect(lift).toBeHidden();
+    await expect(btn(page, "crawler")).toBeFocused();
+    expect(
+      await page.locator("#vp").evaluate((e) => (e as HTMLElement).inert),
+    ).toBe(false);
+  });
+
+  test("R4.b: expanded CastleSiege keeps Esc in the game; Tab then Esc restores", async ({
+    page,
+  }) => {
+    await page.goto(sheet());
+    const area = win(page, "castlesiege").locator(".demo-area");
+    await expect(area).toHaveAttribute("data-host", "running", {
+      timeout: 15000,
+    });
+    await btn(page, "castlesiege").click();
+    await settled(page);
+    await area.locator(".cs-cell").first().focus();
+    expect(await inWin(page, "castlesiege")).toBe(true);
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(100);
+    await expect(page.locator("#lift")).toBeVisible();
+    await page.keyboard.press("Tab"); // 002: Esc then Tab leaves the game
+    await expect(win(page, "castlesiege")).toBeFocused();
+    await page.keyboard.press("Escape");
+    await settled(page);
+    await expect(page.locator("#lift")).toBeHidden();
+    await expect(btn(page, "castlesiege")).toBeFocused();
+  });
+
+  test("R4.b: a control that takes Esc keeps the window expanded", async ({
+    page,
+  }) => {
+    await atZoom(page);
+    await btn(page, "crawler").click();
+    await settled(page);
+    await page.evaluate(() => {
+      const b = document.createElement("button");
+      b.id = "takes-esc";
+      b.textContent = "x";
+      b.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") e.preventDefault();
+      });
+      document.querySelector('[data-win="crawler"] .about')!.append(b);
+    });
+    await page.locator("#takes-esc").focus();
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(100);
+    await expect(page.locator("#lift")).toBeVisible();
+  });
+});
