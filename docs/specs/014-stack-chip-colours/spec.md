@@ -21,6 +21,17 @@ orchestrator.
 | Languages | GitHub Linguist's exact colours (`languages.yml`, MIT). Record the source version, commit and licence. |
 | Other tools | Each tool's own brand colour, from a fixed table in the repo, with a source per entry. asyncio is part of Python: the spec proposes. |
 
+**Round 2** (closes Q1 to Q6):
+
+| Q | Answer |
+|---|---|
+| Q1 No brand colour | The parent's colour: WebSocket, Canvas, Web Workers → JavaScript (Linguist `#f1e05a`); AppKit → Swift. GDELT has no parent: neutral. |
+| Q2 Combined chips | Split "React Native / Expo" and "Fly.io / Docker" into separate chips (a content-only edit, part of the 014 tasks). |
+| Q3 Unknown name | The build fails. |
+| Q4 Mock | A new mock v0.8 with coloured chips: copy v0.7, change only the chips, name it in `docs/mockups/README.md`; compare-vs-mock then uses v0.8. |
+| Q5 Anthropic API | Anthropic's near-black `#141413` (strict own brand). |
+| Q6 Requests, Pillow | Python's colour, as asyncio (owner's answer to Q1). |
+
 ## Assumptions
 
 1. Chips render in two places, both from `scripts/sheet-content.ts`: the window's about block (`:377`) and 013's
@@ -44,7 +55,7 @@ From `content/projects/*.md` (`grep -h '^stack:'`, 2026-10-26) and the live chip
 
 | Where | Chips |
 |---|---|
-| castlesiege | TypeScript · React Native / Expo · Node.js · WebSocket · PostgreSQL · Web Workers · Fly.io / Docker |
+| castlesiege | TypeScript · React Native / Expo · Node.js · WebSocket · PostgreSQL · Web Workers · Fly.io / Docker (split by R10 into React Native · Expo and Fly.io · Docker) |
 | castlewars | Aseprite · TypeScript · Canvas |
 | pentimento | Swift 6 · AppKit · Metal · TypeScript · Claude Agent SDK |
 | crawler (today) | Python · asyncio · Anthropic API · Ollama · scikit-learn · Pandas · Matplotlib |
@@ -66,13 +77,17 @@ From `content/projects/*.md` (`grep -h '^stack:'`, 2026-10-26) and the live chip
 | HTML | HTML | `#e34c26` |
 | CSS | CSS | `#663399` |
 | GraphQL | GraphQL | `#e10098` |
+| (parent only) | JavaScript | `#f1e05a` |
 
 **Same as a language:** asyncio → Python `#3572A5`. Reason: asyncio is part of Python's standard library, and GitHub
 would count its code as Python; a neutral chip would say "not related", which is wrong. (Owner asked the spec to
 propose.)
 
-**Libraries with no brand colour found** (NEEDS OWNER Q6): Requests and Pillow (012 candidates). Requests has no
-brand page; Pillow's logo is white and grey only (researcher, 2026-10-26).
+**Parent colour** (owner, round 2): Requests and Pillow → Python (no brand colour found: Requests has no brand page,
+Pillow's logo is white and grey only); WebSocket, Canvas, Web Workers (web platform APIs) → JavaScript `#f1e05a`;
+AppKit (Apple has no per-framework colour) → Swift `#F05138`. Each is a `same` entry with this reason.
+
+**Neutral** (owner, round 2): GDELT (its site uses greys only; no parent). It keeps today's `--chip`.
 
 **Brands:**
 
@@ -80,13 +95,13 @@ brand page; Pillow's logo is white and grey only (researcher, 2026-10-26).
 |---|---|---|---|
 | Aseprite | `#7D929E` | aseprite.org site CSS (`/assets/css/aseprite.css?v=40`); SI agrees | |
 | Claude Agent SDK | `#D97757` | `claude.ai/favicon.svg` path fill; SI `Claude` agrees | |
-| Anthropic API | `#141413` | `https://www.anthropic.com` `<meta name="theme-color">` | default per the owner's rule; Q5 |
-| React Native | `#61DAFB` | `reactnative.dev/img/header_logo.svg` fill | Q2 (combined chip) |
-| Expo | `#1C2024` | SI (expo.dev/brand) | Q2 |
+| Anthropic API | `#141413` | `https://www.anthropic.com` `<meta name="theme-color">` | owner Q5: strict own brand |
+| React Native | `#61DAFB` | `reactnative.dev/img/header_logo.svg` fill | own chip after the split (Q2) |
+| Expo | `#1C2024` | SI (expo.dev/brand) | own chip after the split |
 | Node.js | `#5FA04E` | SI (nodejs.org/en/about/branding) | |
 | PostgreSQL | `#4169E1` | SI (wiki.postgresql.org/wiki/Logo) | |
-| Fly.io | `#24175B` | SI (fly.io/docs/about/brand) | Q2 |
-| Docker | `#2496ED` | SI (docker.com media resources) | Q2 |
+| Fly.io | `#24175B` | SI (fly.io/docs/about/brand) | own chip after the split |
+| Docker | `#2496ED` | SI (docker.com media resources) | own chip after the split |
 | Ollama | `#000000` | SI (ollama/ollama issue 2152) | |
 | scikit-learn | `#F7931E` | SI (project logo SVG, commit `c5ef2e9`) | |
 | Pandas | `#150458` | SI (pandas.pydata.org/about/citing.html) | |
@@ -99,8 +114,7 @@ brand page; Pillow's logo is white and grey only (researcher, 2026-10-26).
 | DuckDB | `#FFF000` | SI (duckdb.org) | |
 | Polymarket Data API | `#2E5CFF` | polymarket.com/brand logo tile | |
 
-**No brand colour** (NEEDS OWNER Q1): WebSocket, Canvas, Web Workers (web platform APIs), AppKit (Apple has no
-per-framework colour), GDELT (its site uses greys only).
+
 
 ## Requirements
 
@@ -114,6 +128,8 @@ per-framework colour), GDELT (its site uses greys only).
 | R6 | Colour is decoration only: the chip text is unchanged and stays the only label. No information is given by colour alone. | [Prop] | review | — |
 | R7 | No network and no dependency: the colours are copied by hand into the data file with their sources; nothing fetches Linguist or Simple Icons at build or in the page. The OKLCH maths is about 40 lines in `scripts/`. 001 R22 budgets hold (only inline custom properties and two CSS lines are added). | [Prop] | build | — |
 | R8 | The colour of a chip is the same wherever the same text appears (both places, every window). | [Prop] | unit | — |
+| R10 | Content (owner Q2): `content/projects/castlesiege.md` lists "React Native", "Expo", "Fly.io" and "Docker" as four chips instead of the two combined ones. | [Prop] | unit | — |
+| R11 | Mock (owner Q4): `docs/mockups/rargu-os-v0.8.html` is a copy of v0.7 with only the stack chips coloured by this spec's values (the split chips included); `docs/mockups/README.md` names it as the current mock with its SHA-256; v0.7 stays as it is. compare-vs-mock for 014 and later specs uses v0.8. | [Prop] | review + compare-vs-mock | — |
 | R9 | Print and forced colours: in `@media print` a chip has no background, black text and a 1 px black border, so a page printed from the dark theme with backgrounds off stays readable. In `forced-colors: active` the browser's system colours replace the tints (no override); the label stays readable. | [Prop] | e2e | — |
 
 ### Acceptance
@@ -134,13 +150,19 @@ per-framework colour), GDELT (its site uses greys only).
 - **R5.a** Given every chip of every project (unit), and every chip on the page, the Read panel and `/p/<id>/` without
   JavaScript (e2e), in light, dark and light again, then each background equals its expected value and text contrast
   is ≥ 4.5:1.
-- **R5.b** Given the castlesiege window, then it has 7 chips (or 9 after Q2 option a) with the labels of its content
-  file, and "TypeScript" and "Node.js" have different backgrounds.
+- **R5.b** Given the castlesiege window, then it has 9 chips with the labels of its content file (after R10), and
+  "TypeScript" and "Node.js" have different backgrounds.
+- **R10.a** Given the built page, then no chip text contains " / ".
+- **R11.a** Given `docs/mockups/README.md`, then v0.8 is current with a hash that matches the file, and a diff of
+  v0.7 and v0.8 touches only chip markup or chip styles.
 - **R8.a** Given "TypeScript" in castlesiege, castlewars and pentimento, then the three chips have the same values.
 - **R9.a** Given print emulation in the dark theme, then each chip has no background, black text and a border.
 
 ## Approach
 
+- Content edit (R10): split the two combined chips in `content/projects/castlesiege.md`. Mock (R11): copy
+  `docs/mockups/rargu-os-v0.7.html` to v0.8 (or rebuild it from a copied source folder, as v0.7 was), colour the
+  chips, update the README table.
 - `content/stack-colours.json` and `content/licences/linguist-LICENSE.txt` (R1). `scripts/stack-colours.ts`: load,
   check (R2), OKLCH convert, gamut map and tint (R3),
   return `{ light, dark }` per chip text. `scripts/sheet-content.ts`: one `chip(name)` function used in both places.
@@ -163,23 +185,9 @@ per-framework colour), GDELT (its site uses greys only).
 
 ## Open questions
 
-- NEEDS OWNER Q1: chips with no brand colour (WebSocket, Canvas, Web Workers, AppKit, GDELT): (a) neutral, today's
-  `--chip` (recommended: honest, no invented colour); (b) a parent colour (JavaScript's yellow for the web APIs,
-  Swift for AppKit).
-- NEEDS OWNER Q2: the two combined chips "React Native / Expo" and "Fly.io / Docker": (a) split each into two chips
-  in the content file (recommended: one colour per tool; a content-only edit); (b) the first tool's colour;
-  (c) a two-colour chip (more CSS, harder to keep 4.5:1).
-- NEEDS OWNER Q3: an unknown chip name: (a) the build fails (recommended: catches a typo and a forgotten colour);
-  (b) a neutral chip and a build warning.
-- NEEDS OWNER Q4: the approved mock v0.7 has one chip colour: (a) a new mock v0.8 with coloured chips, recorded in
-  `docs/mockups/README.md` (recommended: the mock stays the baseline); (b) record the chips as an owner-decision
-  difference in the mock comparison.
-- NEEDS OWNER Q5: "Anthropic API": (a) Anthropic's near-black `#141413`, its own brand colour (recommended: follows
-  the owner's rule; the chip is grey); (b) Claude's coral `#D97757`, as for "Claude Agent SDK" (more colour, but an
-  exception to the rule).
-- NEEDS OWNER Q6: Requests and Pillow (no brand colour found): (a) Python's colour, as for asyncio (recommended:
-  they are Python libraries; an exception to the own-brand rule that the owner must approve); (b) neutral.
+- None. Q1 to Q6 closed by the owner, round 2 (table above).
 
 ## Approval record
 
-None yet.
+2026-10-26 — Owner answers Q1 to Q6 given through the orchestrator (round 2 table). The spec is Critiqued, not
+Approved: the owner approves the whole text next. No gate is approved.
