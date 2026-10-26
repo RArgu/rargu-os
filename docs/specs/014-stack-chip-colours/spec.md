@@ -1,6 +1,6 @@
 # 014: Coloured stack chips
 
-**Status:** Critiqued · **Owner approval:** none yet (style and sources given 2026-10-26, below) · **Gates needed:**
+**Status:** Approved 2026-10-26 (was Critiqued) · **Owner approval:** 2026-10-26 · **Gates needed:**
 none for the build; G-deploy to ship
 **Related:** 001 (R18 contrast, R22 budget), 013 (Read panel title block, `readPanel` in `scripts/sheet-content.ts`),
 011 and 012 (the live builds' chip sets), mock v0.7 (`docs/mockups/README.md`), critique
@@ -189,5 +189,7 @@ AppKit (Apple has no per-framework colour) → Swift `#F05138`. Each is a `same`
 
 ## Approval record
 
-2026-10-26 — Owner answers Q1 to Q6 given through the orchestrator (round 2 table). The spec is Critiqued, not
-Approved: the owner approves the whole text next. No gate is approved.
+2026-10-26 — **Owner approved this spec** ("Approve, build it"), relayed by the orchestrator, including the round 2
+answers. No gate is approved by this (G-deploy and G-push stay ask-first).
+
+2026-10-26 — Owner answers Q1 to Q6 given through the orchestrator (round 2 table).
