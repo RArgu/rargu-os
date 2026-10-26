@@ -219,3 +219,13 @@
   top: 0;
   visibility: hidden;
 }
+
+/* R11: a tool's status in the diagram, in text */
+.dg-status {
+  font-size: 13px;
+  font-weight: 700;
+}
+.dg-statusline {
+  margin: 8px 0 0;
+  font-size: 14px;
+}

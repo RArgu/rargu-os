@@ -19,6 +19,7 @@ import {
 } from "./tabs";
 import { createExpand } from "./expand";
 import { initRead } from "./read";
+import { initToolEvents } from "./tool-events";
 import { mount as mountPentimento } from "./demos/pentimento";
 import * as castlewars from "./demos/castlewars";
 import * as crawler from "./demos/crawler";
@@ -66,6 +67,7 @@ const wins = createWindows(view);
 // register through `__registerTool`)
 initTabs();
 initRead();
+initToolEvents();
 if (import.meta.env.MODE === "e2e")
   Object.assign(window, { __registerTool: registerTool });
 

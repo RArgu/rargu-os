@@ -62,7 +62,7 @@ a tool registers.
     or after `preventDefault()`. Focus after Restore goes to the Expand control.
   - Verify: `npm run e2e` (R4.a, R4.b with expanded CastleSiege, R4.c after T9).
   - Files: `src/sheet/expand.ts`, `src/sheet/main.ts`, `tests/e2e/readme-expand.spec.ts`.
-- [ ] **T8** Event contract [local] (R10, R11)
+- [x] **T8** Event contract [local] (R10, R11)
   - Acceptance: 013 listens for `tool:stage` and `tool:status` on each window from page start, keeps the latest of
     each, draws at most once per frame, and sends `tool:read-open` when Read opens. One active box (latest `start`),
     cleared by `done`, `error` ("stopped") or `null`. Markers "running" / "drawing", announced once. Status texts as
