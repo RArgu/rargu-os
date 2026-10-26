@@ -24,7 +24,7 @@ run). Repo paths are repo-relative. Everything from 011/012 is a draft and can c
 
 ### Title block
 
-- Title, year: **TODO-owner** (one year, or "2025, live 2026").
+- Title, year: "2025, live 2026" (owner, after approval), set when the tool ships.
 - Role line (draft): "Built the live version. In the course project: the LLM strategy and the evaluations."
 - Stack chips (owner, N7): the live build's stack, Ollama kept. From 011: TypeScript, Cloudflare Workers, Workers AI,
   Turnstile, Ollama (011 R5–R9; 011 confirms at C4). The course stack (Python, asyncio, Anthropic API, scikit-learn,
@@ -53,11 +53,11 @@ id must be on one box.
 3. **`frontier`**: four frontiers kept in the browser, one per strategy (011 R6).
 4. **`fetch`**: the Worker fetches one page per request, under the fetch rules (011 R8). Loop label: "↺ next page".
 5. **Gates, tier of 4:** `gate-a` URL priority · `gate-b` static similarity · `gate-c` adaptive similarity ·
-   `gate-d` LLM judge: a small model on Ollama, CPU only, on the owner's computer (whether to name the 2018 MacBook
-   Pro: **TODO-owner**), through a Tunnel. Note: "may be offline; the other three keep running" (011 R7).
+   `gate-d` LLM judge: a small model on Ollama, CPU only, on a home machine (owner rule: no machine model in public text),
+   through a Tunnel. Note: "may be offline; the other three keep running" (011 R7).
 6. **`evaluate`**: a Workers AI model from another model family labels every page once, blind to the strategy →
    precision, diversity, overlap (011 R9) → zip in the browser (011 R12).
-- Caption (draft): "The browser runs the race. Cloudflare fetches the pages, and a laptop at home judges them."
+- Caption (draft): "The browser runs the race. Cloudflare fetches the pages, and a home machine judges them."
 - `tool:status`: `{ judge }` sets the `gate-d` note.
 
 ### Challenges (from `docs/specs/011-crawler-live/challenges.md`, picked at C4)
@@ -80,7 +80,7 @@ pages and robots.txt; keeping the Worker from becoming an open proxy (011 R8 tag
   `c_crawler/j_script_run_d_llmfocus.py`). The live build rewrites the method in TypeScript (011 assumption 2).
 - Course stack in one line: Python, asyncio, the Anthropic API, scikit-learn, Pandas, Matplotlib (frontmatter).
 - Credit (011 commit check, owner round 3): the owner built the LLM strategy and the evaluation layer on
-  `LLM-Page-Selection`, the more complete branch. Harry (`hz3866`; full name and link **TODO-owner**) built the
+  `LLM-Page-Selection`, the more complete branch. The teammate (GitHub username only: `hz3866` or `MacroMozilla`, 011 confirms from commit data) built the
   pipeline, the seeds, URL priority, the similarity crawlers, and the original labeler and precision plot on
   `master`. Neither branch has frontend code, so the write-up does not mention a frontend. Repo owner:
   `MacroMozilla`.
@@ -90,10 +90,9 @@ pages and robots.txt; keeping the Worker from becoming an open proxy (011 R8 tag
 
 ### Facts still open (crawler)
 
-1. **TODO-owner:** Harry's full name and link. Other team members (`MacroMozilla` is the repo owner)?
-2. **TODO-owner:** may the write-up say "2018 MacBook Pro"? (Proposal: yes, it explains "may be offline". No
-   hostname.) The Ollama model name comes from 011.
-3. **TODO-owner:** the year line (see Title block).
+1. Closed at approval: teammates by GitHub username only (011 confirms which: `hz3866` or `MacroMozilla`).
+2. Closed at approval: no machine model in public text. The Ollama model name comes from 011.
+3. Closed after approval: the year line is "2025, live 2026".
 
 ---
 
@@ -104,7 +103,7 @@ Read. Try opens first, on the Maduro market (owner, N6).
 
 ### Title block
 
-- Title, year (2026). Role line (draft): "Built the live version. In the course project: the idea, the data
+- Title, year: "2026, live 2026" (owner, after approval), set when the tool ships. Role line (draft): "Built the live version. In the course project: the idea, the data
   collection and the analysis design."
 - Stack chips (owner, N7): the live build's stack: Python on the spare computer, Polymarket Data API v2, GDELT,
   Cloudflare Workers, D1 (012 R6–R11; 012 confirms at C4). The course stack (PySpark, Spark SQL, Spark MLlib,
@@ -166,8 +165,8 @@ live build uses a transparent points rule (012 assumption 5).
   detection, wallet trace, scoring against GDELT news, then a Spark MLlib random forest and k-means
   (`RArgu/CS-GY6513-FinalProject`, `collect/`, `pipeline/ingest.py`, `analysis/*.ipynb`).
 - Credit (owner, rounds 2 and 3): the owner had the idea, wrote the proposal, built the data collection and designed
-  the analysis phases. Shwetanshu Raj built the ingestion and the notebooks. Link
-  `https://github.com/shwetanshu07`.
+  the analysis phases. `shwetanshu07` built the ingestion and the notebooks. Link
+  `https://github.com/shwetanshu07`. No full name (owner rule at approval).
 - The label problem, kept honest: the labels came from rules, and 2 of the 9 features defined the label, so 0.99
   accuracy showed that the model learned the rule (content file; report).
 - Numbers (owner, round 3; 012 research §10): "333K on-chain fills across 6 markets (~$256M volume when collected)".

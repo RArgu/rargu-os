@@ -40,11 +40,11 @@ Relayed by the orchestrator.
 |---|---|
 | Framing | "We're making 'new projects', so the challenges will be what we face with the new builds." "We'll write it up based on what we do." Each write-up is about the 011/012 build. The course project is a short Origin section with credit. |
 | Crawler results | Our own evaluation with the new build (011 adds an eval task), shown as a small HTML table (N2). |
-| Crawler team | The owner did the LLM strategy and the evaluations. Harry did the frontend, the normal crawl and the original evaluations (011 confirms from commits; corrected in round 3). The zip was only in the solo crawler first. The new build has zips. |
-| Insider team | The owner designed the analysis phases. Shwetanshu Raj built the notebooks and ingestion. Credit him for the original project and link his GitHub. The 3 open markets resolved (corrected in round 3: 2 of 3). No need to ask him before shipping (N4). |
+| Crawler team | The owner did the LLM strategy and the evaluations. the teammate did the frontend, the normal crawl and the original evaluations (011 confirms from commits; corrected in round 3). The zip was only in the solo crawler first. The new build has zips. |
+| Insider team | The owner designed the analysis phases. `shwetanshu07` built the notebooks and ingestion. Credit him for the original project and link his GitHub. The 3 open markets resolved (corrected in round 3: 2 of 3). No need to ask him before shipping (N4). |
 | Ship order | A write-up and its tool ship together (N1). |
 | Corrections | Email, with a stated reply within 7 days (N3). |
-| Ollama chip | Stays. The live judge is a small model, CPU only, on the owner's 2018 MacBook Pro. |
+| Ollama chip | Stays. The live judge is a small model, CPU only, on a home machine of the owner's. |
 | 012 images | 012 shows Polymarket profile pictures (owner's choice, 012 scope). The write-up still has no images (Q7). |
 
 **Round 3:**
@@ -58,9 +58,9 @@ Relayed by the orchestrator.
 | Insider numbers | "333K on-chain fills across 6 markets (~$256M volume when collected)" (012 research §10). Content task C6 updates the two content files. |
 | Correction | Only 2 of the 3 open markets resolved. "China invades Taiwan" is still open, and the live tool refreshes it each night. |
 | Crawler evaluation | 10 topics × 3 runs (011). |
-| Crawler credit (011 commit check) | The owner built the LLM strategy and the evaluation layer on `LLM-Page-Selection`, the more complete branch. Harry built the pipeline, seeds, URL priority, the similarity crawlers, and the original labeler and precision plot on `master`. Neither branch has frontend code. |
-| Shwetanshu | GitHub `shwetanshu07`. |
-| Still open (TODO-owner) | Harry's full name and link. May the write-up name the 2018 MacBook Pro? The year line. |
+| Crawler credit (011 commit check) | The owner built the LLM strategy and the evaluation layer on `LLM-Page-Selection`, the more complete branch. The teammate built the pipeline, seeds, URL priority, the similarity crawlers, and the original labeler and precision plot on `master`. Neither branch has frontend code. |
+| Insider teammate | GitHub `shwetanshu07`. |
+| Still open (TODO-owner) | None. The teammate's name and the home machine were closed at approval (GitHub usernames only, no machine model in public text). The year line was closed after approval (below). |
 
 **Round 4** (reconciliation, after the 011/012/013 critiques):
 
@@ -71,6 +71,9 @@ Relayed by the orchestrator.
 | Look-back | 24 h kept (owner). 012 found that Vivaldi007 bet about 115 h before its spike, so the 24 h rule will likely not list it. |
 | Shared infra | 011 owns the Worker, router, `Limits`, wrangler bindings and `public/_headers`. 013 adds its own `_headers` lines (case-study JSON) in its own tasks. |
 | Event contract | 013 owns `tool:stage` and `tool:status` (section "Event contract"). |
+
+**After approval** (2026-10-26): teammates by GitHub username only; no machine model in public text; year line
+crawler "2025, live 2026", insider "2026, live 2026", set in the frontmatter in the same release as the tool.
 
 Sibling-track facts used here (relayed 2026-10-26, and read in the 011/012 drafts):
 
@@ -351,7 +354,7 @@ not change his choice.
 ## Boundaries
 
 - **Always:** keep the site static. Respect reduced motion. Say "candidates, not proof" next to every insider wallet.
-  Credit the teams in Origin (Harry and the WSEProject team; Shwetanshu Raj with his GitHub link). Keep course-project
+  Credit the teams in Origin (the WSEProject teammate and `shwetanshu07`, by GitHub username only, with links). Keep course-project
   facts in Origin and live-build facts in the other sections.
 - **Ask first:** images or charts in a write-up (Q7 says none). Any change to `public/_redirects`. Any `public/_headers`
   change beyond the R18 rule. Any change to the case study text beyond the report's words. Publishing a
@@ -388,12 +391,13 @@ not change his choice.
 
 - N5 to N8: closed by the owner, round 3 (table above).
 - N9, N10: closed by the owner, round 4 (table above).
-- TODO-owner: Harry's full name and link. May the write-up name the 2018 MacBook Pro? The year line. (Details in
-  `writeup-outlines.md`.)
+- Closed at approval: teammates by GitHub username only; no machine model in public text.
+- Year line, owner answer after approval (2026-10-26): crawler "2025, live 2026"; insider "2026, live 2026". It goes
+  in the frontmatter `year` field in the same release as the tool (tasks T15, T16). No open owner items remain.
 
 ## Approval record
 
-2026-10-26 — **Owner approved this spec** ("Approve all three, go ahead"), together with 011, 012 and 013, including the owner answers recorded above. Two owner rules added with the approval: (1) teammates are named only by their GitHub usernames (no full names) in site text, write-ups, READMEs and zips; (2) the write-ups and site text never mention the owner's 2018 MacBook Pro (say "a home machine" or name nothing; internal docs and runbooks may name it). Assumed, not yet confirmed: `OWNER_TZ` = `America/New_York`. Open content item: the year line. No gate is approved by this (G-net, G-deploy, G-push, new dependencies stay ask-first).
+2026-10-26 — **Owner approved this spec** ("Approve all three, go ahead"), together with 011, 012 and 013, including the owner answers recorded above. Two owner rules added with the approval: (1) teammates are named only by their GitHub usernames (no full names) in site text, write-ups, READMEs and zips; (2) the write-ups and site text never mention the owner's home machine model (say "a home machine" or name nothing; internal docs and runbooks may name it). Assumed, not yet confirmed: `OWNER_TZ` = `America/New_York`. Open content item: the year line. No gate is approved by this (G-net, G-deploy, G-push, new dependencies stay ask-first).
 
 2026-10-26 — Design answers given by the owner through the orchestrator in four rounds (tables above). Codex
 critique done the same day ([critique](../../review/spec-013-critique-codex.md), 17 findings: 13 accepted (5 of them

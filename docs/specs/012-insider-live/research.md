@@ -28,7 +28,7 @@ Findings that change the port:
 3. **`win_rate` needs a resolved market.** It cannot score an open market. (derived)
 4. **GDELT keywords were hand-written per market.** A live check needs keywords from the market question. (derived)
 5. **The repo has no LICENSE file.** (observed) The owner co-wrote it, so a port of the owner's own logic is fine.
-   Shwetanshu Raj wrote the analysis notebooks (`content/projects/polymarket-insider-trading.md`). Credit him in the
+   `shwetanshu07` wrote the analysis notebooks (`content/projects/polymarket-insider-trading.md`). Credit him in the
    window. (inferred)
 
 ## 2. Polymarket APIs (observed 2026-10-26)
@@ -247,7 +247,7 @@ So 2 of the 3 "active" markets resolved. The Taiwan market has not. (observed)
 - **Disk:** ~100–200 bytes per stored row in DuckDB, so 1M rows ≈ 100–200 MB (inferred).
 - **With 011 (011 R20, adopted 2026-10-26; Codex 012 #4):** the job owns 03:00–05:00 owner time. It writes
   `~/.rargu/llm-busy.lock` with its PID, unloads the Ollama model, never waits for a crawl, stops new
-  work at 04:50 and deletes the lock. The `launchd` job kills its process group at 04:58 (011 R20); 011's proxy
+  work at 04:50 and deletes the lock. The `launchd` job kills its process group at 04:55 (011 R20); 011's proxy
   ignores a stale lock only outside 02:55–05:00 when its PID is not running. 011 budgets ≥ 2 GB
   free; the job targets < 800 MB.
 - **Estimate per night (derived, not measured; R21.a measures it):**

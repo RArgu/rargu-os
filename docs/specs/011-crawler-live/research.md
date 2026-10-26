@@ -333,3 +333,20 @@ labeler used only the first (`QUERY = "AI Image Generation App"`, `g_evaluator/b
 
 The zip output exists only in the owner's solo crawler (`RArgu/CS-GY-6913-GeneralizedCrawler`, `storage.py:73-131`).
 The team crawler saves HTML files to disk and has no zip. (observed) The new build makes a zip anyway (spec R12).
+
+### 12.5 GitHub usernames (added 2026-10-26, for the owner's "usernames only" rule)
+
+Observed with `gh api repos/MacroMozilla/WSEProject/commits/<sha> --jq .author.login` and `.../contributors`:
+
+| Commit identity | GitHub login | Commits |
+|---|---|---|
+| "harry" `hz3866@nyu.edu` | **`hz3866`** | 18 (all of "harry"'s commits on `master`) |
+| "MacroMozilla" `honyzeng7@gmail.com` | **`MacroMozilla`** (repo owner) | 1 (README title, made in the GitHub web editor) |
+| "Rodrigo Arguello" `rargu@Rodrigos-MacBook-Pro.local` | none (the email is not linked to an account) | 17 (branch only) |
+
+- Harry's GitHub account is `hz3866`. (observed)
+- `MacroMozilla` owns the repo and made one web commit. It is most likely Harry's second account: the initials
+  "hz" and the email name "honyzeng7" match, and no third person committed code. (**inferred**, not confirmed)
+- The owner's 17 commits are not linked to `RArgu`, so GitHub does not list `RArgu` as a contributor to the repo.
+  Their author email shows the local host name `Rodrigos-MacBook-Pro.local` in the public commit data of that repo.
+  The site does not repeat it. (observed)
