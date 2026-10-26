@@ -9,7 +9,15 @@ import { showFailure } from "./host/failure";
 import { LAYOUT } from "./layout";
 import { createView, PHONE } from "./view";
 import { createWindows } from "./windows";
-import { initTabs, modeOf, onMode, registerTool } from "./tabs";
+import {
+  initTabs,
+  modeOf,
+  onMode,
+  registerTool,
+  select,
+  type Mode,
+} from "./tabs";
+import { createExpand } from "./expand";
 import { initRead } from "./read";
 import { mount as mountPentimento } from "./demos/pentimento";
 import * as castlewars from "./demos/castlewars";
@@ -146,14 +154,37 @@ mountPentimento($('[data-win="pentimento"] .demo-area'), view.stop);
 // spec 005 R3, R4: Castle Wars loads when it first comes near the view or is
 // used (a press in it, focus into it, the card's link), and animates only
 // while it is in the view and the tab is visible
-// 013 R6: a demo animates only while its Demo panel is the one shown
-const seen = createVisibility(
-  view,
-  wins,
-  $("#vp"),
-  (id) => modeOf($(`[data-win="${id}"]`)) === "demo",
-);
+// 013 R2: Expand and Restore in each project window's title bar
+const expand = createExpand(view, wins);
+for (const b of document.querySelectorAll<HTMLElement>(".bar .expand")) {
+  const w = b.closest<HTMLElement>("[data-win]")!;
+  b.addEventListener("click", () =>
+    expand.current() === w ? expand.restore() : expand.expand(w),
+  );
+}
+// 013 R3: on a phone Read also expands; Restore there goes back to the
+// mode before Read (R20)
+onMode((w, mode, was) => {
+  if (mode !== "read" || !matchMedia(PHONE).matches || expand.current()) return;
+  w.dataset.before = was;
+  expand.expand(w);
+});
+expand.onChange((w, on) => {
+  if (on || !w.dataset.before) return;
+  select(w, w.dataset.before as Mode);
+  delete w.dataset.before;
+});
+
+// 013 R6: a demo animates only while its Demo panel is shown, and, while a
+// window is expanded, only in that window
+const seen = createVisibility(view, wins, $("#vp"), (id) => {
+  const w = $(`[data-win="${id}"]`);
+  const open = expand.current();
+  if ((open && open !== w) || modeOf(w) !== "demo") return false;
+  return open ? "expanded" : true;
+});
 onMode(() => seen.check());
+expand.onChange(() => seen.check());
 const cw = $('[data-win="castlewars"]');
 const cwMount = () =>
   castlewars.mount(cw.querySelector(".demo-area")!, view.stop);

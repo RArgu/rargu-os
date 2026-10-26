@@ -48,7 +48,7 @@ a tool registers.
     animation, and selecting Demo continues it from the same state. A Try run is never cancelled by a tab change.
   - Verify: `npm run e2e` (R6.b). Existing `npm run e2e` demo tests still pass.
   - Files: `src/sheet/demos/visibility.ts`, `src/sheet/main.ts`, `tests/e2e/readme-tabs.spec.ts`.
-- [ ] **T6** Expand and Restore [local] (R2, R5, R6, R7)
+- [x] **T6** Expand and Restore [local] (R2, R5, R6, R7)
   - Acceptance: Expand moves the window node into `#lift` with a placeholder, FLIP 240 ms ± 20, and Restore returns
     it to the same sheet position, zoom and scroll. Reduced motion: fade ≤ 120 ms, no size between. A preference
     change mid-animation ends at the end state. No drag, throw, Home, pan or zoom while expanded. Demo state is kept.

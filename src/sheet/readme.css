@@ -190,3 +190,32 @@
 .read-area:focus-visible {
   outline-offset: -2px;
 }
+
+/* R2: the layer over the page (above the card and minimap at 5000, below
+   the toast at 9999) and the expanded window in it */
+#lift {
+  position: fixed;
+  inset: 0;
+  z-index: 6000;
+}
+#lift[hidden] {
+  display: none;
+}
+.sheet-win.expanded {
+  inset: 0;
+  width: auto !important;
+  height: auto !important;
+  box-shadow: none;
+}
+.sheet-win.expanded .bar {
+  cursor: auto;
+}
+.sheet-win.expanded .bar .home {
+  display: none;
+}
+.sheet-win-ph {
+  position: absolute;
+  left: 0;
+  top: 0;
+  visibility: hidden;
+}

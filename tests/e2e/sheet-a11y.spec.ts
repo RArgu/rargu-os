@@ -557,7 +557,7 @@ test("R17.a reduced motion: Home, Reset and a zoom button commit in the same tur
           .style.transform,
       };
     }, sel);
-  const h = await read('[data-win="castlesiege"] .bar button');
+  const h = await read('[data-win="castlesiege"] .bar button.home');
   expect(parse(h.cs)).toEqual({ x: 360, y: 100, rot: 0, scale: 1 });
   await throwIt(page);
   const z = await read("#zIn");
@@ -576,7 +576,7 @@ test("R17 reduced motion turned on during a Home flight ends it at home", async 
   const away = await pose(page, "castlesiege");
   await setReduced(page, false);
   await page
-    .locator('[data-win="castlesiege"] .bar button')
+    .locator('[data-win="castlesiege"] .bar button.home')
     .evaluate((b) => (b as HTMLElement).click());
   // two frames: the flight is under way
   await frame(page, 16);
@@ -869,11 +869,11 @@ test("R19 Shift+Tab during a card navigation pan: the new focus comes into view"
   await page.locator('#card [data-go="paint"]').click();
   await expect(page.locator('[data-win="paint"]')).toBeFocused();
   // back to Insider Trading, while the pan to Paint has not moved yet: its
-  // link, Home and Replay (006 T4), then the window; with a write-up (013,
-  // the e2e build's fixtures) its tab strip is one more stop
+  // link, Home, Expand (013) and Replay (006 T4), then the window; with a
+  // write-up (013, the e2e build's fixtures) its tab strip is one more stop
   const back = browserName === "webkit" ? "Alt+Shift+Tab" : "Shift+Tab";
   const strip = await page.locator('[data-win="insider"] .tabs').isVisible();
-  for (let i = 0; i < 4 + Number(strip); i++) await page.keyboard.press(back);
+  for (let i = 0; i < 5 + Number(strip); i++) await page.keyboard.press(back);
   await expect(page.locator('[data-win="insider"]')).toBeFocused();
   await settle(page);
   await focusInView(page);
@@ -885,7 +885,7 @@ test("R19 the Home control with home out of view: the window and the focused con
   await page.emulateMedia({ reducedMotion: "reduce" });
   await open(page);
   const w = page.locator('[data-win="castlesiege"]');
-  const home = page.locator('[data-win="castlesiege"] .bar button');
+  const home = page.locator('[data-win="castlesiege"] .bar button.home');
   for (const how of ["Enter on the control", "Home key"]) {
     await w.focus();
     for (let i = 0; i < 40; i++) await page.keyboard.press("Alt+ArrowRight");

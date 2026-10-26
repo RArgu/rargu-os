@@ -48,6 +48,8 @@ interface Win {
   d: Vec; // its path since the press: each move's screen motion ÷ the zoom then
   samples: Sample[]; // [time, d], for the release velocity
   fl: { f: Flight; t0: number } | null;
+  /** 013 R7: expanded over the page: no drag, throw, Home or draw */
+  lifted: boolean;
 }
 
 export interface Windows {
@@ -61,6 +63,11 @@ export interface Windows {
   cancel(): void;
   /** Calls `cb(id)` each time a window is drawn (every pointer move and every frame while it moves). */
   onMove(cb: (id: string) => void): void;
+  /** 013 R2, R7: stops the window where it is (no flight, no tilt) and
+   * leaves its transform to the expanded layer until `drop`. */
+  lift(id: string): void;
+  /** 013 R2: the window is back on the sheet at its place. */
+  drop(id: string): void;
 }
 
 export function createWindows(view: View): Windows {
@@ -81,6 +88,7 @@ export function createWindows(view: View): Windows {
     d: [0, 0],
     samples: [],
     fl: null,
+    lifted: false,
   }));
   const byId = (id: string) => wins[LAYOUT.findIndex((s) => s.id === id)];
   const moved: ((id: string) => void)[] = [];
@@ -92,6 +100,7 @@ export function createWindows(view: View): Windows {
       s.pointer !== null || s.fl || s.th || s.v ? "transform" : "";
   };
   const draw = (s: Win) => {
+    if (s.lifted) return;
     s.el.style.transformOrigin = `${s.g[0]}px ${s.g[1]}px`;
     s.el.style.transform = `translate(${s.x}px, ${s.y}px) rotate(${s.th}deg)`;
     hint(s);
@@ -182,7 +191,7 @@ export function createWindows(view: View): Windows {
     const still = reduced();
     for (const s of wins) {
       const held = s.pointer !== null;
-      if (!held && !s.fl && !s.th && !s.v) continue;
+      if (s.lifted || (!held && !s.fl && !s.th && !s.v)) continue;
       if (held) {
         busy = edgeScroll(s.c, dt) || busy;
         follow(s);
@@ -243,6 +252,7 @@ export function createWindows(view: View): Windows {
   for (const s of wins) {
     const bar = s.el.querySelector<HTMLElement>(".bar")!;
     bar.addEventListener("pointerdown", (e) => {
+      if (s.lifted) return;
       if (e.button !== 0 || (e.target as Element).closest("button")) return;
       if (!claim("win", e.pointerId, 1, () => letGo(s))) return;
       e.preventDefault(); // no text selection
@@ -284,7 +294,7 @@ export function createWindows(view: View): Windows {
         letGo(s);
       });
     bar.addEventListener("dblclick", (e) => {
-      if (!(e.target as Element).closest("button")) home(s);
+      if (!s.lifted && !(e.target as Element).closest("button")) home(s);
     });
     bar
       .querySelector<HTMLElement>("button.home")!
@@ -297,6 +307,7 @@ export function createWindows(view: View): Windows {
     // R19: Alt + arrows move the focused window, Home sends it home; the
     // view follows it, so its focus stays beside the card
     s.el.addEventListener("keydown", (e) => {
+      if (s.lifted) return;
       if (e.target !== s.el || e.ctrlKey || e.metaKey || e.shiftKey) return;
       const d = e.altKey ? NUDGE[e.key] : undefined;
       if (!d && (e.altKey || e.key !== "Home")) return;
@@ -344,6 +355,7 @@ export function createWindows(view: View): Windows {
   });
 
   function home(s: Win): void {
+    if (s.lifted) return;
     if (s.pointer !== null) cancelGesture();
     fly(s, s.home);
     // R19: a focus in this window (it, or its Home control) follows it home
@@ -361,6 +373,22 @@ export function createWindows(view: View): Windows {
       return s.fl ? s.fl.f.to : [s.x, s.y];
     },
     home: (id) => home(byId(id)),
+    lift(id) {
+      const s = byId(id);
+      if (s.pointer !== null) cancelGesture();
+      if (s.fl) [s.x, s.y] = s.fl.f.to;
+      s.fl = null;
+      s.th = s.v = 0;
+      draw(s); // at rest, untilted: the place it comes back to
+      s.lifted = true;
+      s.el.style.transform = "";
+      s.el.style.willChange = "";
+    },
+    drop(id) {
+      const s = byId(id);
+      s.lifted = false;
+      draw(s);
+    },
     onMove: (cb) => void moved.push(cb),
     cancel() {
       if (wins.some((s) => s.pointer !== null)) cancelGesture();
