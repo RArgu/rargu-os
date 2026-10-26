@@ -47,3 +47,10 @@ test("R12: the insider page has its own title and canonical URL", async ({
   );
   await expect(page.locator('[data-win="insider"]')).toHaveClass(/expanded/);
 });
+
+test("R13: with JavaScript, / has no link to the write-up page", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator(".nojs-read")).toHaveCount(0);
+});

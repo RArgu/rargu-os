@@ -85,7 +85,7 @@ a tool registers.
     Forward and direct entry.
   - Verify: `npm run e2e` (R20.a, one case per row); `npm run e2e:all` for the Back/Forward cases in WebKit.
   - Files: `src/sheet/history.ts`, `src/sheet/main.ts`, `tests/e2e/readme-history.spec.ts`.
-- [ ] **T11** Without JavaScript [local] (R13)
+- [x] **T11** Without JavaScript [local] (R13)
   - Acceptance: on `/p/<id>/`, CSS keyed on `data-open` shows the write-up as a normal page with every section
     visible by page scroll. On `/`, a window with a write-up shows a "Read the write-up" link to `/p/<id>/`.
   - Verify: `npm run e2e` with JavaScript off (R13.a at 1440 × 900 and 390 × 844).

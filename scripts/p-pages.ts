@@ -10,6 +10,19 @@ import type { Plugin } from "vite";
 import { loadProjects, type Project } from "./sheet-content.ts";
 
 const SITE = "https://rargu.dev";
+
+/** 013 R13: without JavaScript the page is the write-up as a normal page:
+ * only the open window, full width, no fixed height or clip, its Read panel
+ * shown. In <noscript>, so a visitor with JavaScript never sees it. */
+const NOJS = `<noscript><style>
+html,body{height:auto!important}html{overflow:auto!important}body{overflow:visible!important}
+#card,.mapbox,.titleblock,.sheet-win:not([data-open]){display:none!important}
+#vp,#sizer,#world{position:static!important;overflow:visible!important;width:auto!important;height:auto!important;transform:none!important;padding:0!important;touch-action:auto!important}
+.sheet-win[data-open]{position:static!important;width:auto!important;height:auto!important;max-width:900px;margin:0 auto;transform:none!important;overflow:visible!important;box-shadow:none}
+.sheet-win[data-open] .read-area[hidden]{display:block!important;overflow:visible}
+.sheet-win[data-open] .about,.sheet-win[data-open] .demo-area,.sheet-win[data-open] .wfoot,.sheet-win[data-open] .bar button{display:none!important}
+.sheet-win[data-open] .r-nav{position:static}
+</style></noscript>`;
 const root = resolve(import.meta.dirname, "..");
 
 const esc = (s: string): string =>
@@ -51,6 +64,7 @@ export function pPage(html: string, p: Project): string {
     `<meta name="description" content="${desc}" />`,
   );
   set(/<body>/, `<body data-open="${p.id}:read">`);
+  set(/<\/head>/, `${NOJS}\n  </head>`);
   // the window that opens: no-JS CSS shows only it
   set(new RegExp(`data-win="${p.id}"`), `data-win="${p.id}" data-open`);
   return html.replace(/(\s(?:src|href)=")\.\//g, "$1/");

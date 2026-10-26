@@ -66,6 +66,9 @@ const wins = createWindows(view);
 
 // 013 R1: the Demo · Try · Read tabs (test builds: a fixture tool can
 // register through `__registerTool`)
+// 013 R13: the no-JavaScript link to a write-up's page; the Read tab
+// replaces it
+for (const a of document.querySelectorAll(".nojs-read")) a.remove();
 initTabs();
 initRead();
 initToolEvents();

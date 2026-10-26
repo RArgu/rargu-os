@@ -319,7 +319,7 @@ function windows(projects: Project[]): string {
     const about = p
       ? `<div class="about">
         <div class="phead"><h2>${esc(p.title)}</h2><span class="yr">${esc(p.year)}</span><span class="status ${STATUS[p.status][1]}">${STATUS[p.status][0]}</span></div>
-        <p class="blurb">${esc(p.summary)}</p>
+        <p class="blurb">${esc(p.summary)}</p>${p.writeup ? `<a class="nojs-read" href="/p/${p.id}/">Read the write-up</a>` : ""}
         <div class="meta">${p.stack.map((c) => `<span class="chip">${esc(c)}</span>`).join("")}${p.links.map((l) => `<a href="${esc(l)}" ${ext}>${esc(linkText(l, p.links))} ↗</a>`).join("")}</div>
       </div>`
       : "";
