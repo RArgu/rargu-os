@@ -91,7 +91,10 @@ export function initRead(): void {
       area.scrollTo({ top: to, behavior: "instant" });
     });
     // the panel opens hidden: mark once it has a size
-    new ResizeObserver(mark).observe(area);
+    // and again when its content changes size (the case studies load)
+    const ro = new ResizeObserver(mark);
+    ro.observe(area);
+    ro.observe(area.querySelector(".r-body")!);
     // a fragment link would scroll every ancestor (the sheet) and the URL
     area.querySelector(".r-nav")!.addEventListener("click", (e) => {
       const a = (e.target as Element).closest<HTMLAnchorElement>("a");

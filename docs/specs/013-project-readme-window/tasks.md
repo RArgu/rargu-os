@@ -99,7 +99,7 @@ a tool registers.
   - Verify: `npm test` (R18.d, R19.a). `npm run e2e` (R18.a, R18.b, R18.c, R16.a).
   - Files: `scripts/build-p-pages.ts`, `public/_headers`, `src/sheet/case-studies.ts`,
     `tests/unit/address-scan.test.ts`, `tests/e2e/readme-case-studies.spec.ts`.
-- [ ] **T13** Mechanism check before review [local] (R5, R8, R14, R15, R16)
+- [x] **T13** Mechanism check before review [local] (R5, R8, R14, R15, R16)
   - Acceptance: all 013 e2e pass in `npm run e2e:all`. `compare-vs-mock` for a window with the fixture write-up
     (Read in the window and expanded, 1440 × 900 and 390 × 844, light and dark) lists only differences from 013. The
     session ledger records the commands and results.

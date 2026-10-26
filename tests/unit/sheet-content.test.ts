@@ -316,6 +316,18 @@ const PAIRS: [string, string, number][] = [
   ["accent", "chip", 3],
 ];
 
+describe("013 R14 lines in the Read panel", () => {
+  it("use --ink, not --outline (dark --outline on --win-bg is under 3:1)", () => {
+    const css = readFileSync(
+      join(root, "src/sheet/readme.css"),
+      "utf8",
+    ).replace(/\/\*[\s\S]*?\*\//g, "");
+    expect(css).not.toMatch(/var\(--outline\)/);
+    const t = themes().dark;
+    expect(contrast(t.outline, t["win-bg"])).toBeLessThan(3);
+  });
+});
+
 describe("R18.a contrast table", () => {
   // 005 Pentimento: the command panel's own colours (pentimento.css), the
   // same in both themes, as in the mock

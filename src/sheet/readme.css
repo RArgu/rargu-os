@@ -1,5 +1,6 @@
 /* Spec 013: the Read panel and its system diagram (R8, R9). Colours are the
-   sheet's tokens only, so both themes follow (R14). */
+   sheet's tokens only, so both themes follow (R14). Lines on the window use
+   --ink: dark --outline (#000) on --win-bg is under 3:1. */
 
 /* R9: the diagram: tiers top to bottom, boxes wrap at narrow widths */
 .dg {
@@ -27,7 +28,7 @@
   flex-direction: column;
   gap: 2px;
   padding: 6px 8px;
-  border: 2px solid var(--outline);
+  border: 2px solid var(--ink);
   background: var(--win-bg);
   text-align: center;
   overflow-wrap: anywhere;
@@ -160,7 +161,7 @@
   overflow-x: auto;
   padding: 8px 0;
   background: var(--win-bg);
-  border-bottom: 2px solid var(--outline);
+  border-bottom: 2px solid var(--ink);
   scrollbar-width: none;
 }
 .r-nav a {
@@ -233,7 +234,7 @@
 /* R18: the notice above the insider case studies, in the body type size */
 .cs-notice {
   padding: 8px 10px;
-  border: 2px solid var(--outline);
+  border: 2px solid var(--ink);
 }
 .cases h3 {
   font-family: var(--font-display);
