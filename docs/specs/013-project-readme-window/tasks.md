@@ -29,7 +29,7 @@ a tool registers.
   - Verify: `npm test` (R9.b, R14.a). `npm run e2e` (R9.a: no sideways scroll at 390 × 844, fixture diagram).
   - Files: `scripts/diagram.ts`, `src/sheet/readme.css`, `tests/unit/diagram.test.ts`,
     `tests/unit/sheet-contrast.test.ts`, `tests/e2e/readme.spec.ts`.
-- [ ] **T3** Tab strip and panels [local] (R1)
+- [x] **T3** Tab strip and panels [local] (R1)
   - Acceptance: every project window gets `.demo-area`, `.try-area`, `.read-area` panels and an ARIA tab strip
     (names, `aria-controls`, `aria-labelledby`, roving `tabindex`, Left/Right wrap, Home/End). A tab shows only when
     its mode exists. One mode means no strip. `registerTool(id)` adds the Try tab. Pressing or arrowing a tab does

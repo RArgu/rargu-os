@@ -1,21 +1,96 @@
 {
   "caption": "Fixture diagram for the 013 tests.",
   "tiers": [
-    { "boxes": [{ "id": "topic", "label": "Browser", "name": "Topic", "keywords": "fixture · topic field" }] },
-    { "boxes": [{ "id": "seeds", "label": "Worker", "name": "Seeds", "keywords": "fixture · seed list", "stage": "seeds" }] },
-    { "boxes": [{ "id": "frontier", "label": "Browser", "name": "Frontier", "keywords": "fixture · four queues", "stage": "frontier" }] },
     {
-      "boxes": [{ "id": "fetch", "label": "Worker", "name": "Fetch", "keywords": "fixture · one page a request", "stage": "fetch" }],
-      "loop": { "to": "frontier", "text": "next page" }
+      "boxes": [
+        {
+          "id": "topic",
+          "label": "Browser",
+          "name": "Fixture topic",
+          "keywords": "fixture \u00b7 topic field"
+        }
+      ]
     },
     {
       "boxes": [
-        { "id": "gate-a", "label": "Rule", "name": "URL priority", "keywords": "fixture", "stage": "gate-a" },
-        { "id": "gate-b", "label": "Rule", "name": "Static similarity", "keywords": "fixture", "stage": "gate-b" },
-        { "id": "gate-c", "label": "Rule", "name": "Adaptive similarity", "keywords": "fixture", "stage": "gate-c" },
-        { "id": "gate-d", "label": "Model", "name": "LLM judge", "keywords": "fixture", "note": "may be offline", "stage": "gate-d" }
+        {
+          "id": "seeds",
+          "label": "Worker",
+          "name": "Fixture seeds",
+          "keywords": "fixture \u00b7 seed list",
+          "stage": "seeds"
+        }
       ]
     },
-    { "boxes": [{ "id": "evaluate", "label": "Model", "name": "Evaluate", "keywords": "fixture · precision · diversity", "stage": "evaluate" }] }
+    {
+      "boxes": [
+        {
+          "id": "frontier",
+          "label": "Browser",
+          "name": "Fixture frontier",
+          "keywords": "fixture \u00b7 four queues",
+          "stage": "frontier"
+        }
+      ]
+    },
+    {
+      "boxes": [
+        {
+          "id": "fetch",
+          "label": "Worker",
+          "name": "Fixture fetch",
+          "keywords": "fixture \u00b7 one page a request",
+          "stage": "fetch"
+        }
+      ],
+      "loop": {
+        "to": "frontier",
+        "text": "next page"
+      }
+    },
+    {
+      "boxes": [
+        {
+          "id": "gate-a",
+          "label": "Rule",
+          "name": "Fixture url priority",
+          "keywords": "fixture",
+          "stage": "gate-a"
+        },
+        {
+          "id": "gate-b",
+          "label": "Rule",
+          "name": "Fixture static similarity",
+          "keywords": "fixture",
+          "stage": "gate-b"
+        },
+        {
+          "id": "gate-c",
+          "label": "Rule",
+          "name": "Fixture adaptive similarity",
+          "keywords": "fixture",
+          "stage": "gate-c"
+        },
+        {
+          "id": "gate-d",
+          "label": "Model",
+          "name": "Fixture llm judge",
+          "keywords": "fixture",
+          "note": "may be offline",
+          "stage": "gate-d"
+        }
+      ]
+    },
+    {
+      "boxes": [
+        {
+          "id": "evaluate",
+          "label": "Model",
+          "name": "Fixture evaluate",
+          "keywords": "fixture \u00b7 precision \u00b7 diversity",
+          "stage": "evaluate"
+        }
+      ]
+    }
   ]
 }

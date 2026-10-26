@@ -75,7 +75,7 @@ describe("R9 diagram HTML", () => {
     expect(html.match(/class="dg-box"/g)).toHaveLength(9);
     expect(html).toContain('data-box="gate-d" data-stage="gate-d"');
     expect(html).toContain('<span class="dg-note">may be offline</span>');
-    expect(html).toContain("next page (back to Frontier)");
+    expect(html).toContain("next page (back to Fixture frontier)");
     expect(html).toContain(
       "<figcaption>Fixture diagram for the 013 tests.</figcaption>",
     );

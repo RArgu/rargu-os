@@ -512,7 +512,8 @@ test("R7 each hosted window's demo area is its app's start control (\"Start <nam
   const release = await holdHost(page);
   await open(page);
   const areas = await page
-    .locator("[data-win] .demo-area[role]")
+    // 013: a project window's demo panel may be a tab panel
+    .locator('[data-win] .demo-area[role="button"]')
     .evaluateAll((all) =>
       all.map((d) => ({
         id: d.closest<HTMLElement>("[data-win]")!.dataset.win,

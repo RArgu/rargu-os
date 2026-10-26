@@ -869,9 +869,11 @@ test("R19 Shift+Tab during a card navigation pan: the new focus comes into view"
   await page.locator('#card [data-go="paint"]').click();
   await expect(page.locator('[data-win="paint"]')).toBeFocused();
   // back to Insider Trading, while the pan to Paint has not moved yet: its
-  // link, Home and Replay (006 T4), then the window
+  // link, Home and Replay (006 T4), then the window; with a write-up (013,
+  // the e2e build's fixtures) its tab strip is one more stop
   const back = browserName === "webkit" ? "Alt+Shift+Tab" : "Shift+Tab";
-  for (let i = 0; i < 4; i++) await page.keyboard.press(back);
+  const strip = await page.locator('[data-win="insider"] .tabs').isVisible();
+  for (let i = 0; i < 4 + Number(strip); i++) await page.keyboard.press(back);
   await expect(page.locator('[data-win="insider"]')).toBeFocused();
   await settle(page);
   await focusInView(page);

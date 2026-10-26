@@ -9,6 +9,7 @@ import { LAYOUT } from "../src/sheet/layout.ts";
 import { UNITS } from "./castlewars-frames.ts";
 import { requireSheetPage, SHEET_PAGE } from "./sheet-guard.ts";
 import { writeup, type Writeup } from "./writeup.ts";
+import { STAGES } from "../src/sheet/stages.ts";
 import { STRATEGIES } from "../src/sheet/demos/crawler-data.ts";
 import {
   FLAG_MIN,
@@ -295,6 +296,18 @@ export function readPanel(p: Project & { writeup: Writeup }): string {
       </div>`;
 }
 
+/** 013 R1: a project window's tab strip, hidden until main.ts shows it
+ * (two or more modes). Try waits for a tool (tabs.ts registerTool); only
+ * windows with a tool's stage list (stages.ts) can get one. A window that
+ * can have one mode only gets no strip. */
+const hasTool = (p: Project) => p.id in STAGES;
+function tabs(p: Project): string {
+  if (!p.writeup && !hasTool(p)) return "";
+  const tab = (mode: string, label: string, on: boolean, hide: boolean) =>
+    `<button type="button" role="tab" id="${p.id}-tab-${mode}" aria-controls="${p.id}-${mode}" aria-selected="${on}" tabindex="${on ? 0 : -1}" data-mode="${mode}"${hide ? " hidden" : ""}>${label}</button>`;
+  return `<div class="tabs" role="tablist" aria-label="${esc(p.title)} view" hidden>${tab("demo", "Demo", true, false)}${hasTool(p) ? tab("try", "Try", false, true) : ""}${p.writeup ? tab("read", "Read", false, false) : ""}</div>`;
+}
+
 // R7 / R14: the eight windows at their home positions. The inline transform
 // shows the layout without JS; windows.ts owns it after start. R9: each title
 // bar has a Home control.
@@ -311,9 +324,9 @@ function windows(projects: Project[]): string {
       </div>`
       : "";
     return `<section class="sheet-win" data-win="${s.id}" role="region" aria-label="${esc(name)}" style="width:${s.w}px;height:${s.h}px;transform:translate(${s.x}px, ${s.y}px)">
-      <div class="bar"><span class="grip" aria-hidden="true">⠿</span><span class="t">${esc(s.bar)}</span>${s.id === "crawler" ? CRAWLER_PAUSE : ""}${s.id === "insider" ? INSIDER_REPLAY : ""}<button type="button" class="home" aria-label="Send ${esc(name)} home">⌂</button></div>
+      <div class="bar"><span class="grip" aria-hidden="true">⠿</span><span class="t">${esc(s.bar)}</span>${s.id === "crawler" ? CRAWLER_PAUSE : ""}${s.id === "insider" ? INSIDER_REPLAY : ""}${p ? tabs(p) : ""}<button type="button" class="home" aria-label="Send ${esc(name)} home">⌂</button></div>
       ${about}
-      ${DEMO[s.id] ? DEMO[s.id](s.demoH) : `<div class="demo-area" style="height:${s.demoH}px" inert></div>`}${FOOT[s.id] ? `\n      <div class="wfoot">${esc(FOOT[s.id])}</div>` : ""}${p?.writeup ? `\n      ${readPanel({ ...p, writeup: p.writeup })}` : ""}
+      ${DEMO[s.id] ? DEMO[s.id](s.demoH) : `<div class="demo-area" style="height:${s.demoH}px" inert></div>`}${FOOT[s.id] ? `\n      <div class="wfoot">${esc(FOOT[s.id])}</div>` : ""}${p && hasTool(p) ? `\n      <div class="try-area" hidden></div>` : ""}${p?.writeup ? `\n      ${readPanel({ ...p, writeup: p.writeup })}` : ""}
     </section>`;
   }).join("\n");
 }

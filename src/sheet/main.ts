@@ -9,6 +9,7 @@ import { showFailure } from "./host/failure";
 import { LAYOUT } from "./layout";
 import { createView, PHONE } from "./view";
 import { createWindows } from "./windows";
+import { initTabs, registerTool } from "./tabs";
 import { mount as mountPentimento } from "./demos/pentimento";
 import * as castlewars from "./demos/castlewars";
 import * as crawler from "./demos/crawler";
@@ -51,6 +52,12 @@ const view = createView(() =>
   }),
 );
 const wins = createWindows(view);
+
+// 013 R1: the Demo · Try · Read tabs (test builds: a fixture tool can
+// register through `__registerTool`)
+initTabs();
+if (import.meta.env.MODE === "e2e")
+  Object.assign(window, { __registerTool: registerTool });
 
 // R7.a: pressing anywhere in a window brings it to the front
 let top = 0;
