@@ -184,13 +184,26 @@ test.describe("013 R5 motion", () => {
   }) => {
     await atZoom(page);
     await btn(page, "crawler").click();
+    // deterministic: hold the expand animation mid-way, then wait for the
+    // page's own media change event (not a timer), then one frame
+    const held = await page.evaluate(() => {
+      const w = document.querySelector('[data-win="crawler"]')!;
+      const a = w.getAnimations();
+      a.forEach((x) => x.pause());
+      const q = matchMedia("(prefers-reduced-motion: reduce)");
+      (window as unknown as { changed: Promise<void> }).changed = new Promise(
+        (done) => q.addEventListener("change", () => done(), { once: true }),
+      );
+      return a.length;
+    });
+    expect(held, "the expand animation is under way").toBe(1);
     await page.emulateMedia({ reducedMotion: "reduce" });
-    const left = await page.evaluate(
-      () =>
-        new Promise<number>((done) =>
-          requestAnimationFrame(() => done(document.getAnimations().length)),
-        ),
-    );
+    const left = await page.evaluate(async () => {
+      await (window as unknown as { changed: Promise<void> }).changed;
+      await new Promise(requestAnimationFrame);
+      return document.querySelector('[data-win="crawler"]')!.getAnimations()
+        .length;
+    });
     expect(left).toBe(0);
     expect(await rect(page, "crawler")).toEqual([0, 0, 1280, 800]);
   });
