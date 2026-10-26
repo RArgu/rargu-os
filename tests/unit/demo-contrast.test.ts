@@ -530,7 +530,8 @@ describe("R8.a demo text contrast (composited)", () => {
       .filter((f) => f.endsWith(".css"))
       .map((f) => `src/sheet/demos/${f}`);
     expect([...order].sort()).toEqual(
-      ["src/sheet/sheet.css", ...demoSheets].sort(),
+      // 013: readme.css, the Read panel and diagram
+      ["src/sheet/sheet.css", "src/sheet/readme.css", ...demoSheets].sort(),
     );
   });
 

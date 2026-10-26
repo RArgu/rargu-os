@@ -1,0 +1,80 @@
+/* Spec 013: the Read panel and its system diagram (R8, R9). Colours are the
+   sheet's tokens only, so both themes follow (R14). */
+
+/* R9: the diagram: tiers top to bottom, boxes wrap at narrow widths */
+.dg {
+  margin: 16px 0;
+}
+.dg-tiers {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.dg-tier {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.dg-boxes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr));
+  gap: 8px;
+  width: 100%;
+}
+.dg-box {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 8px;
+  border: 2px solid var(--outline);
+  background: var(--win-bg);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.dg-label,
+.dg-kw,
+.dg-loop,
+.dg figcaption {
+  font-size: 13px;
+  color: var(--ink-dim);
+}
+.dg-label {
+  font-family: var(--font-mono);
+}
+.dg-name {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 400;
+}
+.dg-note,
+.dg-mark {
+  font-size: 13px;
+  font-weight: 700;
+}
+.dg-mark:empty {
+  display: none;
+}
+.dg-arrow {
+  font-size: 18px;
+  line-height: 1.5;
+}
+.dg-loop {
+  margin: 4px 0 0;
+}
+.dg figcaption {
+  margin-top: 8px;
+}
+/* R10: the stage a tool reports */
+.dg-box.active {
+  outline: 3px solid var(--accent);
+  outline-offset: 1px;
+}
+.dg-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

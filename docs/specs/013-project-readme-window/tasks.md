@@ -22,7 +22,7 @@ a tool registers.
   - Verify: `npm test` (R17.a; one case per rule; R8.b id uniqueness across two fixture write-ups).
   - Files: `scripts/sheet-content.ts`, `src/apps/resume/doc.ts`, `tests/unit/writeup-content.test.ts`,
     `tests/fixtures/content/` (fixture write-up).
-- [ ] **T2** Diagram schema and HTML renderer [local] (R9, R14)
+- [x] **T2** Diagram schema and HTML renderer [local] (R9, R14)
   - Acceptance: a JSON file with the R9 schema renders tiers, boxes, arrows and labelled loops as HTML with token
     colours only. The build fails on a bad `stage`, a tool stage on no box, a duplicate id or a bad `loop.to`.
     Contrast of every diagram token pair, including the active outline and markers, meets 001 R18 in both themes.

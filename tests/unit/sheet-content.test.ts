@@ -310,6 +310,8 @@ const PAIRS: [string, string, number][] = [
   // 005 Pentimento: the sketch line on the window, the footer
   ["ink-dim", "win-bg", 4.5],
   ["ink", "paper-2", 4.5],
+  // 013 R10, R14: the active diagram box's outline on the window
+  ["accent", "win-bg", 3],
 ];
 
 describe("R18.a contrast table", () => {

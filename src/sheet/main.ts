@@ -1,6 +1,7 @@
 // RArgu OS sheet entry (spec 001). No old-OS code: not even tokens.css, whose
 // shared chunk changed how `/` loads its CSS (R1).
 import "./sheet.css";
+import "./readme.css";
 import hostUrl from "virtual:host-url";
 import { cancel as cancelGesture, claim, free } from "./gestures";
 import { reloadCss } from "./host/css-retry";

@@ -3,6 +3,7 @@
 // only with `writeup: true`; then every check below must pass, or the build
 // fails and names the file.
 import { renderMarkdown, type Anchor } from "../src/apps/resume/doc.ts";
+import { checkDiagram, diagramHtml } from "./diagram.ts";
 
 /** R8: the H2 sections, in this order. */
 export const SECTIONS = [
@@ -22,11 +23,13 @@ export interface Writeup {
   anchors: Anchor[];
 }
 
-/** Renders and checks a write-up body; `fail` throws with the file name. */
+/** Renders and checks a write-up body and its diagram (the parsed JSON, or
+ * undefined when there is no file); `fail` throws with the file name. */
 export function writeup(
   id: string,
   meta: Record<string, string | string[]>,
   body: string,
+  diagram: unknown,
   fail: (why: string) => never,
 ): Writeup {
   const text = (field: string): string => {
@@ -59,11 +62,15 @@ export function writeup(
   // the renderer drops raw HTML, so a TODO in a comment never shows
   if (/TODO/.test(html.replace(/<[^>]*>/g, "")))
     fail(`the shown write-up text has "TODO"`);
+  if (diagram === undefined) fail("no diagram file (diagrams/<file>.json)");
+  const figure = diagramHtml(checkDiagram(id, diagram, fail));
+  // R9: the diagram goes after the claim paragraph of "How it works"
+  const at = html.indexOf("</p>", html.indexOf(`id="${id}-sec-how-it-works"`));
   return {
     role,
     lede,
     // links leave the sheet in a new tab, as the window's other links do
-    html: html.replace(
+    html: (html.slice(0, at + 4) + figure + html.slice(at + 4)).replace(
       /<a href="(https?:[^"]*)">/g,
       '<a href="$1" target="_blank" rel="noopener">',
     ),

@@ -1,7 +1,13 @@
 // @vitest-environment node
 // Spec 013 T1: the write-up content pipeline (R8 ids, R17 build checks).
 import { describe, expect, it } from "vitest";
-import { cpSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  cpSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { build, type Rollup } from "vite";
@@ -22,7 +28,6 @@ function overlayWith(edit: (src: string) => string): string {
   const file = join(dir, CRAWLER);
   const src = readFileSync(file, "utf8");
   const out = edit(src);
-  expect(out, "the edit changes the fixture").not.toBe(src);
   writeFileSync(file, out);
   return dir;
 }
@@ -99,8 +104,26 @@ describe("R17.a the build checks of a write-up", () => {
   ];
   for (const [name, edit, error] of cases)
     it(`fails on ${name} and names the file`, () => {
+      const src = readFileSync(join(fixtures, CRAWLER), "utf8");
+      expect(edit(src), "the edit changes the fixture").not.toBe(src);
       expect(() => loadProjects(projects, overlayWith(edit))).toThrow(error);
     });
+  it("fails with no diagram file, and on a bad one", () => {
+    const dir = overlayWith((s) => s);
+    rmSync(join(dir, "diagrams/focused-web-crawler.json"));
+    expect(() => loadProjects(projects, dir)).toThrow(/no diagram file/);
+    writeFileSync(join(dir, "diagrams/focused-web-crawler.json"), "{");
+    expect(() => loadProjects(projects, dir)).toThrow(/bad JSON/);
+  });
+  it("puts the diagram after the claim paragraph of How it works", () => {
+    const html = loadProjects(projects, fixtures).find(
+      (p) => p.id === "crawler",
+    )!.writeup!.html;
+    const h = html.indexOf('id="crawler-sec-how-it-works"');
+    const fig = html.indexOf('<figure class="dg">');
+    expect(fig).toBeGreaterThan(html.indexOf("</p>", h));
+    expect(html.indexOf("<p>", h)).toBeLessThan(fig);
+  });
   it("allows TODO in a comment (the renderer drops it)", () => {
     const dir = overlayWith((s) => `${s}\n<!-- TODO(content): more -->\n`);
     expect(() => loadProjects(projects, dir)).not.toThrow();

@@ -99,12 +99,27 @@ export function loadProjects(
       stack: list("stack"),
       links,
       ...(meta.writeup === "true" && {
-        writeup: writeup(id, meta, body, (why) => {
+        writeup: writeup(id, meta, body, diagram(file, dir, overlay), (why) => {
           throw new Error(`${basename(path)}: write-up: ${why}`);
         }),
       }),
     };
   });
+}
+
+/** 013 R9: the parsed `diagrams/<file>.json` (the overlay's first), or
+ * undefined when there is none. */
+function diagram(file: string, dir: string, overlay?: string): unknown {
+  const name = join("diagrams", `${file}.json`);
+  const path = [overlay && join(overlay, name), join(dir, name)].find(
+    (p) => p && existsSync(p),
+  );
+  if (!path) return undefined;
+  try {
+    return JSON.parse(readFileSync(path, "utf8"));
+  } catch (e) {
+    throw new Error(`${name}: bad JSON (${(e as Error).message})`);
+  }
 }
 
 /** Content links must be web links: no javascript: or data: URLs. */
