@@ -5,6 +5,7 @@
 // R19.a: a case removed from the source is gone from the built data.
 import { describe, expect, it } from "vitest";
 import { execSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import {
   cpSync,
   existsSync,
@@ -22,12 +23,14 @@ const root = resolve(import.meta.dirname, "../..");
 const ALLOWED = "content/projects/insider-case-studies.json";
 // shortcut: 012's spec (R22) names the report's market-maker contract in full;
 // it is public (report section 4.4), not from the private files. Remove when
-// 012 shortens it (013 cross-spec request, 2026-10-26).
+// 012 shortens it (013 cross-spec request, 2026-10-26). SHA-256 of the
+// address, so this file holds no address itself.
 const KNOWN: Record<string, string[]> = {
   "docs/specs/012-insider-live/spec.md": [
-    "0x4bfb41d5b3570defd03c39a9a4d8de6bd8b8982e",
+    "6eb37c44cab105b61577ec85402c905435b3bf7b951de5712a54ba88081afee6",
   ],
 };
+const sha = (s: string) => createHash("sha256").update(s).digest("hex");
 // shortcut: 012's own docs name report wallets (public, from the report) that
 // are also in its private files. Remove each when 012 uses report section
 // numbers instead (013 cross-spec request, 2026-10-26).
@@ -76,7 +79,7 @@ describe("R18.d no wallet address outside the case-study JSON", () => {
     for (const [f, s] of files) {
       if (f === ALLOWED) continue;
       for (const m of s.matchAll(/0x[0-9a-fA-F]{40}/g))
-        if (!KNOWN[f]?.includes(m[0])) found.push(`${f}: ${m[0]}`);
+        if (!KNOWN[f]?.includes(sha(m[0]))) found.push(`${f}: ${m[0]}`);
     }
     expect(found).toEqual([]);
   });

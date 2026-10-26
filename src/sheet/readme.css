@@ -240,3 +240,31 @@
   font-size: 18px;
   margin: 16px 0 6px;
 }
+
+/* R8: expanded at 760 px or wider: the nav in a left column beside the text */
+@media (min-width: 760px) {
+  .sheet-win.expanded .read-area {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 68ch);
+    column-gap: 32px;
+    justify-content: center;
+    align-content: start;
+    padding: 0 24px 32px;
+  }
+  .sheet-win.expanded .r-head {
+    grid-column: 1 / -1;
+    max-width: calc(180px + 32px + 68ch);
+  }
+  .sheet-win.expanded .r-nav {
+    grid-column: 1;
+    align-self: start;
+    flex-direction: column;
+    align-items: flex-start;
+    top: 16px;
+    border-bottom: 0;
+    overflow: visible;
+  }
+  .sheet-win.expanded .r-body {
+    grid-column: 2;
+  }
+}
