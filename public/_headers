@@ -1,3 +1,7 @@
 # Vite's hashed bundles never change under one name
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
+# 013 R18: the insider case studies: not indexed, short cache (removal, R19)
+/p/insider/case-studies.json
+  X-Robots-Tag: noindex
+  Cache-Control: public, max-age=300

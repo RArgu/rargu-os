@@ -120,6 +120,14 @@ export function writeupPages({
             fileName: `p/${p.id}/index.html`,
             source: html,
           });
+          // R18: the case studies, outside every page's HTML (noindex in
+          // public/_headers)
+          if (p.cases)
+            this.emitFile({
+              type: "asset",
+              fileName: `p/${p.id}/case-studies.json`,
+              source: JSON.stringify(p.cases),
+            });
         }
       },
     },

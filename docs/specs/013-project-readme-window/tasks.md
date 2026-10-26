@@ -90,7 +90,7 @@ a tool registers.
     visible by page scroll. On `/`, a window with a write-up shows a "Read the write-up" link to `/p/<id>/`.
   - Verify: `npm run e2e` with JavaScript off (R13.a at 1440 × 900 and 390 × 844).
   - Files: `scripts/sheet-content.ts`, `src/sheet/readme.css`, `tests/e2e/readme-nojs.spec.ts`.
-- [ ] **T12** Case-study loader and address guard [local] (R16, R18, R19)
+- [x] **T12** Case-study loader and address guard [local] (R16, R18, R19)
   - Acceptance: the build copies `content/projects/insider-case-studies.json` to `dist/p/insider/case-studies.json`.
     013 adds its two lines to `public/_headers` (011 owns the file): `X-Robots-Tag: noindex`, `Cache-Control: public,
     max-age=300`. Origin loads the JSON once when it first scrolls into view, into a `data-nosnippet` container, below

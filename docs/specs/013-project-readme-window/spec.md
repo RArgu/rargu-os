@@ -68,7 +68,7 @@ Relayed by the orchestrator.
 |---|---|
 | N9 Case-study load | (b) When Origin scrolls into view. The owner accepts the indexing risk. R18 keeps its honest wording and `data-nosnippet`. |
 | N10 Publish rule | (c) Publish all rows if a majority of the report wallets expected as candidates is listed and the market maker is not listed. Else Results leaves the check out. |
-| Look-back | 24 h kept (owner). 012 found that Vivaldi007 bet about 115 h before its spike, so the 24 h rule will likely not list it. |
+| Look-back | 24 h kept (owner). 012 found that the report's §4.2 wallet bet about 115 h before its spike, so the 24 h rule will likely not list it. |
 | Shared infra | 011 owns the Worker, router, `Limits`, wrangler bindings and `public/_headers`. 013 adds its own `_headers` lines (case-study JSON) in its own tasks. |
 | Event contract | 013 owns `tool:stage` and `tool:status` (section "Event contract"). |
 
@@ -291,7 +291,7 @@ deprecated Goldsky subgraph, a judge model that is too slow on CPU, robots.txt o
 (`jobs/insider/eval/report-cases.json`: the report's section 4 wallets over the 5 resolved start markets, full
 address, found, listed, score). The publish rule is the owner's (N8, N10): publish all rows if a majority of the
 report wallets expected as candidates is listed (with three expected, two or more) and the market maker is not
-listed. Else Results leaves the check out. Vivaldi007 bet about 115 h before its spike and the rule looks back 24 h,
+listed. Else Results leaves the check out. the report's §4.2 wallet bet about 115 h before its spike and the rule looks back 24 h,
 so it will likely not be listed (012 finding; owner kept 24 h). A published table is titled "Report cases, checked with the live rule" and lists each wallet with
 listed yes/no, so it reads as selected case checks, not as an accuracy figure.
 

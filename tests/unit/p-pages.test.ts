@@ -1,6 +1,7 @@
 // @vitest-environment node
 // Spec 013 T9: the /p/<id>/ page from the sheet page (R12).
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { missing, pPage } from "../../scripts/p-pages.ts";
 import { loadProjects } from "../../scripts/sheet-content.ts";
@@ -62,5 +63,16 @@ describe("R12 the write-up page", () => {
     expect(missing(html, new Set(["assets/index-1.js"]))).toEqual([
       "/assets/index-2.css",
     ]);
+  });
+});
+
+describe("R18.b the case-study file's headers (public/_headers)", () => {
+  it("noindex and a 5-minute cache for /p/insider/case-studies.json", () => {
+    const h = readFileSync(join(root, "public/_headers"), "utf8");
+    const block = /^\/p\/insider\/case-studies\.json\n((?:[ \t]+.*\n?)+)/m.exec(
+      h,
+    )?.[1];
+    expect(block).toMatch(/^\s+X-Robots-Tag: noindex$/m);
+    expect(block).toMatch(/^\s+Cache-Control: public, max-age=300$/m);
   });
 });

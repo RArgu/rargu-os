@@ -21,6 +21,7 @@ import { createExpand } from "./expand";
 import { initHistory } from "./history";
 import { initRead } from "./read";
 import { initToolEvents } from "./tool-events";
+import { initCaseStudies } from "./case-studies";
 import { mount as mountPentimento } from "./demos/pentimento";
 import * as castlewars from "./demos/castlewars";
 import * as crawler from "./demos/crawler";
@@ -72,6 +73,7 @@ for (const a of document.querySelectorAll(".nojs-read")) a.remove();
 initTabs();
 initRead();
 initToolEvents();
+initCaseStudies();
 if (import.meta.env.MODE === "e2e")
   Object.assign(window, { __registerTool: registerTool });
 

@@ -1,0 +1,15 @@
+{
+  "cases": [
+    {
+      "heading": "Fixture case 1",
+      "paragraphs": [
+        "Fixture text for the 013 tests. Wallet 0xFIXTURE-ONE is an invented name, not an address.",
+        "A second paragraph <b>not markup</b>."
+      ]
+    },
+    {
+      "heading": "Fixture case 2",
+      "paragraphs": ["Fixture text for the 013 tests."]
+    }
+  ]
+}

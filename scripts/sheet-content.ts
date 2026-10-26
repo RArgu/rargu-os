@@ -53,6 +53,13 @@ export interface Project {
   links: string[];
   /** 013: only with `writeup: true` (build side; not in the virtual module) */
   writeup?: Writeup;
+  /** 013 R18: `<id>-case-studies.json`, checked, when the write-up has one */
+  cases?: Cases;
+}
+
+/** 013 R18: case studies shown as in the report, loaded by the page. */
+export interface Cases {
+  cases: { heading: string; paragraphs: string[] }[];
 }
 
 /** `overlay`: a folder whose `<file>.md` adds its frontmatter fields and
@@ -103,9 +110,46 @@ export function loadProjects(
         writeup: writeup(id, meta, body, diagram(file, dir, overlay), (why) => {
           throw new Error(`${basename(path)}: write-up: ${why}`);
         }),
+        cases: cases(id, dir, overlay),
       }),
     };
   });
+}
+
+/** 013 R18: the checked `<id>-case-studies.json` (the overlay's first), or
+ * undefined when there is none. */
+function cases(id: string, dir: string, overlay?: string): Cases | undefined {
+  const name = `${id}-case-studies.json`;
+  const path = [overlay && join(overlay, name), join(dir, name)].find(
+    (p) => p && existsSync(p),
+  );
+  if (!path) return undefined;
+  const bad = (why: string): never => {
+    throw new Error(`${name}: ${why}`);
+  };
+  let d: Cases;
+  try {
+    d = JSON.parse(readFileSync(path, "utf8"));
+  } catch (e) {
+    return bad(`bad JSON (${(e as Error).message})`);
+  }
+  const str = (v: unknown) => typeof v === "string" && v.trim() !== "";
+  if (!Array.isArray(d?.cases) || !d.cases.length) bad("no cases");
+  d.cases.forEach((c, i) => {
+    if (!str(c?.heading)) bad(`case ${i + 1} has no heading`);
+    if (
+      !Array.isArray(c.paragraphs) ||
+      !c.paragraphs.length ||
+      !c.paragraphs.every(str)
+    )
+      bad(`case ${i + 1} needs paragraphs of text`);
+  });
+  return {
+    cases: d.cases.map((c) => ({
+      heading: c.heading,
+      paragraphs: c.paragraphs,
+    })),
+  };
 }
 
 /** 013 R9: the parsed `diagrams/<file>.json` (the overlay's first), or
@@ -279,7 +323,17 @@ const DEMO: Record<string, (demoH: number) => string> = {
 
 /** 013 R8: the Read panel: title block, lede, section nav and the body.
  * Hidden until its tab opens it (main.ts) or a /p/ page shows it. */
-export function readPanel(p: Project & { writeup: Writeup }): string {
+/** 013 R18, R19: the notice above the case studies (in the page HTML) and
+ * their container; case-studies.ts loads them, with JavaScript only. */
+function casesHtml(id: string, email: string): string {
+  const mail = `<a href="mailto:${esc(email)}">${esc(email)}</a>`;
+  return `<div class="cases-wrap"><p class="cs-notice"><strong>These wallets were candidates from our course project's heuristics, not proof of insider trading.</strong> Figures are from our final report (2026-05-18). A market can be hidden at once. A case study below is removed with the next site update. We reply within 7 days. To ask for a correction or removal, email ${mail}. Copies already saved by others cannot be recalled.</p><div class="cases" data-nosnippet data-src="/p/${id}/case-studies.json"><p class="cases-state">The case studies need JavaScript.</p></div></div>`;
+}
+
+export function readPanel(
+  p: Project & { writeup: Writeup },
+  email: string,
+): string {
   const ext = 'target="_blank" rel="noopener"';
   const w = p.writeup;
   const nav = w.anchors
@@ -292,7 +346,7 @@ export function readPanel(p: Project & { writeup: Writeup }): string {
           <div class="meta">${p.stack.map((c) => `<span class="chip">${esc(c)}</span>`).join("")}${p.links.map((l) => `<a href="${esc(l)}" ${ext}>${esc(linkText(l, p.links))} ↗</a>`).join("")}</div>
         </header>
         <nav class="r-nav" aria-label="Sections">${nav}</nav>
-        <div class="r-body">${w.html}</div>
+        <div class="r-body">${w.html}${p.cases ? casesHtml(p.id, email) : ""}</div>
       </div>`;
 }
 
@@ -311,7 +365,7 @@ function tabs(p: Project): string {
 // R7 / R14: the eight windows at their home positions. The inline transform
 // shows the layout without JS; windows.ts owns it after start. R9: each title
 // bar has a Home control.
-function windows(projects: Project[]): string {
+function windows(projects: Project[], email: string): string {
   const ext = 'target="_blank" rel="noopener"';
   return LAYOUT.map((s) => {
     const p = projects.find((p) => p.id === s.id);
@@ -326,7 +380,7 @@ function windows(projects: Project[]): string {
     return `<section class="sheet-win" data-win="${s.id}" role="region" aria-label="${esc(name)}" style="width:${s.w}px;height:${s.h}px;transform:translate(${s.x}px, ${s.y}px)">
       <div class="bar"><span class="grip" aria-hidden="true">⠿</span><span class="t">${esc(s.bar)}</span>${s.id === "crawler" ? CRAWLER_PAUSE : ""}${s.id === "insider" ? INSIDER_REPLAY : ""}${p ? tabs(p) : ""}${p ? `<button type="button" class="expand" aria-label="Expand ${esc(name)}">⤢</button>` : ""}<button type="button" class="home" aria-label="Send ${esc(name)} home">⌂</button></div>
       ${about}
-      ${DEMO[s.id] ? DEMO[s.id](s.demoH) : `<div class="demo-area" style="height:${s.demoH}px" inert></div>`}${FOOT[s.id] ? `\n      <div class="wfoot">${esc(FOOT[s.id])}</div>` : ""}${p && hasTool(p) ? `\n      <div class="try-area" hidden></div>` : ""}${p?.writeup ? `\n      ${readPanel({ ...p, writeup: p.writeup })}` : ""}
+      ${DEMO[s.id] ? DEMO[s.id](s.demoH) : `<div class="demo-area" style="height:${s.demoH}px" inert></div>`}${FOOT[s.id] ? `\n      <div class="wfoot">${esc(FOOT[s.id])}</div>` : ""}${p && hasTool(p) ? `\n      <div class="try-area" hidden></div>` : ""}${p?.writeup ? `\n      ${readPanel({ ...p, writeup: p.writeup }, email)}` : ""}
     </section>`;
   }).join("\n");
 }
@@ -347,7 +401,7 @@ export function sheetContent({
         this.addWatchFile(join(projects, `${file}.md`));
       // 013 R15: the write-ups are HTML in the page, not JS
       const data = loadProjects(projects, overlay).map(
-        ({ writeup: _, ...p }) => p,
+        ({ writeup: _, cases: __, ...p }) => p,
       );
       return `export default ${JSON.stringify(data)};`;
     },
@@ -356,11 +410,12 @@ export function sheetContent({
     transformIndexHtml(html, ctx) {
       if (!ctx.filename.endsWith(`/${SHEET_PAGE}`)) return html;
       const list = loadProjects(projects, overlay);
+      const id = readIdentity(identity);
       return (
         html
           // callbacks: a replacement string would expand $' and $& in content
-          .replace("<!-- card -->", () => card(readIdentity(identity), list))
-          .replace("<!-- windows -->", () => windows(list))
+          .replace("<!-- card -->", () => card(id, list))
+          .replace("<!-- windows -->", () => windows(list, id.email))
       );
     },
   };

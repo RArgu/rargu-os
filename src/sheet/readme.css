@@ -229,3 +229,14 @@
   margin: 8px 0 0;
   font-size: 14px;
 }
+
+/* R18: the notice above the insider case studies, in the body type size */
+.cs-notice {
+  padding: 8px 10px;
+  border: 2px solid var(--outline);
+}
+.cases h3 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  margin: 16px 0 6px;
+}
