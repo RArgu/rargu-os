@@ -5,6 +5,7 @@ import type { Plugin } from "vite";
 import { castlewarsFrames } from "./scripts/castlewars-frames.ts";
 import { hostResources } from "./scripts/host-resources.ts";
 import { sheetContent } from "./scripts/sheet-content.ts";
+import { writeupPages } from "./scripts/p-pages.ts";
 import { hostChunks } from "./scripts/host-chunks.ts";
 import { hostCss } from "./scripts/host-css.ts";
 import { siteHead, type Identity } from "./scripts/site-identity.ts";
@@ -15,6 +16,10 @@ import {
 } from "./scripts/sheet-guard.ts";
 
 const root = import.meta.dirname;
+const writeups = (mode: string) =>
+  mode === "e2e"
+    ? { overlay: resolve(root, "tests/fixtures/writeups") }
+    : undefined;
 
 function identity(): Identity {
   try {
@@ -60,11 +65,9 @@ export default defineConfig(({ mode }) => ({
     // 002 R13: the hosted apps' and widgets' CSS under the host root
     hostCss(),
     // 013: the e2e build shows fixture write-ups (no real one ships yet)
-    sheetContent(
-      mode === "e2e"
-        ? { overlay: resolve(root, "tests/fixtures/writeups") }
-        : undefined,
-    ),
+    sheetContent(writeups(mode)),
+    // 013 R12: /p/<id>/ for each write-up
+    writeupPages(writeups(mode)),
     castlewarsFrames(),
     hostResources(),
     {

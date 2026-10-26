@@ -71,7 +71,7 @@ a tool registers.
     real tools.
   - Files: `src/sheet/tool-events.ts`, `src/sheet/read.ts`, `src/sheet/readme.css`,
     `tests/fixtures/tool-fixture.ts`, `tests/e2e/readme-events.spec.ts`.
-- [ ] **T9** `/p/<id>/` pages [local] (R12, R15)
+- [x] **T9** `/p/<id>/` pages [local] (R12, R15)
   - Acceptance: after `vite build`, a script writes `dist/p/<id>/index.html` for each write-up from `dist/index.html`
     with its own title, description, canonical and preview tags, `data-open="<id>:read"`, and absolute asset URLs.
     With JavaScript, the page starts with the window expanded in Read. The sheet guard checks each page: assets

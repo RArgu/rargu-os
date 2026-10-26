@@ -31,6 +31,12 @@ const cases: Case[] = [
   // html_handling "auto-trailing-slash" (wrangler.jsonc): 307 to /resume
   { path: "/resume.html", status: 307, location: "/resume" },
   { path: "/nope", status: 404, body: /href="\/"[^>]*>Open RArgu OS/ },
+  // 013 R12: only a write-up has a /p/ page; the others get the 404 page
+  {
+    path: "/p/castlesiege/",
+    status: 404,
+    body: /href="\/"[^>]*>Open RArgu OS/,
+  },
 ];
 
 for (const c of cases) {

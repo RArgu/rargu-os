@@ -28,7 +28,8 @@ const stops = (win: HTMLElement): HTMLElement[] =>
 export interface Expand {
   /** The expanded window, or null. */
   current(): HTMLElement | null;
-  expand(win: HTMLElement): void;
+  /** `instant`: no animation (a page that opens expanded, R12). */
+  expand(win: HTMLElement, instant?: boolean): void;
   restore(): void;
   /** Calls `cb(win, expanded)` after each change. */
   onChange(cb: (win: HTMLElement, expanded: boolean) => void): void;
@@ -117,7 +118,7 @@ export function createExpand(view: View, wins: Windows): Expand {
   return {
     current: () => open?.win ?? null,
     onChange: (cb) => void changed.push(cb),
-    expand(win) {
+    expand(win, instant = false) {
       if (open || anim) return;
       const id = win.dataset.win!;
       const from = win.getBoundingClientRect(); // zoom and tilt included
@@ -137,8 +138,10 @@ export function createExpand(view: View, wins: Windows): Expand {
       });
       open = { win, ph };
       label(win, true);
-      anim = play(win, from, false);
-      anim.finished.finally(() => (anim = null));
+      if (!instant) {
+        anim = play(win, from, false);
+        anim.finished.finally(() => (anim = null));
+      }
       for (const cb of changed) cb(win, true);
     },
     restore: () => restoreIt(),

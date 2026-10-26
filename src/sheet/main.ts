@@ -177,6 +177,16 @@ expand.onChange((w, on) => {
   delete w.dataset.before;
 });
 
+// 013 R12: a /p/<id>/ page opens that window expanded in Read, with the
+// focus on the write-up's title (R4)
+const [openId, openMode] = (document.body.dataset.open ?? "").split(":");
+if (openId && openMode === "read") {
+  const w = $(`[data-win="${openId}"]`);
+  expand.expand(w, true);
+  select(w, "read");
+  view.navFocus(w.querySelector<HTMLElement>(".r-title")!);
+}
+
 // 013 R6: a demo animates only while its Demo panel is shown, and, while a
 // window is expanded, only in that window
 const seen = createVisibility(view, wins, $("#vp"), (id) => {
