@@ -10,6 +10,7 @@ import { LAYOUT } from "./layout";
 import { createView, PHONE } from "./view";
 import { createWindows } from "./windows";
 import { initTabs, registerTool } from "./tabs";
+import { initRead } from "./read";
 import { mount as mountPentimento } from "./demos/pentimento";
 import * as castlewars from "./demos/castlewars";
 import * as crawler from "./demos/crawler";
@@ -56,6 +57,7 @@ const wins = createWindows(view);
 // 013 R1: the Demo · Try · Read tabs (test builds: a fixture tool can
 // register through `__registerTool`)
 initTabs();
+initRead();
 if (import.meta.env.MODE === "e2e")
   Object.assign(window, { __registerTool: registerTool });
 

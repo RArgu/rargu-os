@@ -312,6 +312,8 @@ const PAIRS: [string, string, number][] = [
   ["ink", "paper-2", 4.5],
   // 013 R10, R14: the active diagram box's outline on the window
   ["accent", "win-bg", 3],
+  // 013 R8: the current section's chip border, and the panel's focus ring
+  ["accent", "chip", 3],
 ];
 
 describe("R18.a contrast table", () => {

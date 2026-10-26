@@ -37,7 +37,7 @@ a tool registers.
   - Verify: `npm run e2e` (R1.a, R1.b, R1.c; fixture tool for the Try tab).
   - Files: `scripts/sheet-content.ts`, `src/sheet/tabs.ts`, `src/sheet/main.ts`, `src/sheet/sheet.css`,
     `tests/e2e/readme-tabs.spec.ts`.
-- [ ] **T4** Read panel: layout, input and section nav [local] (R3, R8)
+- [x] **T4** Read panel: layout, input and section nav [local] (R3, R8)
   - Acceptance: the Read panel scrolls inside the window. Wheel, touch (`touch-action: pan-y`, in `NOPAN`) and keys
     (arrows, Page, Home/End, Space) scroll the panel and never pan the sheet, also at its ends. The nav marks the
     current section with `aria-current`. Layout as R8 at 1440 × 900 and 390 × 844.

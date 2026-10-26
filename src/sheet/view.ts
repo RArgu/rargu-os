@@ -19,8 +19,9 @@ const KEYS: Record<string, [number, number]> = {
   ArrowDown: [0, 1],
 };
 // presses here belong to the content, not to a touch pan
+// 013 R3: a write-up's Read panel scrolls itself
 const NOPAN =
-  ".bar, a, button, input, textarea, select, label, [contenteditable]";
+  ".bar, a, button, input, textarea, select, label, [contenteditable], .read-area";
 
 export const REDUCE = "(prefers-reduced-motion: reduce)";
 // read at each action, so a preference change applies at once (R17)
@@ -407,6 +408,8 @@ export function createView(rects: () => MapRect[]): View {
     const d = arrow(e);
     const t = e.target as HTMLElement;
     if (!d || e.defaultPrevented) return;
+    // 013 R3: keys in a Read panel scroll the panel, also at its ends
+    if (t.closest(".read-area")) return;
     if (t.matches("input, textarea, select") || t.isContentEditable) {
       // WebKit scrolls the sheet by a key the field leaves: its caret is
       // already at that end, so the key would do nothing in the field

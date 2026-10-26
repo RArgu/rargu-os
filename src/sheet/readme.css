@@ -107,3 +107,86 @@
   flex: 1 1 0;
   min-height: 0;
 }
+
+/* R3, R8: the Read panel scrolls itself; touches and wheel stay in it */
+.read-area {
+  position: relative;
+  overflow: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  padding: 0 16px 24px;
+  background: var(--win-bg);
+  scrollbar-width: thin;
+}
+.r-head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 0 10px;
+}
+.r-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1;
+  margin: 0;
+}
+.r-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin: 0;
+}
+.r-meta .yr {
+  font-family: var(--font-display);
+  color: var(--ink-dim);
+}
+.r-role {
+  font-size: 14px;
+  color: var(--ink-dim);
+}
+.r-lede {
+  margin: 0;
+  font-size: 17px;
+}
+/* the section nav: one row of chips over the text */
+.r-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 8px 0;
+  background: var(--win-bg);
+  border-bottom: 2px solid var(--outline);
+  scrollbar-width: none;
+}
+.r-nav a {
+  flex: none;
+  font-size: 13px;
+  padding: 1px 8px;
+  background: var(--chip);
+  border: 2px solid transparent;
+  border-radius: 2px;
+  text-decoration: none;
+}
+.r-nav a[aria-current="true"] {
+  border-color: var(--accent);
+}
+.r-body {
+  max-width: 68ch;
+}
+.r-body h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 1.1;
+  margin: 24px 0 8px;
+}
+.r-body p {
+  margin: 0 0 12px;
+}
+.read-area:focus-visible {
+  outline-offset: -2px;
+}
