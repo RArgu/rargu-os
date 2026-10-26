@@ -109,3 +109,23 @@ test.describe("013 R1 tabs", () => {
     expect(await box(page, "crawler")).toBe(before);
   });
 });
+
+test("R6.b: Read stops the demo; Demo continues it from the same row", async ({
+  page,
+}) => {
+  await page.goto(sheet());
+  await page.locator('#card [data-go="crawler"]').click();
+  const rows = () =>
+    win(page, "crawler")
+      .locator(".crawl li")
+      .evaluateAll((l) => l.length + "|" + l.map((x) => x.textContent).join());
+  // it streams while the demo is shown
+  const r0 = await rows();
+  await expect.poll(rows, { timeout: 5000 }).not.toBe(r0);
+  await tab(page, "crawler", "Read").click();
+  const held = await rows();
+  await page.waitForTimeout(2000); // about three of the demo's 700 ms steps
+  expect(await rows()).toBe(held);
+  await tab(page, "crawler", "Demo").click();
+  await expect.poll(rows, { timeout: 5000 }).not.toBe(held);
+});

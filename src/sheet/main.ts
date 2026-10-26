@@ -9,7 +9,7 @@ import { showFailure } from "./host/failure";
 import { LAYOUT } from "./layout";
 import { createView, PHONE } from "./view";
 import { createWindows } from "./windows";
-import { initTabs, registerTool } from "./tabs";
+import { initTabs, modeOf, onMode, registerTool } from "./tabs";
 import { initRead } from "./read";
 import { mount as mountPentimento } from "./demos/pentimento";
 import * as castlewars from "./demos/castlewars";
@@ -146,7 +146,14 @@ mountPentimento($('[data-win="pentimento"] .demo-area'), view.stop);
 // spec 005 R3, R4: Castle Wars loads when it first comes near the view or is
 // used (a press in it, focus into it, the card's link), and animates only
 // while it is in the view and the tab is visible
-const seen = createVisibility(view, wins, $("#vp"));
+// 013 R6: a demo animates only while its Demo panel is the one shown
+const seen = createVisibility(
+  view,
+  wins,
+  $("#vp"),
+  (id) => modeOf($(`[data-win="${id}"]`)) === "demo",
+);
+onMode(() => seen.check());
 const cw = $('[data-win="castlewars"]');
 const cwMount = () =>
   castlewars.mount(cw.querySelector(".demo-area")!, view.stop);

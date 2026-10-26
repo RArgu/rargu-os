@@ -148,7 +148,7 @@ describe("createVisibility: the wiring", () => {
     hidden = false;
   });
 
-  function rig() {
+  function rig(shown?: Parameters<typeof createVisibility>[3]) {
     const st = {
       z: 1,
       sx: 0,
@@ -172,13 +172,14 @@ describe("createVisibility: the wiring", () => {
     vp.getBoundingClientRect = () => new DOMRect(0, 0, 1200, 800);
     Object.defineProperty(vp, "clientWidth", { value: 1200 });
     Object.defineProperty(vp, "clientHeight", { value: 800 });
-    const vis = createVisibility(view, wins, vp);
+    const vis = createVisibility(view, wins, vp, shown);
     const calls: { eligible: boolean; visible: boolean }[] = [];
     const stop = vis.watch(id, (s) => calls.push(s));
     return {
       st,
       calls,
       stop,
+      vis,
       pan: () => viewCbs.forEach((cb) => cb()),
       move: (to: [number, number]) => {
         st.pos = to;
@@ -187,6 +188,20 @@ describe("createVisibility: the wiring", () => {
     };
   }
 
+  it("013 R6: a panel not shown is not visible; an expanded window is", () => {
+    let how: boolean | "expanded" = true;
+    const r = rig(() => how);
+    expect(r.calls).toEqual([{ eligible: true, visible: true }]);
+    how = false; // Read selected, or another window expanded
+    r.vis.check();
+    expect(r.calls.at(-1)).toEqual({ eligible: true, visible: false });
+    how = "expanded";
+    r.move([2500, 1400]); // far off the view: expanded still counts
+    expect(r.calls.at(-1)).toEqual({ eligible: true, visible: true });
+    hidden = true; // a hidden tab still stops it
+    r.vis.check();
+    expect(r.calls.at(-1)).toEqual({ eligible: true, visible: false });
+  });
   it("reports the state at once, then only changes", () => {
     const r = rig(); // castlewars at 1040,140 is in a 1200 × 800 view at 100 %
     expect(r.calls).toEqual([{ eligible: true, visible: true }]);

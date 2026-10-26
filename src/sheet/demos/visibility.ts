@@ -56,12 +56,20 @@ export function viewRect(
   return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
 }
 
+/** 013 R6: how a window is shown besides its place: "expanded" (it covers
+ * the page: eligible, and visible while the tab is), false (its watched
+ * panel is not selected, or another window covers the page: not visible), or
+ * true (the place decides). */
+export type Shown = (id: string) => boolean | "expanded";
+
 /** Watches windows' visibility. Each `watch` calls back once at once, then
- * only when eligible or visible changes; it returns a stop function. */
+ * only when eligible or visible changes; it returns a stop function.
+ * `check()` runs the rule again after a `shown` change. */
 export function createVisibility(
   view: Pick<View, "toSheet" | "onChange">,
   wins: Pick<Windows, "pos" | "onMove">,
   vp: HTMLElement,
+  shown: Shown = () => true,
 ) {
   const watches = new Set<{
     id: string;
@@ -84,7 +92,12 @@ export function createVisibility(
       if (only && w.id !== only) continue;
       const s = LAYOUT.find((s) => s.id === w.id)!;
       const [x, y] = wins.pos(w.id);
-      const now = seen({ x, y, w: s.w, h: s.h }, v, document.hidden);
+      const how = shown(w.id);
+      const now =
+        how === "expanded"
+          ? { eligible: true, visible: !document.hidden }
+          : seen({ x, y, w: s.w, h: s.h }, v, document.hidden);
+      if (how === false) now.visible = false;
       if (w.last?.eligible === now.eligible && w.last.visible === now.visible)
         continue;
       w.last = now;
@@ -97,6 +110,7 @@ export function createVisibility(
   // a resize can change the view's size without a scroll
   addEventListener("resize", () => check());
   return {
+    check: () => check(),
     watch(id: string, cb: (s: Seen) => void): () => void {
       const w = { id, last: null, cb };
       watches.add(w);

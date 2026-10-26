@@ -43,7 +43,7 @@ a tool registers.
     current section with `aria-current`. Layout as R8 at 1440 × 900 and 390 × 844.
   - Verify: `npm run e2e` (R3.a, R3.b, R3.c, R8.a).
   - Files: `src/sheet/read.ts`, `src/sheet/view.ts`, `src/sheet/readme.css`, `tests/e2e/readme.spec.ts`.
-- [ ] **T5** Visibility uses the panel and expansion [local] (R6)
+- [x] **T5** Visibility uses the panel and expansion [local] (R6)
   - Acceptance: visible = tab visible and (expanded or in view) and panel selected. Selecting Read stops the demo's
     animation, and selecting Demo continues it from the same state. A Try run is never cancelled by a tab change.
   - Verify: `npm run e2e` (R6.b). Existing `npm run e2e` demo tests still pass.
