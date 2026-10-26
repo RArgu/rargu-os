@@ -33,6 +33,8 @@ export interface Expand {
   restore(): void;
   /** Calls `cb(win, expanded)` after each change. */
   onChange(cb: (win: HTMLElement, expanded: boolean) => void): void;
+  /** Calls `cb(win)` when a Restore starts, before it measures where to go. */
+  onRestore(cb: (win: HTMLElement) => void): void;
 }
 
 export function createExpand(view: View, wins: Windows): Expand {
@@ -40,6 +42,7 @@ export function createExpand(view: View, wins: Windows): Expand {
   let open: { win: HTMLElement; ph: HTMLElement } | null = null;
   let anim: Animation | null = null;
   const changed: ((win: HTMLElement, on: boolean) => void)[] = [];
+  const restoring: ((win: HTMLElement) => void)[] = [];
 
   // R5: reduced motion turned on mid-animation: the end state at once
   matchMedia(REDUCE).addEventListener("change", (e) => {
@@ -118,6 +121,7 @@ export function createExpand(view: View, wins: Windows): Expand {
   return {
     current: () => open?.win ?? null,
     onChange: (cb) => void changed.push(cb),
+    onRestore: (cb) => void restoring.push(cb),
     expand(win, instant = false) {
       if (open || anim) return;
       const id = win.dataset.win!;
@@ -150,6 +154,7 @@ export function createExpand(view: View, wins: Windows): Expand {
   function restoreIt(): void {
     if (!open || anim) return;
     const { win, ph } = open;
+    for (const cb of restoring) cb(win);
     open = null;
     label(win, false);
     // play back to the placeholder's rect, then move the node home

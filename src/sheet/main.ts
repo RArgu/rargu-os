@@ -18,6 +18,7 @@ import {
   type Mode,
 } from "./tabs";
 import { createExpand } from "./expand";
+import { initHistory } from "./history";
 import { initRead } from "./read";
 import { initToolEvents } from "./tool-events";
 import { mount as mountPentimento } from "./demos/pentimento";
@@ -160,9 +161,13 @@ mountPentimento($('[data-win="pentimento"] .demo-area'), view.stop);
 const expand = createExpand(view, wins);
 for (const b of document.querySelectorAll<HTMLElement>(".bar .expand")) {
   const w = b.closest<HTMLElement>("[data-win]")!;
-  b.addEventListener("click", () =>
-    expand.current() === w ? expand.restore() : expand.expand(w),
-  );
+  b.addEventListener("click", () => {
+    // R4, R20: the control keeps the focus (WebKit does not focus a button
+    // on a click)
+    view.navFocus(b);
+    if (expand.current() === w) expand.restore();
+    else expand.expand(w);
+  });
 }
 // 013 R3: on a phone Read also expands; Restore there goes back to the
 // mode before Read (R20)
@@ -186,6 +191,8 @@ if (openId && openMode === "read") {
   select(w, "read");
   view.navFocus(w.querySelector<HTMLElement>(".r-title")!);
 }
+// 013 R20: the URL follows Read (after the direct entry's own Read above)
+initHistory(view, expand, wins.pos);
 
 // 013 R6: a demo animates only while its Demo panel is shown, and, while a
 // window is expanded, only in that window

@@ -65,3 +65,23 @@ test("R2.a, R3.b: on a phone Read expands to the viewport; Restore shows Demo ag
   );
   await expect(w.locator(".demo-area")).toBeVisible();
 });
+
+test("R20 row 3 (phone): Restore from Read goes back to / and the mode before", async ({
+  page,
+}) => {
+  await page.goto(sheet());
+  const w = page.locator('[data-win="crawler"]');
+  await page.evaluate(() =>
+    document.querySelector<HTMLElement>('#card [data-go="crawler"]')!.click(),
+  );
+  await page.waitForTimeout(500);
+  await w.getByRole("tab", { name: "Read" }).tap();
+  await expect.poll(() => new URL(page.url()).pathname).toBe("/p/crawler/");
+  await expect
+    .poll(() => page.evaluate(() => document.getAnimations().length))
+    .toBe(0);
+  await w.locator(".bar .expand").tap();
+  await expect.poll(() => new URL(page.url()).pathname).toBe("/");
+  await expect(w).toHaveAttribute("data-mode", "demo");
+  await expect(w.locator(".bar .expand")).toBeFocused();
+});

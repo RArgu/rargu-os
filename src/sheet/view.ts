@@ -61,7 +61,7 @@ export interface View {
   /** Stops the zoom animation, the paper's glide and a navigation pan. */
   stop(): void;
   /** Pans so the sheet rect is centred in the view beside the card (R12). */
-  panTo(x: number, y: number, w: number, h: number): void;
+  panTo(x: number, y: number, w: number, h: number, instant?: boolean): void;
   /** panTo, only if the sheet rect is not wholly in the view beside the card (R19). */
   reveal(x: number, y: number, w: number, h: number, instant?: boolean): void;
   /** Focuses `el` for the card's navigation: no scroll and no reveal, the

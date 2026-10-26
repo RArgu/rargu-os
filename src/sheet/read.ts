@@ -1,6 +1,7 @@
 // Spec 013 R3, R8: the Read panel. It scrolls itself (readme.css: overscroll
 // and touch; view.ts leaves its keys and touches alone). Its section nav
 // scrolls the panel, not the sheet, and marks the section in view.
+import { onMode } from "./tabs";
 import { reduced } from "./view";
 
 /** The section in view: the last H2 at or above the line under the nav. */
@@ -68,6 +69,15 @@ export function initRead(): void {
           : a.removeAttribute("aria-current"),
       );
     };
+    // R20: a hidden panel loses its scroll position; Read gets it back
+    let kept = 0;
+    area.addEventListener("scroll", () => (kept = area.scrollTop), {
+      passive: true,
+    });
+    const win = area.closest<HTMLElement>("[data-win]")!;
+    onMode((w, mode) => {
+      if (w === win && mode === "read") area.scrollTop = kept;
+    });
     area.addEventListener("scroll", mark, { passive: true });
     area.addEventListener("keydown", (e) => {
       const t = e.target as HTMLElement;

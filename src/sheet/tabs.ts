@@ -34,7 +34,7 @@ export function select(win: HTMLElement, mode: Mode, focus = false): void {
     const on = t.dataset.mode === mode;
     t.setAttribute("aria-selected", `${on}`);
     t.tabIndex = on ? 0 : -1;
-    if (on && focus) t.focus();
+    if (on && focus) t.focus({ preventScroll: true });
   }
   for (const m of ["demo", "try", "read"] as const) {
     const p = panelOf(win, m);
@@ -76,7 +76,9 @@ export function initTabs(): void {
     refresh(win);
     strip.addEventListener("click", (e) => {
       const t = (e.target as Element).closest<HTMLElement>("[role=tab]");
-      if (t) select(win, t.dataset.mode as Mode);
+      // R20: the pressed tab has the focus (WebKit does not focus a button
+      // on a click)
+      if (t) select(win, t.dataset.mode as Mode, true);
     });
     // arrows move and select (wrapping), Home and End go to the ends; the
     // sheet does not pan (view.ts skips a key whose default is prevented)

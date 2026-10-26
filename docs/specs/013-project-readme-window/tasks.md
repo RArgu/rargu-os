@@ -80,7 +80,7 @@ a tool registers.
     trailing-slash redirect, 404). `npm run e2e` (R4.c).
   - Files: `scripts/build-p-pages.ts`, `package.json` (build script), `scripts/sheet-guard.ts`, `src/sheet/main.ts`,
     `tests/e2e/routing-p-pages.spec.ts`.
-- [ ] **T10** History transitions [local] (R20)
+- [x] **T10** History transitions [local] (R20)
   - Acceptance: every row of the R20 table gives the stated mode, expansion, URL and focus, including Back and
     Forward and direct entry.
   - Verify: `npm run e2e` (R20.a, one case per row); `npm run e2e:all` for the Back/Forward cases in WebKit.
