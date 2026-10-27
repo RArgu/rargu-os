@@ -1,5 +1,6 @@
 """Rebuild the RArgu OS mock: python3 -I docs/mockups/rargu-os-src/build.py [output-name.html]
-Default output: rargu-os-v0.7.html (spec 004 T1). v0.6 builds from rargu-os-src-v0.6/. A new mock version passes its
+Default output: rargu-os-v0.8.html (spec 014 T5: v0.7 with coloured stack chips). v0.7 builds from
+rargu-os-src-v0.7/, v0.6 from rargu-os-src-v0.6/. A new mock version passes its
 own name and must not overwrite an older file.
 Joins part1.html + part2.js + reused.js + part3.js and inlines the Pixel Operator fonts, the Castle Wars sprite
 sheets, the CastleSiege piece masks and the app icons, so the mock is one self-contained HTML file."""
@@ -17,7 +18,7 @@ for n in ['swordsman', 'spearman', 'hammerman', 'archer', 'knight', 'wizard']:
 t = t.replace('__SPRITES__', json.dumps(sp)).replace('__MASKS__', open(os.path.join(HERE, 'masks.json')).read())
 for k, a in [('PAINT', 'paint'), ('MUSIC', 'tracker'), ('NOTES', 'writer')]:
     t = t.replace(f'__ICON_{k}__', 'data:image/png;base64,' + b64(R + f'src/apps/{a}/icon.png'))
-DEFAULT = 'rargu-os-v0.7.html'
+DEFAULT = 'rargu-os-v0.8.html'
 name = sys.argv[1] if len(sys.argv) > 1 else DEFAULT
 out = os.path.join(HERE, '..', name)
 if name != DEFAULT and os.path.exists(out):

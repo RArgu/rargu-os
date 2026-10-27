@@ -29,7 +29,7 @@ fail, then implement (`ponytail`), then run `npm run lint`, `npm test` and the n
     expected background and ≥ 4.5:1 text, in light, dark and light again with no reload; print removes backgrounds.
   - Verify: `npm run e2e` (R4.a, R5.a, R5.b, R9.a); `npm run e2e:all` for the new file.
   - Files: `tests/e2e/stack-chips.spec.ts`, `tests/e2e/compact-stack-chips.spec.ts`.
-- [ ] **T5** Mock v0.8 (R11)
+- [x] **T5** Mock v0.8 (R11)
   - Acceptance: the v0.7 sources are frozen as `docs/mockups/rargu-os-src-v0.7/` (they still build the v0.7 hash);
     `rargu-os-src/` builds `rargu-os-v0.8.html` with only the chips changed (colours and the split chips);
     `docs/mockups/README.md` names v0.8 as current with its hash.
