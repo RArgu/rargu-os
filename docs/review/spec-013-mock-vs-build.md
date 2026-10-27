@@ -37,3 +37,8 @@ Motion (FLIP, reduced motion) was judged by the e2e tests, not by eye. Firefox a
 (their e2e passed). Touch was tested in e2e only. Text is fixture text; real write-ups come with 011/012 (T15, T16).
 No owner review of this list yet: per the skill, fixes D1 and D2 are small token and behaviour defects against
 R14 and R8, so they were fixed before showing.
+
+### Owner review
+
+2026-10-26 — The owner approved the preview ("Preview approved, looks good"), relayed by the orchestrator. This covers
+the list above (L1–L3, D1 and D2 fixed). No gate is approved by this.
