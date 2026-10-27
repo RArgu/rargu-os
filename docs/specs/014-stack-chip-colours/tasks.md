@@ -4,7 +4,7 @@ Ordered by dependency. Check a box only after its verification has run. Each tas
 fail, then implement (`ponytail`), then run `npm run lint`, `npm test` and the named e2e (under the shared e2e lock,
 `CI=1`). No new dependency, no network from the site or the build.
 
-- [ ] **T1** Colour table, sources and checks (R1, R2, R8)
+- [x] **T1** Colour table, sources and checks (R1, R2, R8)
   - Acceptance: `content/stack-colours.json` with every chip of the sheet's projects and the 011/012 candidates, each
     a sourced colour, a one-hop `same` or a neutral; the header with Linguist and Simple Icons provenance;
     `content/licences/linguist-LICENSE.txt` at the pinned commit. `scripts/stack-colours.ts` loads and checks it:
