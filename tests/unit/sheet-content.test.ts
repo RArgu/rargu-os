@@ -310,7 +310,23 @@ const PAIRS: [string, string, number][] = [
   // 005 Pentimento: the sketch line on the window, the footer
   ["ink-dim", "win-bg", 4.5],
   ["ink", "paper-2", 4.5],
+  // 013 R10, R14: the active diagram box's outline on the window
+  ["accent", "win-bg", 3],
+  // 013 R8: the current section's chip border, and the panel's focus ring
+  ["accent", "chip", 3],
 ];
+
+describe("013 R14 lines in the Read panel", () => {
+  it("use --ink, not --outline (dark --outline on --win-bg is under 3:1)", () => {
+    const css = readFileSync(
+      join(root, "src/sheet/readme.css"),
+      "utf8",
+    ).replace(/\/\*[\s\S]*?\*\//g, "");
+    expect(css).not.toMatch(/var\(--outline\)/);
+    const t = themes().dark;
+    expect(contrast(t.outline, t["win-bg"])).toBeLessThan(3);
+  });
+});
 
 describe("R18.a contrast table", () => {
   // 005 Pentimento: the command panel's own colours (pentimento.css), the

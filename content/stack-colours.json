@@ -1,0 +1,243 @@
+{
+  "_meta": {
+    "about": "Spec 014: one colour per stack chip. Languages: GitHub Linguist (MIT, see content/licences/linguist-LICENSE.txt). Other tools: their own brand colour, with the source per entry. Keys are the exact chip text.",
+    "linguist": {
+      "release": "v9.7.0",
+      "commit": "e0c78d62c42abae6122235d8e68a7aa43eef89da",
+      "file": "lib/linguist/languages.yml",
+      "licence": "MIT, Copyright (c) 2017 GitHub, Inc.",
+      "read": "2026-10-26"
+    },
+    "simpleIcons": {
+      "version": "16.36.0",
+      "commit": "90646e4bf7f3b89df6c37e65baf3e7bc759a517c",
+      "file": "data/simple-icons.json",
+      "licence": "CC0-1.0",
+      "read": "2026-10-26"
+    }
+  },
+  "TypeScript": {
+    "colour": "#3178c6",
+    "source": "https://github.com/github-linguist/linguist/blob/e0c78d62c42abae6122235d8e68a7aa43eef89da/lib/linguist/languages.yml",
+    "revision": "Linguist v9.7.0, commit e0c78d62c42abae6122235d8e68a7aa43eef89da",
+    "detail": "languages.yml: TypeScript, color"
+  },
+  "Python": {
+    "colour": "#3572A5",
+    "source": "https://github.com/github-linguist/linguist/blob/e0c78d62c42abae6122235d8e68a7aa43eef89da/lib/linguist/languages.yml",
+    "revision": "Linguist v9.7.0, commit e0c78d62c42abae6122235d8e68a7aa43eef89da",
+    "detail": "languages.yml: Python, color"
+  },
+  "Swift": {
+    "colour": "#F05138",
+    "source": "https://github.com/github-linguist/linguist/blob/e0c78d62c42abae6122235d8e68a7aa43eef89da/lib/linguist/languages.yml",
+    "revision": "Linguist v9.7.0, commit e0c78d62c42abae6122235d8e68a7aa43eef89da",
+    "detail": "languages.yml: Swift, color"
+  },
+  "Metal": {
+    "colour": "#8f14e9",
+    "source": "https://github.com/github-linguist/linguist/blob/e0c78d62c42abae6122235d8e68a7aa43eef89da/lib/linguist/languages.yml",
+    "revision": "Linguist v9.7.0, commit e0c78d62c42abae6122235d8e68a7aa43eef89da",
+    "detail": "languages.yml: Metal, color"
+  },
+  "HTML": {
+    "colour": "#e34c26",
+    "source": "https://github.com/github-linguist/linguist/blob/e0c78d62c42abae6122235d8e68a7aa43eef89da/lib/linguist/languages.yml",
+    "revision": "Linguist v9.7.0, commit e0c78d62c42abae6122235d8e68a7aa43eef89da",
+    "detail": "languages.yml: HTML, color"
+  },
+  "CSS": {
+    "colour": "#663399",
+    "source": "https://github.com/github-linguist/linguist/blob/e0c78d62c42abae6122235d8e68a7aa43eef89da/lib/linguist/languages.yml",
+    "revision": "Linguist v9.7.0, commit e0c78d62c42abae6122235d8e68a7aa43eef89da",
+    "detail": "languages.yml: CSS, color"
+  },
+  "GraphQL": {
+    "colour": "#e10098",
+    "source": "https://github.com/github-linguist/linguist/blob/e0c78d62c42abae6122235d8e68a7aa43eef89da/lib/linguist/languages.yml",
+    "revision": "Linguist v9.7.0, commit e0c78d62c42abae6122235d8e68a7aa43eef89da",
+    "detail": "languages.yml: GraphQL, color"
+  },
+  "JavaScript": {
+    "colour": "#f1e05a",
+    "source": "https://github.com/github-linguist/linguist/blob/e0c78d62c42abae6122235d8e68a7aa43eef89da/lib/linguist/languages.yml",
+    "revision": "Linguist v9.7.0, commit e0c78d62c42abae6122235d8e68a7aa43eef89da",
+    "detail": "languages.yml: JavaScript, color"
+  },
+  "Swift 6": {
+    "same": "Swift",
+    "reason": "Swift 6 is a version of the Swift language"
+  },
+  "asyncio": {
+    "same": "Python",
+    "reason": "part of Python's standard library (owner, 2026-10-26)"
+  },
+  "Requests": {
+    "same": "Python",
+    "reason": "a Python library with no brand colour (owner, 2026-10-26)"
+  },
+  "Pillow": {
+    "same": "Python",
+    "reason": "a Python library; its logo is white and grey only (owner, 2026-10-26)"
+  },
+  "WebSocket": {
+    "same": "JavaScript",
+    "reason": "a web platform API with no brand colour; parent JavaScript (owner, 2026-10-26)"
+  },
+  "Canvas": {
+    "same": "JavaScript",
+    "reason": "the HTML canvas API, no brand colour; parent JavaScript (owner, 2026-10-26)"
+  },
+  "Web Workers": {
+    "same": "JavaScript",
+    "reason": "a web platform API with no brand colour; parent JavaScript (owner, 2026-10-26)"
+  },
+  "AppKit": {
+    "same": "Swift",
+    "reason": "Apple has no per-framework colour; parent Swift (owner, 2026-10-26)"
+  },
+  "GDELT": {
+    "neutral": true,
+    "reason": "its site uses greys only and it has no parent (owner, 2026-10-26)"
+  },
+  "Aseprite": {
+    "colour": "#7D929E",
+    "source": "https://www.aseprite.org/assets/css/aseprite.css?v=40",
+    "revision": "read 2026-10-26",
+    "detail": "the most used non-white colour in the site CSS (15 uses); Simple Icons 'aseprite' agrees"
+  },
+  "Claude Agent SDK": {
+    "colour": "#D97757",
+    "source": "https://claude.ai/favicon.svg",
+    "revision": "read 2026-10-26",
+    "detail": "path fill; Simple Icons 'claude' agrees"
+  },
+  "Anthropic API": {
+    "colour": "#141413",
+    "source": "https://www.anthropic.com",
+    "revision": "read 2026-10-26",
+    "detail": "<meta name=\"theme-color\">; strict own brand (owner, 2026-10-26)"
+  },
+  "React Native": {
+    "colour": "#61DAFB",
+    "source": "https://reactnative.dev/img/header_logo.svg",
+    "revision": "read 2026-10-26",
+    "detail": "fill; Simple Icons 'react' agrees"
+  },
+  "Expo": {
+    "colour": "#1C2024",
+    "source": "https://expo.dev/brand/",
+    "revision": "Simple Icons 16.36.0, commit 90646e4bf7f3b89df6c37e65baf3e7bc759a517c, data/simple-icons.json",
+    "detail": "Simple Icons entry 'expo' (hex), which cites this source"
+  },
+  "Node.js": {
+    "colour": "#5FA04E",
+    "source": "https://nodejs.org/en/about/branding",
+    "revision": "Simple Icons 16.36.0, commit 90646e4bf7f3b89df6c37e65baf3e7bc759a517c, data/simple-icons.json",
+    "detail": "Simple Icons entry 'nodedotjs' (hex), which cites this source"
+  },
+  "PostgreSQL": {
+    "colour": "#4169E1",
+    "source": "https://wiki.postgresql.org/wiki/Logo",
+    "revision": "Simple Icons 16.36.0, commit 90646e4bf7f3b89df6c37e65baf3e7bc759a517c, data/simple-icons.json",
+    "detail": "Simple Icons entry 'postgresql' (hex), which cites this source"
+  },
+  "Fly.io": {
+    "colour": "#24175B",
+    "source": "https://fly.io/docs/about/brand",
+    "revision": "Simple Icons 16.36.0, commit 90646e4bf7f3b89df6c37e65baf3e7bc759a517c, data/simple-icons.json",
+    "detail": "Simple Icons entry 'flydotio' (hex), which cites this source"
+  },
+  "Docker": {
+    "colour": "#2496ED",
+    "source": "https://www.docker.com/company/newsroom/media-resources",
+    "revision": "Simple Icons 16.36.0, commit 90646e4bf7f3b89df6c37e65baf3e7bc759a517c, data/simple-icons.json",
+    "detail": "Simple Icons entry 'docker' (hex), which cites this source"
+  },
+  "Ollama": {
+    "colour": "#000000",
+    "source": "https://github.com/ollama/ollama/issues/2152#issuecomment-1905286922",
+    "revision": "Simple Icons 16.36.0, commit 90646e4bf7f3b89df6c37e65baf3e7bc759a517c, data/simple-icons.json",
+    "detail": "Simple Icons entry 'ollama' (hex), which cites this source"
+  },
+  "scikit-learn": {
+    "colour": "#F7931E",
+    "source": "https://github.com/scikit-learn/scikit-learn/blob/c5ef2e9/doc/logos/scikit-learn-logo.svg",
+    "revision": "Simple Icons 16.36.0, commit 90646e4bf7f3b89df6c37e65baf3e7bc759a517c, data/simple-icons.json",
+    "detail": "Simple Icons entry 'scikitlearn' (hex), which cites this source"
+  },
+  "Pandas": {
+    "colour": "#150458",
+    "source": "https://pandas.pydata.org/about/citing.html",
+    "revision": "Simple Icons 16.36.0, commit 90646e4bf7f3b89df6c37e65baf3e7bc759a517c, data/simple-icons.json",
+    "detail": "Simple Icons entry 'pandas' (hex), which cites this source"
+  },
+  "Matplotlib": {
+    "colour": "#11557C",
+    "source": "https://raw.githubusercontent.com/matplotlib/matplotlib/main/doc/_static/logo2.svg",
+    "revision": "read 2026-10-26",
+    "detail": "fill:#11557c (10 uses)"
+  },
+  "Playwright": {
+    "colour": "#2EAD33",
+    "source": "https://playwright.dev/img/playwright-logo.svg",
+    "revision": "read 2026-10-26",
+    "detail": "the green of the three logo fills (#2D4552, #E2574C, #2EAD33)"
+  },
+  "Chromium": {
+    "colour": "#1A73E8",
+    "source": "https://raw.githubusercontent.com/chromium/chromium/main/chrome/app/theme/chromium/product_logo.svg",
+    "revision": "read 2026-10-26",
+    "detail": "the main fill of four blues"
+  },
+  "PySpark": {
+    "colour": "#E25A1C",
+    "source": "https://apache.org/logos",
+    "revision": "Simple Icons 16.36.0, commit 90646e4bf7f3b89df6c37e65baf3e7bc759a517c, data/simple-icons.json",
+    "detail": "Simple Icons entry 'apachespark' (hex), which cites this source"
+  },
+  "Spark SQL": {
+    "same": "PySpark",
+    "reason": "an Apache Spark component; no colour of its own"
+  },
+  "Spark MLlib": {
+    "same": "PySpark",
+    "reason": "an Apache Spark component; no colour of its own"
+  },
+  "BigQuery": {
+    "colour": "#669DF6",
+    "source": "https://cloud.google.com/icons",
+    "revision": "Simple Icons 16.36.0, commit 90646e4bf7f3b89df6c37e65baf3e7bc759a517c, data/simple-icons.json",
+    "detail": "Simple Icons entry 'googlebigquery' (hex), which cites this source"
+  },
+  "Cloudflare Workers": {
+    "colour": "#F38020",
+    "source": "https://www.cloudflare.com/logo/",
+    "revision": "Simple Icons 16.36.0, commit 90646e4bf7f3b89df6c37e65baf3e7bc759a517c, data/simple-icons.json",
+    "detail": "Simple Icons entry 'cloudflareworkers' (hex), which cites this source"
+  },
+  "Workers AI": {
+    "same": "Cloudflare Workers",
+    "reason": "a Cloudflare product with no colour of its own"
+  },
+  "Turnstile": {
+    "same": "Cloudflare Workers",
+    "reason": "a Cloudflare product with no colour of its own"
+  },
+  "D1": {
+    "same": "Cloudflare Workers",
+    "reason": "a Cloudflare product with no colour of its own"
+  },
+  "DuckDB": {
+    "colour": "#FFF000",
+    "source": "https://duckdb.org",
+    "revision": "Simple Icons 16.36.0, commit 90646e4bf7f3b89df6c37e65baf3e7bc759a517c, data/simple-icons.json",
+    "detail": "Simple Icons entry 'duckdb' (hex), which cites this source"
+  },
+  "Polymarket Data API": {
+    "colour": "#2E5CFF",
+    "source": "https://polymarket.com/brand",
+    "revision": "read 2026-10-26",
+    "detail": "logo tile bg-[#2E5CFF]"
+  }
+}

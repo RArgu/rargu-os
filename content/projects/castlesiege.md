@@ -2,7 +2,7 @@
 title: CastleSiege
 short: CastleSiege
 year: 2026
-stack: [TypeScript, React Native / Expo, Node.js, WebSocket, PostgreSQL, Web Workers, Fly.io / Docker]
+stack: [TypeScript, React Native, Expo, Node.js, WebSocket, PostgreSQL, Web Workers, Fly.io, Docker]
 links: [https://castlesiege.fly.dev]
 app: castlesiege
 status: playable

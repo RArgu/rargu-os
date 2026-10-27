@@ -1,6 +1,7 @@
 // RArgu OS sheet entry (spec 001). No old-OS code: not even tokens.css, whose
 // shared chunk changed how `/` loads its CSS (R1).
 import "./sheet.css";
+import "./readme.css";
 import hostUrl from "virtual:host-url";
 import { cancel as cancelGesture, claim, free } from "./gestures";
 import { reloadCss } from "./host/css-retry";
@@ -8,6 +9,19 @@ import { showFailure } from "./host/failure";
 import { LAYOUT } from "./layout";
 import { createView, PHONE } from "./view";
 import { createWindows } from "./windows";
+import {
+  initTabs,
+  modeOf,
+  onMode,
+  registerTool,
+  select,
+  type Mode,
+} from "./tabs";
+import { createExpand } from "./expand";
+import { initHistory } from "./history";
+import { initRead } from "./read";
+import { initToolEvents } from "./tool-events";
+import { initCaseStudies } from "./case-studies";
 import { mount as mountPentimento } from "./demos/pentimento";
 import * as castlewars from "./demos/castlewars";
 import * as crawler from "./demos/crawler";
@@ -50,6 +64,18 @@ const view = createView(() =>
   }),
 );
 const wins = createWindows(view);
+
+// 013 R1: the Demo · Try · Read tabs (test builds: a fixture tool can
+// register through `__registerTool`)
+// 013 R13: the no-JavaScript link to a write-up's page; the Read tab
+// replaces it
+for (const a of document.querySelectorAll(".nojs-read")) a.remove();
+initTabs();
+initRead();
+initToolEvents();
+initCaseStudies();
+if (import.meta.env.MODE === "e2e")
+  Object.assign(window, { __registerTool: registerTool });
 
 // R7.a: pressing anywhere in a window brings it to the front
 let top = 0;
@@ -136,7 +162,53 @@ mountPentimento($('[data-win="pentimento"] .demo-area'), view.stop);
 // spec 005 R3, R4: Castle Wars loads when it first comes near the view or is
 // used (a press in it, focus into it, the card's link), and animates only
 // while it is in the view and the tab is visible
-const seen = createVisibility(view, wins, $("#vp"));
+// 013 R2: Expand and Restore in each project window's title bar
+const expand = createExpand(view, wins);
+for (const b of document.querySelectorAll<HTMLElement>(".bar .expand")) {
+  const w = b.closest<HTMLElement>("[data-win]")!;
+  b.addEventListener("click", () => {
+    // R4, R20: the control keeps the focus (WebKit does not focus a button
+    // on a click)
+    view.navFocus(b);
+    if (expand.current() === w) expand.restore();
+    else expand.expand(w);
+  });
+}
+// 013 R3: on a phone Read also expands; Restore there goes back to the
+// mode before Read (R20)
+onMode((w, mode, was) => {
+  if (mode !== "read" || !matchMedia(PHONE).matches || expand.current()) return;
+  w.dataset.before = was;
+  expand.expand(w);
+});
+expand.onChange((w, on) => {
+  if (on || !w.dataset.before) return;
+  select(w, w.dataset.before as Mode);
+  delete w.dataset.before;
+});
+
+// 013 R12: a /p/<id>/ page opens that window expanded in Read, with the
+// focus on the write-up's title (R4)
+const [openId, openMode] = (document.body.dataset.open ?? "").split(":");
+if (openId && openMode === "read") {
+  const w = $(`[data-win="${openId}"]`);
+  expand.expand(w, true);
+  select(w, "read");
+  view.navFocus(w.querySelector<HTMLElement>(".r-title")!);
+}
+// 013 R20: the URL follows Read (after the direct entry's own Read above)
+initHistory(view, expand, wins.pos);
+
+// 013 R6: a demo animates only while its Demo panel is shown, and, while a
+// window is expanded, only in that window
+const seen = createVisibility(view, wins, $("#vp"), (id) => {
+  const w = $(`[data-win="${id}"]`);
+  const open = expand.current();
+  if ((open && open !== w) || modeOf(w) !== "demo") return false;
+  return open ? "expanded" : true;
+});
+onMode(() => seen.check());
+expand.onChange(() => seen.check());
 const cw = $('[data-win="castlewars"]');
 const cwMount = () =>
   castlewars.mount(cw.querySelector(".demo-area")!, view.stop);

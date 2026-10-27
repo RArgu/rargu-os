@@ -1,13 +1,16 @@
 // R11 / R14: the overlay card, written into index.html at build time from
 // content/identity.json, and the project data as `virtual:sheet-projects`,
 // read from an ordered allowlist of content/projects/*.md.
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { basename, join, resolve } from "node:path";
 import type { Plugin } from "vite";
 import { parseFrontmatter } from "../src/apps/resume/doc.ts";
 import { LAYOUT } from "../src/sheet/layout.ts";
 import { UNITS } from "./castlewars-frames.ts";
 import { requireSheetPage, SHEET_PAGE } from "./sheet-guard.ts";
+import { writeup, type Writeup } from "./writeup.ts";
+import { STAGES } from "../src/sheet/stages.ts";
+import { chipColours, colourOf, loadColours } from "./stack-colours.ts";
 import { STRATEGIES } from "../src/sheet/demos/crawler-data.ts";
 import {
   FLAG_MIN,
@@ -49,12 +52,32 @@ export interface Project {
   summary: string;
   stack: string[];
   links: string[];
+  /** 013: only with `writeup: true` (build side; not in the virtual module) */
+  writeup?: Writeup;
+  /** 013 R18: `<id>-case-studies.json`, checked, when the write-up has one */
+  cases?: Cases;
 }
 
-export function loadProjects(dir = join(root, "content/projects")): Project[] {
+/** 013 R18: case studies shown as in the report, loaded by the page. */
+export interface Cases {
+  cases: { heading: string; paragraphs: string[] }[];
+}
+
+/** `overlay`: a folder whose `<file>.md` adds its frontmatter fields and
+ * replaces the body (013: the e2e build's fixture write-ups,
+ * tests/fixtures/writeups). */
+export function loadProjects(
+  dir = join(root, "content/projects"),
+  overlay?: string,
+): Project[] {
   return ALLOWLIST.map(([file, id]) => {
     const path = join(dir, `${file}.md`);
-    const { meta } = parseFrontmatter(readFileSync(path, "utf8"));
+    const parsed = parseFrontmatter(readFileSync(path, "utf8"));
+    const own = overlay && join(overlay, `${file}.md`);
+    const over =
+      own && existsSync(own) && parseFrontmatter(readFileSync(own, "utf8"));
+    const meta = over ? { ...parsed.meta, ...over.meta } : parsed.meta;
+    const body = over ? over.body : parsed.body;
     const fail = (field: string): never => {
       throw new Error(`${basename(path)}: bad or missing "${field}"`);
     };
@@ -70,6 +93,8 @@ export function loadProjects(dir = join(root, "content/projects")): Project[] {
       return Array.isArray(v) ? v : fail(field);
     };
     const links = list("links");
+    // 014 R2: every chip has a colour entry, or the build fails
+    for (const c of list("stack")) colourOf(colours(), c, basename(path));
     if (!links.every(isWeb)) fail("links");
     const status = text("status");
     if (!Object.hasOwn(STATUS, status)) fail("status");
@@ -84,8 +109,78 @@ export function loadProjects(dir = join(root, "content/projects")): Project[] {
       summary: text("summary"),
       stack: list("stack"),
       links,
+      ...(meta.writeup === "true" && {
+        writeup: writeup(id, meta, body, diagram(file, dir, overlay), (why) => {
+          throw new Error(`${basename(path)}: write-up: ${why}`);
+        }),
+        cases: cases(id, dir, overlay),
+      }),
     };
   });
+}
+
+/** 013 R18: the checked `<id>-case-studies.json` (the overlay's first), or
+ * undefined when there is none. */
+function cases(id: string, dir: string, overlay?: string): Cases | undefined {
+  const name = `${id}-case-studies.json`;
+  const path = [overlay && join(overlay, name), join(dir, name)].find(
+    (p) => p && existsSync(p),
+  );
+  if (!path) return undefined;
+  const bad = (why: string): never => {
+    throw new Error(`${name}: ${why}`);
+  };
+  let d: Cases;
+  try {
+    d = JSON.parse(readFileSync(path, "utf8"));
+  } catch (e) {
+    return bad(`bad JSON (${(e as Error).message})`);
+  }
+  const str = (v: unknown) => typeof v === "string" && v.trim() !== "";
+  if (!Array.isArray(d?.cases) || !d.cases.length) bad("no cases");
+  d.cases.forEach((c, i) => {
+    if (!str(c?.heading)) bad(`case ${i + 1} has no heading`);
+    if (
+      !Array.isArray(c.paragraphs) ||
+      !c.paragraphs.length ||
+      !c.paragraphs.every(str)
+    )
+      bad(`case ${i + 1} needs paragraphs of text`);
+  });
+  return {
+    cases: d.cases.map((c) => ({
+      heading: c.heading,
+      paragraphs: c.paragraphs,
+    })),
+  };
+}
+
+/** 013 R9: the parsed `diagrams/<file>.json` (the overlay's first), or
+ * undefined when there is none. */
+function diagram(file: string, dir: string, overlay?: string): unknown {
+  const name = join("diagrams", `${file}.json`);
+  const path = [overlay && join(overlay, name), join(dir, name)].find(
+    (p) => p && existsSync(p),
+  );
+  if (!path) return undefined;
+  try {
+    return JSON.parse(readFileSync(path, "utf8"));
+  } catch (e) {
+    throw new Error(`${name}: bad JSON (${(e as Error).message})`);
+  }
+}
+
+// 014: the stack chips' colours, loaded and checked once per run
+let table: ReturnType<typeof loadColours> | undefined;
+const colours = () => (table ??= loadColours());
+let tints: ReturnType<typeof chipColours> | undefined;
+
+/** 014 R4: a stack chip with its light and dark backgrounds (the same for
+ * the same text everywhere, R8); a neutral chip keeps --chip. */
+function chip(name: string): string {
+  const t = (tints ??= chipColours(colours())).get(name);
+  const style = t ? ` style="--chip-l:${t.light};--chip-d:${t.dark}"` : "";
+  return `<span class="chip"${style}>${esc(name)}</span>`;
 }
 
 /** Content links must be web links: no javascript: or data: URLs. */
@@ -242,10 +337,51 @@ const DEMO: Record<string, (demoH: number) => string> = {
   insider: insiderArea,
 };
 
+/** 013 R8: the Read panel: title block, lede, section nav and the body.
+ * Hidden until its tab opens it (main.ts) or a /p/ page shows it. */
+/** 013 R18, R19: the notice above the case studies (in the page HTML) and
+ * their container; case-studies.ts loads them, with JavaScript only. */
+function casesHtml(id: string, email: string): string {
+  const mail = `<a href="mailto:${esc(email)}">${esc(email)}</a>`;
+  return `<div class="cases-wrap"><p class="cs-notice"><strong>These wallets were candidates from our course project's heuristics, not proof of insider trading.</strong> Figures are from our final report (2026-05-18). A market can be hidden at once. A case study below is removed with the next site update. We reply within 7 days. To ask for a correction or removal, email ${mail}. Copies already saved by others cannot be recalled.</p><div class="cases" data-nosnippet data-src="/p/${id}/case-studies.json"><p class="cases-state">The case studies need JavaScript.</p></div></div>`;
+}
+
+export function readPanel(
+  p: Project & { writeup: Writeup },
+  email: string,
+): string {
+  const ext = 'target="_blank" rel="noopener"';
+  const w = p.writeup;
+  const nav = w.anchors
+    .map((a) => `<a href="#${a.id}">${esc(a.text)}</a>`)
+    .join("");
+  return `<div class="read-area" id="${p.id}-read" hidden>
+        <header class="r-head"><h2 class="r-title" id="${p.id}-read-title" tabindex="-1">${esc(p.title)}</h2>
+          <p class="r-meta"><span class="yr">${esc(p.year)}</span><span class="status ${STATUS[p.status][1]}">${STATUS[p.status][0]}</span> <span class="r-role">${esc(w.role)}</span></p>
+          <p class="r-lede">${esc(w.lede)}</p>
+          <div class="meta">${p.stack.map(chip).join("")}${p.links.map((l) => `<a href="${esc(l)}" ${ext}>${esc(linkText(l, p.links))} ↗</a>`).join("")}</div>
+        </header>
+        <nav class="r-nav" aria-label="Sections">${nav}</nav>
+        <div class="r-body">${w.html}${p.cases ? casesHtml(p.id, email) : ""}</div>
+      </div>`;
+}
+
+/** 013 R1: a project window's tab strip, hidden until main.ts shows it
+ * (two or more modes). Try waits for a tool (tabs.ts registerTool); only
+ * windows with a tool's stage list (stages.ts) can get one. A window that
+ * can have one mode only gets no strip. */
+const hasTool = (p: Project) => p.id in STAGES;
+function tabs(p: Project): string {
+  if (!p.writeup && !hasTool(p)) return "";
+  const tab = (mode: string, label: string, on: boolean, hide: boolean) =>
+    `<button type="button" role="tab" id="${p.id}-tab-${mode}" aria-controls="${p.id}-${mode}" aria-selected="${on}" tabindex="${on ? 0 : -1}" data-mode="${mode}"${hide ? " hidden" : ""}>${label}</button>`;
+  return `<div class="tabs" role="tablist" aria-label="${esc(p.title)} view" hidden>${tab("demo", "Demo", true, false)}${hasTool(p) ? tab("try", "Try", false, true) : ""}${p.writeup ? tab("read", "Read", false, false) : ""}</div>`;
+}
+
 // R7 / R14: the eight windows at their home positions. The inline transform
 // shows the layout without JS; windows.ts owns it after start. R9: each title
 // bar has a Home control.
-function windows(projects: Project[]): string {
+function windows(projects: Project[], email: string): string {
   const ext = 'target="_blank" rel="noopener"';
   return LAYOUT.map((s) => {
     const p = projects.find((p) => p.id === s.id);
@@ -253,14 +389,14 @@ function windows(projects: Project[]): string {
     const about = p
       ? `<div class="about">
         <div class="phead"><h2>${esc(p.title)}</h2><span class="yr">${esc(p.year)}</span><span class="status ${STATUS[p.status][1]}">${STATUS[p.status][0]}</span></div>
-        <p class="blurb">${esc(p.summary)}</p>
-        <div class="meta">${p.stack.map((c) => `<span class="chip">${esc(c)}</span>`).join("")}${p.links.map((l) => `<a href="${esc(l)}" ${ext}>${esc(linkText(l, p.links))} ↗</a>`).join("")}</div>
+        <p class="blurb">${esc(p.summary)}</p>${p.writeup ? `<a class="nojs-read" href="/p/${p.id}/">Read the write-up</a>` : ""}
+        <div class="meta">${p.stack.map(chip).join("")}${p.links.map((l) => `<a href="${esc(l)}" ${ext}>${esc(linkText(l, p.links))} ↗</a>`).join("")}</div>
       </div>`
       : "";
     return `<section class="sheet-win" data-win="${s.id}" role="region" aria-label="${esc(name)}" style="width:${s.w}px;height:${s.h}px;transform:translate(${s.x}px, ${s.y}px)">
-      <div class="bar"><span class="grip" aria-hidden="true">⠿</span><span class="t">${esc(s.bar)}</span>${s.id === "crawler" ? CRAWLER_PAUSE : ""}${s.id === "insider" ? INSIDER_REPLAY : ""}<button type="button" class="home" aria-label="Send ${esc(name)} home">⌂</button></div>
+      <div class="bar"><span class="grip" aria-hidden="true">⠿</span><span class="t">${esc(s.bar)}</span>${s.id === "crawler" ? CRAWLER_PAUSE : ""}${s.id === "insider" ? INSIDER_REPLAY : ""}${p ? tabs(p) : ""}${p ? `<button type="button" class="expand" aria-label="Expand ${esc(name)}">⤢</button>` : ""}<button type="button" class="home" aria-label="Send ${esc(name)} home">⌂</button></div>
       ${about}
-      ${DEMO[s.id] ? DEMO[s.id](s.demoH) : `<div class="demo-area" style="height:${s.demoH}px" inert></div>`}${FOOT[s.id] ? `\n      <div class="wfoot">${esc(FOOT[s.id])}</div>` : ""}
+      ${DEMO[s.id] ? DEMO[s.id](s.demoH) : `<div class="demo-area" style="height:${s.demoH}px" inert></div>`}${FOOT[s.id] ? `\n      <div class="wfoot">${esc(FOOT[s.id])}</div>` : ""}${p && hasTool(p) ? `\n      <div class="try-area" hidden></div>` : ""}${p?.writeup ? `\n      ${readPanel({ ...p, writeup: p.writeup }, email)}` : ""}
     </section>`;
   }).join("\n");
 }
@@ -270,6 +406,7 @@ const VIRTUAL = "virtual:sheet-projects";
 export function sheetContent({
   identity = join(root, "content/identity.json"),
   projects = join(root, "content/projects"),
+  overlay = undefined as string | undefined,
 } = {}): Plugin {
   return {
     name: "sheet-content",
@@ -278,18 +415,23 @@ export function sheetContent({
       if (id !== `\0${VIRTUAL}`) return;
       for (const [file] of ALLOWLIST)
         this.addWatchFile(join(projects, `${file}.md`));
-      return `export default ${JSON.stringify(loadProjects(projects))};`;
+      // 013 R15: the write-ups are HTML in the page, not JS
+      const data = loadProjects(projects, overlay).map(
+        ({ writeup: _, cases: __, ...p }) => p,
+      );
+      return `export default ${JSON.stringify(data)};`;
     },
     // 007 R3: the card goes into the sheet's page; no page, no build
     buildStart: requireSheetPage("sheet-content"),
     transformIndexHtml(html, ctx) {
       if (!ctx.filename.endsWith(`/${SHEET_PAGE}`)) return html;
-      const list = loadProjects(projects);
+      const list = loadProjects(projects, overlay);
+      const id = readIdentity(identity);
       return (
         html
           // callbacks: a replacement string would expand $' and $& in content
-          .replace("<!-- card -->", () => card(readIdentity(identity), list))
-          .replace("<!-- windows -->", () => windows(list))
+          .replace("<!-- card -->", () => card(id, list))
+          .replace("<!-- windows -->", () => windows(list, id.email))
       );
     },
   };

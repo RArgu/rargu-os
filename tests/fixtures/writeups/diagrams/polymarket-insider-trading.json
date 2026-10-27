@@ -1,0 +1,89 @@
+{
+  "caption": "Fixture diagram for the 013 tests.",
+  "tiers": [
+    {
+      "boxes": [
+        {
+          "id": "visitor",
+          "label": "Browser",
+          "name": "Fixture visitor",
+          "keywords": "fixture \u00b7 browse \u00b7 request"
+        }
+      ]
+    },
+    {
+      "boxes": [
+        {
+          "id": "queue",
+          "label": "D1",
+          "name": "Fixture queue",
+          "keywords": "fixture \u00b7 waiting requests"
+        }
+      ],
+      "loop": {
+        "to": "visitor",
+        "text": "next night"
+      }
+    },
+    {
+      "boxes": [
+        {
+          "id": "market",
+          "label": "Gamma",
+          "name": "Fixture market",
+          "keywords": "fixture",
+          "stage": "market"
+        },
+        {
+          "id": "prices",
+          "label": "CLOB",
+          "name": "Fixture prices",
+          "keywords": "fixture",
+          "stage": "prices"
+        },
+        {
+          "id": "moves",
+          "label": "Rule",
+          "name": "Fixture sharp moves",
+          "keywords": "fixture",
+          "stage": "moves"
+        }
+      ]
+    },
+    {
+      "boxes": [
+        {
+          "id": "candidates",
+          "label": "Rule",
+          "name": "Fixture candidates",
+          "keywords": "fixture",
+          "stage": "candidates"
+        },
+        {
+          "id": "news",
+          "label": "GDELT",
+          "name": "Fixture news",
+          "keywords": "fixture",
+          "stage": "news"
+        },
+        {
+          "id": "score",
+          "label": "Rule",
+          "name": "Fixture score",
+          "keywords": "fixture",
+          "stage": "score"
+        }
+      ]
+    },
+    {
+      "boxes": [
+        {
+          "id": "store",
+          "label": "D1",
+          "name": "Fixture stored results",
+          "keywords": "fixture"
+        }
+      ]
+    }
+  ]
+}

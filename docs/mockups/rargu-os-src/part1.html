@@ -120,7 +120,9 @@ button{font:inherit;color:inherit}
 .status.live{border-color:var(--ok)} .status.wip{border-color:var(--warn)} .status.ph{border-color:var(--accent-2)}
 .blurb{margin:0;font-size:15px}
 .meta{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
-.chip{font-size:12px;padding:1px 7px;background:var(--chip);border-radius:2px}
+.chip{font-size:12px;padding:1px 7px;background:var(--chip-l,var(--chip));border-radius:2px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chip{background:var(--chip-d,var(--chip))}}
+:root[data-theme="dark"] .chip{background:var(--chip-d,var(--chip))}
 .meta a{font-size:13px;margin-left:4px}
 .wbody{padding:12px;min-width:0}
 .wfoot{border-top:2px solid var(--outline);background:var(--paper-2);font-family:var(--font-display);font-size:15px;padding:3px 10px 2px;display:flex;justify-content:space-between;gap:10px}
@@ -239,7 +241,7 @@ textarea#notes{width:100%;height:170px;resize:vertical;border:2px solid var(--ou
     <div class="about">
       <div class="phead"><h2>CastleSiege</h2><span class="yr">2026</span><span class="status live">Playable</span></div>
       <p class="blurb">Two-player turn-based strategy on a 7×9 board. Fewer pieces than chess, with mismatched move and attack ranges. Online with ranked matchmaking, or against a bot that runs in your browser.</p>
-      <div class="meta"><span class="chip">TypeScript</span><span class="chip">React Native / Expo</span><span class="chip">Node.js</span><span class="chip">WebSocket</span><span class="chip">PostgreSQL</span><a href="https://castlesiege.fly.dev" target="_blank" rel="noopener">castlesiege.fly.dev ↗</a></div>
+      <div class="meta"><span class="chip" style="--chip-l:#d8eaff;--chip-d:#153e6b">TypeScript</span><span class="chip" style="--chip-l:#c3f1ff;--chip-d:#004554">React Native</span><span class="chip" style="--chip-l:#e3e9ee;--chip-d:#393e42">Expo</span><span class="chip" style="--chip-l:#d0f4c7;--chip-d:#214816">Node.js</span><span class="chip" style="--chip-l:#f1eab4;--chip-d:#453e00">WebSocket</span><span class="chip" style="--chip-l:#dee8ff;--chip-d:#273a6c">PostgreSQL</span><a href="https://castlesiege.fly.dev" target="_blank" rel="noopener">castlesiege.fly.dev ↗</a></div>
     </div>
     <div class="wbody cs" style="flex:1">
       <canvas id="board" width="280" height="360" aria-label="CastleSiege board"></canvas>
@@ -258,7 +260,7 @@ textarea#notes{width:100%;height:170px;resize:vertical;border:2px solid var(--ou
     <div class="about">
       <div class="phead"><h2>Castle Wars</h2><span class="yr">2026</span><span class="status wip">In progress</span></div>
       <p class="blurb">An auto-battler set in CastleSiege's world. The units are hand-animated pixel art; the battle engine is next. These are the real sprite sheets.</p>
-      <div class="meta"><span class="chip">Aseprite</span><span class="chip">TypeScript</span><span class="chip">Canvas</span></div>
+      <div class="meta"><span class="chip" style="--chip-l:#d5ecf9;--chip-d:#2d404a">Aseprite</span><span class="chip" style="--chip-l:#d8eaff;--chip-d:#153e6b">TypeScript</span><span class="chip" style="--chip-l:#f1eab4;--chip-d:#453e00">Canvas</span></div>
     </div>
     <div class="wbody">
       <div class="tb" id="cwTabs" role="group" aria-label="Animation"></div>
@@ -273,7 +275,7 @@ textarea#notes{width:100%;height:170px;resize:vertical;border:2px solid var(--ou
     <div class="about">
       <div class="phead"><h2>Pentimento</h2><span class="yr">2026</span><span class="status wip">Planning</span></div>
       <p class="blurb">A native macOS raster editor in the spirit of Paint.NET, built so AI agents can drive it with real tools. It follows PaintDotMac, a Swift/Metal prototype whose compositor matched Paint.NET pixel for pixel.</p>
-      <div class="meta"><span class="chip">Swift 6</span><span class="chip">AppKit</span><span class="chip">Metal</span><span class="chip">Claude Agent SDK</span></div>
+      <div class="meta"><span class="chip" style="--chip-l:#ffe0d9;--chip-d:#64281d">Swift 6</span><span class="chip" style="--chip-l:#ffe0d9;--chip-d:#64281d">AppKit</span><span class="chip" style="--chip-l:#ede2ff;--chip-d:#473064">Metal</span><span class="chip" style="--chip-l:#ffe0d6;--chip-d:#632915">Claude Agent SDK</span></div>
     </div>
     <div class="wbody">
       <div class="pent">
@@ -292,7 +294,7 @@ textarea#notes{width:100%;height:170px;resize:vertical;border:2px solid var(--ou
     <div class="about">
       <div class="phead"><h2>Focused Web Crawler</h2><span class="yr">2025</span><span class="status ph">Demo coming</span></div>
       <p class="blurb">Give it a topic and four strategies crawl side by side: URL keywords, static similarity, adaptive similarity, and an LLM judge. One evaluator scores precision, domain diversity, and overlap. I built the LLM strategy and the evaluation layer.</p>
-      <div class="meta"><span class="chip">Python</span><span class="chip">asyncio</span><span class="chip">Anthropic API</span><span class="chip">scikit-learn</span><a href="https://github.com/MacroMozilla/WSEProject" target="_blank" rel="noopener">repo ↗</a></div>
+      <div class="meta"><span class="chip" style="--chip-l:#d5ebff;--chip-d:#054069">Python</span><span class="chip" style="--chip-l:#d5ebff;--chip-d:#054069">asyncio</span><span class="chip" style="--chip-l:#e8e8e6;--chip-d:#3d3d3c">Anthropic API</span><span class="chip" style="--chip-l:#ffe2c9;--chip-d:#5b3100">scikit-learn</span><a href="https://github.com/MacroMozilla/WSEProject" target="_blank" rel="noopener">repo ↗</a></div>
     </div>
     <div class="wbody"><div class="crawl" id="crawl"></div>
       <p class="note">Placeholder: simulated pages and scores. The real version steps through our recorded crawl.</p></div>
@@ -305,7 +307,7 @@ textarea#notes{width:100%;height:170px;resize:vertical;border:2px solid var(--ou
     <div class="about">
       <div class="phead"><h2>Insider Trading on Polymarket</h2><span class="yr">2026</span><span class="status ph">Demo coming</span></div>
       <p class="blurb">A PySpark pipeline over 226K+ on-chain fills across 6 geopolitical markets ($240M+ volume). It finds sharp price moves, traces the wallets that bet big just before them, and scores those wallets against a GDELT news timeline. It flags candidates; it doesn't prove anything.</p>
-      <div class="meta"><span class="chip">PySpark</span><span class="chip">Spark MLlib</span><span class="chip">BigQuery</span><span class="chip">GraphQL</span><a href="https://github.com/RArgu/CS-GY6513-FinalProject" target="_blank" rel="noopener">repo ↗</a></div>
+      <div class="meta"><span class="chip" style="--chip-l:#ffe0d5;--chip-d:#632a13">PySpark</span><span class="chip" style="--chip-l:#ffe0d5;--chip-d:#632a13">Spark MLlib</span><span class="chip" style="--chip-l:#dbe9ff;--chip-d:#1f3c6c">BigQuery</span><span class="chip" style="--chip-l:#ffddec;--chip-d:#5e2645">GraphQL</span><a href="https://github.com/RArgu/CS-GY6513-FinalProject" target="_blank" rel="noopener">repo ↗</a></div>
     </div>
     <div class="wbody"><div class="ins">
       <canvas id="inC" width="900" height="420" aria-label="Price chart with flagged trades"></canvas>

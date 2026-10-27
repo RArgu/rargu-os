@@ -14,7 +14,7 @@ a tool registers.
 
 ## Mechanism (buildable now)
 
-- [ ] **T1** Write-up content pipeline [local] (R8, R17)
+- [x] **T1** Write-up content pipeline [local] (R8, R17)
   - Acceptance: `loadProjects` reads `writeup`, `role` and `lede` and the markdown body. `renderMarkdown` takes an
     id prefix (`crawler-sec-…`). With `writeup: true`, the build fails and names the file when: an R8 H2 is missing
     or out of order, a section has no bold claim sentence, the role line is missing, Results has no date and run
@@ -22,14 +22,14 @@ a tool registers.
   - Verify: `npm test` (R17.a; one case per rule; R8.b id uniqueness across two fixture write-ups).
   - Files: `scripts/sheet-content.ts`, `src/apps/resume/doc.ts`, `tests/unit/writeup-content.test.ts`,
     `tests/fixtures/content/` (fixture write-up).
-- [ ] **T2** Diagram schema and HTML renderer [local] (R9, R14)
+- [x] **T2** Diagram schema and HTML renderer [local] (R9, R14)
   - Acceptance: a JSON file with the R9 schema renders tiers, boxes, arrows and labelled loops as HTML with token
     colours only. The build fails on a bad `stage`, a tool stage on no box, a duplicate id or a bad `loop.to`.
     Contrast of every diagram token pair, including the active outline and markers, meets 001 R18 in both themes.
   - Verify: `npm test` (R9.b, R14.a). `npm run e2e` (R9.a: no sideways scroll at 390 × 844, fixture diagram).
   - Files: `scripts/diagram.ts`, `src/sheet/readme.css`, `tests/unit/diagram.test.ts`,
     `tests/unit/sheet-contrast.test.ts`, `tests/e2e/readme.spec.ts`.
-- [ ] **T3** Tab strip and panels [local] (R1)
+- [x] **T3** Tab strip and panels [local] (R1)
   - Acceptance: every project window gets `.demo-area`, `.try-area`, `.read-area` panels and an ARIA tab strip
     (names, `aria-controls`, `aria-labelledby`, roving `tabindex`, Left/Right wrap, Home/End). A tab shows only when
     its mode exists. One mode means no strip. `registerTool(id)` adds the Try tab. Pressing or arrowing a tab does
@@ -37,18 +37,18 @@ a tool registers.
   - Verify: `npm run e2e` (R1.a, R1.b, R1.c; fixture tool for the Try tab).
   - Files: `scripts/sheet-content.ts`, `src/sheet/tabs.ts`, `src/sheet/main.ts`, `src/sheet/sheet.css`,
     `tests/e2e/readme-tabs.spec.ts`.
-- [ ] **T4** Read panel: layout, input and section nav [local] (R3, R8)
+- [x] **T4** Read panel: layout, input and section nav [local] (R3, R8)
   - Acceptance: the Read panel scrolls inside the window. Wheel, touch (`touch-action: pan-y`, in `NOPAN`) and keys
     (arrows, Page, Home/End, Space) scroll the panel and never pan the sheet, also at its ends. The nav marks the
     current section with `aria-current`. Layout as R8 at 1440 × 900 and 390 × 844.
   - Verify: `npm run e2e` (R3.a, R3.b, R3.c, R8.a).
   - Files: `src/sheet/read.ts`, `src/sheet/view.ts`, `src/sheet/readme.css`, `tests/e2e/readme.spec.ts`.
-- [ ] **T5** Visibility uses the panel and expansion [local] (R6)
+- [x] **T5** Visibility uses the panel and expansion [local] (R6)
   - Acceptance: visible = tab visible and (expanded or in view) and panel selected. Selecting Read stops the demo's
     animation, and selecting Demo continues it from the same state. A Try run is never cancelled by a tab change.
   - Verify: `npm run e2e` (R6.b). Existing `npm run e2e` demo tests still pass.
   - Files: `src/sheet/demos/visibility.ts`, `src/sheet/main.ts`, `tests/e2e/readme-tabs.spec.ts`.
-- [ ] **T6** Expand and Restore [local] (R2, R5, R6, R7)
+- [x] **T6** Expand and Restore [local] (R2, R5, R6, R7)
   - Acceptance: Expand moves the window node into `#lift` with a placeholder, FLIP 240 ms ± 20, and Restore returns
     it to the same sheet position, zoom and scroll. Reduced motion: fade ≤ 120 ms, no size between. A preference
     change mid-animation ends at the end state. No drag, throw, Home, pan or zoom while expanded. Demo state is kept.
@@ -56,13 +56,13 @@ a tool registers.
   - Verify: `npm run e2e` (R2.a, R2.b, R5.a–d, R6.a, R7.a); `npm run e2e:all` for WebKit and Firefox.
   - Files: `src/sheet/expand.ts`, `src/sheet/windows.ts`, `index.html`, `src/sheet/sheet.css`,
     `tests/e2e/readme-expand.spec.ts`.
-- [ ] **T7** Modal dialog and focus [local] (R4)
+- [x] **T7** Modal dialog and focus [local] (R4)
   - Acceptance: expanded = `role="dialog"`, `aria-modal`, labelled. Sheet, card, minimap and zoom are `inert`. Tab and
     Shift+Tab stay inside. A capture-phase Esc restores, except in a Try or hosted-app area (002's Esc then Tab rule)
     or after `preventDefault()`. Focus after Restore goes to the Expand control.
   - Verify: `npm run e2e` (R4.a, R4.b with expanded CastleSiege, R4.c after T9).
   - Files: `src/sheet/expand.ts`, `src/sheet/main.ts`, `tests/e2e/readme-expand.spec.ts`.
-- [ ] **T8** Event contract [local] (R10, R11)
+- [x] **T8** Event contract [local] (R10, R11)
   - Acceptance: 013 listens for `tool:stage` and `tool:status` on each window from page start, keeps the latest of
     each, draws at most once per frame, and sends `tool:read-open` when Read opens. One active box (latest `start`),
     cleared by `done`, `error` ("stopped") or `null`. Markers "running" / "drawing", announced once. Status texts as
@@ -71,7 +71,7 @@ a tool registers.
     real tools.
   - Files: `src/sheet/tool-events.ts`, `src/sheet/read.ts`, `src/sheet/readme.css`,
     `tests/fixtures/tool-fixture.ts`, `tests/e2e/readme-events.spec.ts`.
-- [ ] **T9** `/p/<id>/` pages [local] (R12, R15)
+- [x] **T9** `/p/<id>/` pages [local] (R12, R15)
   - Acceptance: after `vite build`, a script writes `dist/p/<id>/index.html` for each write-up from `dist/index.html`
     with its own title, description, canonical and preview tags, `data-open="<id>:read"`, and absolute asset URLs.
     With JavaScript, the page starts with the window expanded in Read. The sheet guard checks each page: assets
@@ -80,17 +80,17 @@ a tool registers.
     trailing-slash redirect, 404). `npm run e2e` (R4.c).
   - Files: `scripts/build-p-pages.ts`, `package.json` (build script), `scripts/sheet-guard.ts`, `src/sheet/main.ts`,
     `tests/e2e/routing-p-pages.spec.ts`.
-- [ ] **T10** History transitions [local] (R20)
+- [x] **T10** History transitions [local] (R20)
   - Acceptance: every row of the R20 table gives the stated mode, expansion, URL and focus, including Back and
     Forward and direct entry.
   - Verify: `npm run e2e` (R20.a, one case per row); `npm run e2e:all` for the Back/Forward cases in WebKit.
   - Files: `src/sheet/history.ts`, `src/sheet/main.ts`, `tests/e2e/readme-history.spec.ts`.
-- [ ] **T11** Without JavaScript [local] (R13)
+- [x] **T11** Without JavaScript [local] (R13)
   - Acceptance: on `/p/<id>/`, CSS keyed on `data-open` shows the write-up as a normal page with every section
     visible by page scroll. On `/`, a window with a write-up shows a "Read the write-up" link to `/p/<id>/`.
   - Verify: `npm run e2e` with JavaScript off (R13.a at 1440 × 900 and 390 × 844).
   - Files: `scripts/sheet-content.ts`, `src/sheet/readme.css`, `tests/e2e/readme-nojs.spec.ts`.
-- [ ] **T12** Case-study loader and address guard [local] (R16, R18, R19)
+- [x] **T12** Case-study loader and address guard [local] (R16, R18, R19)
   - Acceptance: the build copies `content/projects/insider-case-studies.json` to `dist/p/insider/case-studies.json`.
     013 adds its two lines to `public/_headers` (011 owns the file): `X-Robots-Tag: noindex`, `Cache-Control: public,
     max-age=300`. Origin loads the JSON once when it first scrolls into view, into a `data-nosnippet` container, below
@@ -99,7 +99,7 @@ a tool registers.
   - Verify: `npm test` (R18.d, R19.a). `npm run e2e` (R18.a, R18.b, R18.c, R16.a).
   - Files: `scripts/build-p-pages.ts`, `public/_headers`, `src/sheet/case-studies.ts`,
     `tests/unit/address-scan.test.ts`, `tests/e2e/readme-case-studies.spec.ts`.
-- [ ] **T13** Mechanism check before review [local] (R5, R8, R14, R15, R16)
+- [x] **T13** Mechanism check before review [local] (R5, R8, R14, R15, R16)
   - Acceptance: all 013 e2e pass in `npm run e2e:all`. `compare-vs-mock` for a window with the fixture write-up
     (Read in the window and expanded, 1440 × 900 and 390 × 844, light and dark) lists only differences from 013. The
     session ledger records the commands and results.

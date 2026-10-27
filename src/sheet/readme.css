@@ -1,0 +1,271 @@
+/* Spec 013: the Read panel and its system diagram (R8, R9). Colours are the
+   sheet's tokens only, so both themes follow (R14). Lines on the window use
+   --ink: dark --outline (#000) on --win-bg is under 3:1. */
+
+/* R9: the diagram: tiers top to bottom, boxes wrap at narrow widths */
+.dg {
+  margin: 16px 0;
+}
+.dg-tiers {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.dg-tier {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.dg-boxes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr));
+  gap: 8px;
+  width: 100%;
+}
+.dg-box {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 8px;
+  border: 2px solid var(--ink);
+  background: var(--win-bg);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.dg-label,
+.dg-kw,
+.dg-loop,
+.dg figcaption {
+  font-size: 13px;
+  color: var(--ink-dim);
+}
+.dg-label {
+  font-family: var(--font-mono);
+}
+.dg-name {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 400;
+}
+.dg-note,
+.dg-mark {
+  font-size: 13px;
+  font-weight: 700;
+}
+.dg-mark:empty {
+  display: none;
+}
+.dg-arrow {
+  font-size: 18px;
+  line-height: 1.5;
+}
+.dg-loop {
+  margin: 4px 0 0;
+}
+.dg figcaption {
+  margin-top: 8px;
+}
+/* R10: the stage a tool reports */
+.dg-box.active {
+  outline: 3px solid var(--accent);
+  outline-offset: 1px;
+}
+.dg-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* R1: the tab strip in the title bar */
+.bar .tabs {
+  display: flex;
+  flex: none;
+  gap: 2px;
+}
+/* descendant selectors only: tests/unit/demo-contrast.test.ts models no other */
+.sheet-win [hidden] {
+  display: none !important;
+}
+.bar .tabs button {
+  width: auto;
+  padding: 0 5px;
+}
+.bar .tabs button[aria-selected="true"] {
+  background: var(--win-bg);
+}
+/* a panel's mode: Read has its own title block; Try keeps the about block */
+.sheet-win[data-mode="read"] .about,
+.sheet-win[data-mode="read"] .wfoot,
+.sheet-win[data-mode="try"] .wfoot {
+  display: none;
+}
+.try-area,
+.read-area {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+/* R3, R8: the Read panel scrolls itself; touches and wheel stay in it */
+.read-area {
+  position: relative;
+  overflow: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  padding: 0 16px 24px;
+  background: var(--win-bg);
+  scrollbar-width: thin;
+}
+.r-head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 0 10px;
+}
+.r-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1;
+  margin: 0;
+}
+.r-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin: 0;
+}
+.r-meta .yr {
+  font-family: var(--font-display);
+  color: var(--ink-dim);
+}
+.r-role {
+  font-size: 14px;
+  color: var(--ink-dim);
+}
+.r-lede {
+  margin: 0;
+  font-size: 17px;
+}
+/* the section nav: one row of chips over the text */
+.r-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 8px 0;
+  background: var(--win-bg);
+  border-bottom: 2px solid var(--ink);
+  scrollbar-width: none;
+}
+.r-nav a {
+  flex: none;
+  font-size: 13px;
+  padding: 1px 8px;
+  background: var(--chip);
+  border: 2px solid transparent;
+  border-radius: 2px;
+  text-decoration: none;
+}
+.r-nav a[aria-current="true"] {
+  border-color: var(--accent);
+}
+.r-body {
+  max-width: 68ch;
+}
+.r-body h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 1.1;
+  margin: 24px 0 8px;
+}
+.r-body p {
+  margin: 0 0 12px;
+}
+.read-area:focus-visible {
+  outline-offset: -2px;
+}
+
+/* R2: the layer over the page (above the card and minimap at 5000, below
+   the toast at 9999) and the expanded window in it */
+#lift {
+  position: fixed;
+  inset: 0;
+  z-index: 6000;
+}
+#lift[hidden] {
+  display: none;
+}
+.sheet-win.expanded {
+  inset: 0;
+  width: auto !important;
+  height: auto !important;
+  box-shadow: none;
+}
+.sheet-win.expanded .bar {
+  cursor: auto;
+}
+.sheet-win.expanded .bar .home {
+  display: none;
+}
+.sheet-win-ph {
+  position: absolute;
+  left: 0;
+  top: 0;
+  visibility: hidden;
+}
+
+/* R11: a tool's status in the diagram, in text */
+.dg-status {
+  font-size: 13px;
+  font-weight: 700;
+}
+.dg-statusline {
+  margin: 8px 0 0;
+  font-size: 14px;
+}
+
+/* R18: the notice above the insider case studies, in the body type size */
+.cs-notice {
+  padding: 8px 10px;
+  border: 2px solid var(--ink);
+}
+.cases h3 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  margin: 16px 0 6px;
+}
+
+/* R8: expanded at 760 px or wider: the nav in a left column beside the text */
+@media (min-width: 760px) {
+  .sheet-win.expanded .read-area {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 68ch);
+    column-gap: 32px;
+    justify-content: center;
+    align-content: start;
+    padding: 0 24px 32px;
+  }
+  .sheet-win.expanded .r-head {
+    grid-column: 1 / -1;
+    max-width: calc(180px + 32px + 68ch);
+  }
+  .sheet-win.expanded .r-nav {
+    grid-column: 1;
+    align-self: start;
+    flex-direction: column;
+    align-items: flex-start;
+    top: 16px;
+    border-bottom: 0;
+    overflow: visible;
+  }
+  .sheet-win.expanded .r-body {
+    grid-column: 2;
+  }
+}

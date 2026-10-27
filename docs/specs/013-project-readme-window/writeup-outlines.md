@@ -154,7 +154,7 @@ live build uses a transparent points rule (012 assumption 5).
   over the 5 resolved start markets, with full addresses (critique 17). 013 runs no check of its own.
 - Owner's choice (N8): publish the check only if the live rule flags the report's wallets. If it does not, Results
   leaves the check out. Rule (owner, N10): publish all rows if 2 or more of the 3 expected wallets are listed and
-  the market maker is not. Vivaldi007 bet about 115 h before its spike, outside the 24 h look-back, so it will likely
+  the market maker is not. the report's §4.2 wallet bet about 115 h before its spike, outside the 24 h look-back, so it will likely
   not be listed. Table if shown, titled "Report cases, checked with the live
   rule": wallet · market · listed (yes/no) · score.
 
@@ -178,7 +178,7 @@ live build uses a transparent points rule (012 assumption 5).
   heuristics, not proof of insider trading.** Figures are from our final report (2026-05-18). To ask for a correction
   or removal, email <site email>. We reply within 7 days."
 - Then the report's section 4 case studies with its own hedges: the wallet that matches the public DOJ case (the
-  report "cannot claim definitive identification"), Vivaldi007, `0x1caa6a…46a0`, and the market-maker contract as the
+  report "cannot claim definitive identification"), the §4.2 and §4.3 wallets, and the market-maker contract as the
   counter-example. Copy full addresses and figures from the PDF at C4, not from this outline.
 - Where they live (owner, N5): in `content/projects/insider-case-studies.json` (spec content task C7), loaded with
   `noindex` into a `data-nosnippet` container (spec R18). It loads when Origin scrolls into view (owner, N9). The

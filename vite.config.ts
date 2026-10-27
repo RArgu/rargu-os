@@ -5,6 +5,7 @@ import type { Plugin } from "vite";
 import { castlewarsFrames } from "./scripts/castlewars-frames.ts";
 import { hostResources } from "./scripts/host-resources.ts";
 import { sheetContent } from "./scripts/sheet-content.ts";
+import { writeupPages } from "./scripts/p-pages.ts";
 import { hostChunks } from "./scripts/host-chunks.ts";
 import { hostCss } from "./scripts/host-css.ts";
 import { siteHead, type Identity } from "./scripts/site-identity.ts";
@@ -15,6 +16,10 @@ import {
 } from "./scripts/sheet-guard.ts";
 
 const root = import.meta.dirname;
+const writeups = (mode: string) =>
+  mode === "e2e"
+    ? { overlay: resolve(root, "tests/fixtures/writeups") }
+    : undefined;
 
 function identity(): Identity {
   try {
@@ -51,7 +56,7 @@ function noTestModules(): Plugin {
   };
 }
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   base: "./",
   plugins: [
     sheetGuard(),
@@ -59,7 +64,10 @@ export default defineConfig({
     hostChunks(),
     // 002 R13: the hosted apps' and widgets' CSS under the host root
     hostCss(),
-    sheetContent(),
+    // 013: the e2e build shows fixture write-ups (no real one ships yet)
+    sheetContent(writeups(mode)),
+    // 013 R12: /p/<id>/ for each write-up
+    writeupPages(writeups(mode)),
     castlewarsFrames(),
     hostResources(),
     {
@@ -100,4 +108,4 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["tests/unit/setup.ts"],
   },
-});
+}));
