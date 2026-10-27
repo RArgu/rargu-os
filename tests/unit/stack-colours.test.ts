@@ -4,7 +4,16 @@ import { describe, expect, it } from "vitest";
 import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { COLOURS, colourOf, loadColours } from "../../scripts/stack-colours.ts";
+import {
+  chipColours,
+  COLOURS,
+  colourOf,
+  contrast,
+  inks,
+  loadColours,
+  oklab,
+  tint,
+} from "../../scripts/stack-colours.ts";
 
 const raw = () => JSON.parse(readFileSync(COLOURS, "utf8"));
 const withTable = (edit: (d: Record<string, unknown>) => void) => {
@@ -110,4 +119,47 @@ describe("R2 checks", () => {
     it(`fails on ${name}`, () => {
       expect(() => loadColours(withTable(edit))).toThrow(error);
     });
+});
+
+describe("R3 the tint", () => {
+  it("R3.a: exact outputs for fixed inputs", () => {
+    expect(tint("#3572A5")).toEqual({ light: "#d5ebff", dark: "#054069" });
+    expect(tint("#8f14e9")).toEqual({ light: "#ede2ff", dark: "#473064" });
+    expect(tint("#000000")).toEqual({ light: "#e8e8e8", dark: "#3d3d3d" });
+    expect(tint("#FFF000")).toEqual({ light: "#eeebb5", dark: "#433f00" });
+  });
+  it("R3.a: hue within 2° of the brand for every colour with chroma ≥ 0.02", () => {
+    const hue = (h: string) => {
+      const [, a, b] = oklab(h);
+      return { h: (Math.atan2(b, a) * 180) / Math.PI, c: Math.hypot(a, b) };
+    };
+    for (const [name, c] of loadColours()) {
+      if (c === null) continue;
+      const brand = hue(c);
+      if (brand.c < 0.02) continue;
+      for (const t of Object.values(tint(c))) {
+        const x = hue(t);
+        if (x.c < 0.02) continue;
+        const d = Math.abs(((x.h - brand.h + 540) % 360) - 180);
+        expect(d, `${name} ${t}`).toBeLessThan(2);
+      }
+    }
+  });
+  it("R5(c): every chip × theme meets 4.5:1 with the --ink of sheet.css", () => {
+    const ink = inks();
+    expect(ink).toEqual({ light: "#1d2b53", dark: "#fff1e8" });
+    const all = chipColours(loadColours(), ink);
+    for (const [name, t] of all) {
+      if (!t) continue;
+      expect(contrast(t.light, ink.light), name).toBeGreaterThanOrEqual(4.5);
+      expect(contrast(t.dark, ink.dark), name).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+  it("R3.b: a text colour close to the tints fails the build, naming the chip", () => {
+    expect(() =>
+      chipColours(loadColours(), { light: "#c0c0c0", dark: "#fff1e8" }),
+    ).toThrow(
+      /stack-colours: "TypeScript" light chip #[0-9a-f]{6} gives its text #c0c0c0/,
+    );
+  });
 });

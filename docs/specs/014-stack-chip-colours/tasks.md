@@ -12,7 +12,7 @@ fail, then implement (`ponytail`), then run `npm run lint`, `npm test` and the n
   - Verify: `npm test` (R1.a, R2.a–c, R5(a) Linguist constants).
   - Files: `content/stack-colours.json`, `content/licences/linguist-LICENSE.txt`, `scripts/stack-colours.ts`,
     `tests/unit/stack-colours.test.ts`.
-- [ ] **T2** OKLCH tint (R3)
+- [x] **T2** OKLCH tint (R3)
   - Acceptance: light L 0.93 / C ≤ 0.07, dark L 0.36 / C ≤ 0.09, gamut map by chroma only, byte rounding; the R3.a
     outputs exactly; hue within 2° for C ≥ 0.02; the build fails under 4.5:1 (R3.b).
   - Verify: `npm test` (R3.a, R3.b, R5(b), R5(c)).
