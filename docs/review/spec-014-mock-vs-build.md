@@ -16,3 +16,8 @@
 
 No defect found. Limits: Firefox and WebKit were not screenshotted (their e2e passed); chip colours compared by eye
 here, by value in e2e; motion is not involved.
+
+### Owner review
+
+2026-10-26 — The owner approved the preview ("Preview approved, looks good"), relayed by the orchestrator. This covers
+the comparison against v0.8 above. No gate is approved by this.
