@@ -10,6 +10,7 @@ import { UNITS } from "./castlewars-frames.ts";
 import { requireSheetPage, SHEET_PAGE } from "./sheet-guard.ts";
 import { writeup, type Writeup } from "./writeup.ts";
 import { STAGES } from "../src/sheet/stages.ts";
+import { chipColours, colourOf, loadColours } from "./stack-colours.ts";
 import { STRATEGIES } from "../src/sheet/demos/crawler-data.ts";
 import {
   FLAG_MIN,
@@ -92,6 +93,8 @@ export function loadProjects(
       return Array.isArray(v) ? v : fail(field);
     };
     const links = list("links");
+    // 014 R2: every chip has a colour entry, or the build fails
+    for (const c of list("stack")) colourOf(colours(), c, basename(path));
     if (!links.every(isWeb)) fail("links");
     const status = text("status");
     if (!Object.hasOwn(STATUS, status)) fail("status");
@@ -165,6 +168,19 @@ function diagram(file: string, dir: string, overlay?: string): unknown {
   } catch (e) {
     throw new Error(`${name}: bad JSON (${(e as Error).message})`);
   }
+}
+
+// 014: the stack chips' colours, loaded and checked once per run
+let table: ReturnType<typeof loadColours> | undefined;
+const colours = () => (table ??= loadColours());
+let tints: ReturnType<typeof chipColours> | undefined;
+
+/** 014 R4: a stack chip with its light and dark backgrounds (the same for
+ * the same text everywhere, R8); a neutral chip keeps --chip. */
+function chip(name: string): string {
+  const t = (tints ??= chipColours(colours())).get(name);
+  const style = t ? ` style="--chip-l:${t.light};--chip-d:${t.dark}"` : "";
+  return `<span class="chip"${style}>${esc(name)}</span>`;
 }
 
 /** Content links must be web links: no javascript: or data: URLs. */
@@ -343,7 +359,7 @@ export function readPanel(
         <header class="r-head"><h2 class="r-title" id="${p.id}-read-title" tabindex="-1">${esc(p.title)}</h2>
           <p class="r-meta"><span class="yr">${esc(p.year)}</span><span class="status ${STATUS[p.status][1]}">${STATUS[p.status][0]}</span> <span class="r-role">${esc(w.role)}</span></p>
           <p class="r-lede">${esc(w.lede)}</p>
-          <div class="meta">${p.stack.map((c) => `<span class="chip">${esc(c)}</span>`).join("")}${p.links.map((l) => `<a href="${esc(l)}" ${ext}>${esc(linkText(l, p.links))} ↗</a>`).join("")}</div>
+          <div class="meta">${p.stack.map(chip).join("")}${p.links.map((l) => `<a href="${esc(l)}" ${ext}>${esc(linkText(l, p.links))} ↗</a>`).join("")}</div>
         </header>
         <nav class="r-nav" aria-label="Sections">${nav}</nav>
         <div class="r-body">${w.html}${p.cases ? casesHtml(p.id, email) : ""}</div>
@@ -374,7 +390,7 @@ function windows(projects: Project[], email: string): string {
       ? `<div class="about">
         <div class="phead"><h2>${esc(p.title)}</h2><span class="yr">${esc(p.year)}</span><span class="status ${STATUS[p.status][1]}">${STATUS[p.status][0]}</span></div>
         <p class="blurb">${esc(p.summary)}</p>${p.writeup ? `<a class="nojs-read" href="/p/${p.id}/">Read the write-up</a>` : ""}
-        <div class="meta">${p.stack.map((c) => `<span class="chip">${esc(c)}</span>`).join("")}${p.links.map((l) => `<a href="${esc(l)}" ${ext}>${esc(linkText(l, p.links))} ↗</a>`).join("")}</div>
+        <div class="meta">${p.stack.map(chip).join("")}${p.links.map((l) => `<a href="${esc(l)}" ${ext}>${esc(linkText(l, p.links))} ↗</a>`).join("")}</div>
       </div>`
       : "";
     return `<section class="sheet-win" data-win="${s.id}" role="region" aria-label="${esc(name)}" style="width:${s.w}px;height:${s.h}px;transform:translate(${s.x}px, ${s.y}px)">

@@ -163,3 +163,112 @@ describe("R3 the tint", () => {
     );
   });
 });
+
+describe("R4, R5(d), R8, R10 chips in the built page", () => {
+  const root = join(COLOURS, "../..");
+  const projects = join(root, "content/projects");
+  async function page(overlay?: string): Promise<string> {
+    const { build } = await import("vite");
+    const { sheetContent } = await import("../../scripts/sheet-content.ts");
+    const { castlewarsFrames } =
+      await import("../../scripts/castlewars-frames.ts");
+    const { hostResources } = await import("../../scripts/host-resources.ts");
+    const { hostChunks } = await import("../../scripts/host-chunks.ts");
+    const out = (await build({
+      configFile: false,
+      logLevel: "silent",
+      root,
+      plugins: [
+        sheetContent(overlay ? { overlay } : {}),
+        castlewarsFrames(),
+        hostResources(),
+        hostChunks(),
+      ],
+      build: {
+        write: false,
+        rollupOptions: { input: { index: join(root, "index.html") } },
+      },
+    })) as { output: { fileName: string; type: string; source?: unknown }[] };
+    return String(out.output.find((f) => f.fileName === "index.html")!.source);
+  }
+  /** chips per window: [label, style] */
+  const chips = (html: string, id: string) => {
+    const sec = html.split(`data-win="${id}"`)[1].split("</section>")[0];
+    const about = sec
+      .split('class="about"')[1]
+      .split('class="meta"')[1]
+      .split("</div>")[0];
+    return [
+      ...about.matchAll(/<span class="chip"( style="[^"]*")?>([^<]*)<\/span>/g),
+    ].map((m) => [m[2], m[1] ?? ""] as const);
+  };
+  it("castlesiege has its nine chips; the split ones each have a colour (R5.b, R10)", async () => {
+    const html = await page();
+    const c = chips(html, "castlesiege");
+    expect(c.map(([l]) => l)).toEqual([
+      "TypeScript",
+      "React Native",
+      "Expo",
+      "Node.js",
+      "WebSocket",
+      "PostgreSQL",
+      "Web Workers",
+      "Fly.io",
+      "Docker",
+    ]);
+    const style = Object.fromEntries(c);
+    expect(style["TypeScript"]).not.toBe(style["Node.js"]);
+    // R10.a: no combined chip anywhere
+    expect(html).not.toMatch(/<span class="chip"[^>]*>[^<]* \/ [^<]*<\/span>/);
+    // a parent colour: WebSocket and Web Workers both JavaScript's
+    expect(style["WebSocket"]).toBe(style["Web Workers"]);
+    const t = tint("#f1e05a");
+    expect(style["WebSocket"]).toBe(
+      ` style="--chip-l:${t.light};--chip-d:${t.dark}"`,
+    );
+  });
+  it("R8.a: the same text has the same values in every window", async () => {
+    const html = await page();
+    const ts = ["castlesiege", "castlewars", "pentimento"].map(
+      (id) => Object.fromEntries(chips(html, id))["TypeScript"],
+    );
+    expect(new Set(ts).size).toBe(1);
+    expect(ts[0]).toMatch(/--chip-l:#[0-9a-f]{6};--chip-d:#[0-9a-f]{6}/);
+  });
+  it("a neutral chip has no tint; an alias has its target's (Read panel too)", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "writeups-"));
+    const fixtures = join(root, "tests/fixtures/writeups");
+    for (const f of ["focused-web-crawler.md", "polymarket-insider-trading.md"])
+      writeFileSync(join(dir, f), readFileSync(join(fixtures, f), "utf8"));
+    const { cpSync } = await import("node:fs");
+    cpSync(join(fixtures, "diagrams"), join(dir, "diagrams"), {
+      recursive: true,
+    });
+    const ins = join(dir, "polymarket-insider-trading.md");
+    writeFileSync(
+      ins,
+      readFileSync(ins, "utf8").replace(
+        "---\n",
+        "---\nstack: [Python, asyncio, GDELT]\n",
+      ),
+    );
+    const html = await page(dir);
+    const style = Object.fromEntries(chips(html, "insider"));
+    expect(style["GDELT"]).toBe("");
+    expect(style["asyncio"]).toBe(style["Python"]);
+    // the Read panel's title block uses the same chips
+    const read = html.split('id="insider-read"')[1];
+    expect(read).toContain(
+      `<span class="chip"${style["Python"]}>Python</span>`,
+    );
+    expect(read).toContain('<span class="chip">GDELT</span>');
+  });
+  it("R2.a: an unknown chip fails the build, naming the file", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "writeups-"));
+    writeFileSync(join(dir, "castlewars.md"), "---\nstack: [Pythn]\n---\n");
+    const { loadProjects } = await import("../../scripts/sheet-content.ts");
+    expect(() => loadProjects(projects, dir)).toThrow(
+      /castlewars\.md: the stack chip "Pythn" has no entry/,
+    );
+  });
+});

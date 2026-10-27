@@ -17,7 +17,7 @@ fail, then implement (`ponytail`), then run `npm run lint`, `npm test` and the n
     outputs exactly; hue within 2° for C ≥ 0.02; the build fails under 4.5:1 (R3.b).
   - Verify: `npm test` (R3.a, R3.b, R5(b), R5(c)).
   - Files: `scripts/stack-colours.ts`, `tests/unit/stack-colours.test.ts`.
-- [ ] **T3** Split chips, render and CSS (R4, R6, R8, R9, R10)
+- [x] **T3** Split chips, render and CSS (R4, R6, R8, R9, R10)
   - Acceptance: castlesiege lists React Native, Expo, Fly.io, Docker as four chips; one `chip()` function renders
     `--chip-l` / `--chip-d` in the window and the Read panel; `.chip` uses them, with the dark media rule and a print
     rule; neutral chips keep `--chip`; an unknown chip fails `npm run build`.

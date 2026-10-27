@@ -316,11 +316,27 @@ button {
   gap: 5px;
   align-items: center;
 }
+/* 014 R4: a stack chip takes its tint (--chip-l / --chip-d, written by the
+   build); a neutral chip keeps --chip */
 .chip {
   font-size: 12px;
   padding: 1px 7px;
-  background: var(--chip);
+  background: var(--chip-l, var(--chip));
   border-radius: 2px;
+}
+@media (prefers-color-scheme: dark) {
+  .chip {
+    background: var(--chip-d, var(--chip));
+  }
+}
+/* 014 R9: printed from either theme, with backgrounds off, chips stay
+   readable */
+@media print {
+  .chip {
+    background: none;
+    color: #000;
+    border: 1px solid #000;
+  }
 }
 .meta a {
   font-size: 13px;
