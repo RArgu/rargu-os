@@ -24,7 +24,7 @@ fail, then implement (`ponytail`), then run `npm run lint`, `npm test` and the n
   - Verify: `npm test` (R5(d), R8.a, R10.a); `npm run build`.
   - Files: `content/projects/castlesiege.md`, `scripts/sheet-content.ts`, `src/sheet/sheet.css`,
     `tests/unit/stack-colours.test.ts`, `tests/unit/sheet-content.test.ts`.
-- [ ] **T4** Chips in the browser (R4, R5, R9)
+- [x] **T4** Chips in the browser (R4, R5, R9)
   - Acceptance: every chip in the windows, in a visible Read panel and on `/p/<id>/` without JavaScript has its
     expected background and ≥ 4.5:1 text, in light, dark and light again with no reload; print removes backgrounds.
   - Verify: `npm run e2e` (R4.a, R5.a, R5.b, R9.a); `npm run e2e:all` for the new file.
