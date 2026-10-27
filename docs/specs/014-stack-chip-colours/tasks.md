@@ -37,7 +37,7 @@ fail, then implement (`ponytail`), then run `npm run lint`, `npm test` and the n
     docs/mockups/rargu-os-src/build.py` writes v0.8; the v0.7 → v0.8 source diff touches only chips (R11.a).
   - Files: `docs/mockups/rargu-os-src-v0.7/`, `docs/mockups/rargu-os-src/`, `docs/mockups/rargu-os-v0.8.html`,
     `docs/mockups/README.md`.
-- [ ] **T6** Check before review
+- [x] **T6** Check before review
   - Acceptance: `npm run e2e:all` passes; compare-vs-mock against v0.8 (1440 × 900 and 390 × 844, light and dark)
     lists only allowed differences; the ledger records the results.
   - Verify: `npm run lint`, `npm test`, `npm run e2e:all`, `npm run build`, `compare-vs-mock`.
