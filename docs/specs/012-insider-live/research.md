@@ -143,7 +143,7 @@ background for the Risks section of spec.md.
   says the labels have no ground truth. (observed, `rep.txt`)
 - Lower-risk choices (inferred, not legal advice; the owner may want a lawyer's view):
   1. Call the result "Unusual bets before a price move" and the score "pattern score", not "insider score".
-  2. Show a short address (`0x4bfb…982e`), no username, no avatar. Link to the address on Polymarket only on click.
+  2. Show a short address (first 6 and last 4 characters), no username, no avatar. Link to the address on Polymarket only on click.
   3. Put the "flags patterns, does not prove insider trading" line next to every list, not only in a footer.
   4. No wallet search, no "top insiders" page, no indexing of results (`noindex`, results only via the API).
   5. A contact line for removal requests, and a short block list the owner can add a wallet to.
@@ -247,7 +247,7 @@ So 2 of the 3 "active" markets resolved. The Taiwan market has not. (observed)
 - **Disk:** ~100–200 bytes per stored row in DuckDB, so 1M rows ≈ 100–200 MB (inferred).
 - **With 011 (011 R20, adopted 2026-10-26; Codex 012 #4):** the job owns 03:00–05:00 owner time. It writes
   `~/.rargu/llm-busy.lock` with its PID, unloads the Ollama model, never waits for a crawl, stops new
-  work at 04:50 and deletes the lock. The `launchd` job kills its process group at 04:55 (011 R20); 011's proxy
+  work at 04:50 and deletes the lock. The host script's 04:55 watchdog kills its process group (011 R20; the host is switched on by hand, owner 2026-10-26); 011's proxy
   ignores a stale lock only outside 02:55–05:00 when its PID is not running. 011 budgets ≥ 2 GB
   free; the job targets < 800 MB.
 - **Estimate per night (derived, not measured; R21.a measures it):**
@@ -267,10 +267,11 @@ So 2 of the 3 "active" markets resolved. The Taiwan market has not. (observed)
   again until it meets stored rows, then continues with a saved cursor. Whether a saved cursor still works the next
   day is **Unverified** (cursors are signed); if not, the job pages through the stored part again (~1.4 s per
   1,000 rows).
-- **Always on:** set "Prevent automatic sleeping when the display is off" (or `pmset -c sleep 0`), and
-  `pmset repeat wakeorpoweron` as a safety net. A `launchd` job with `StartCalendarInterval` runs once at the next
-  wake if the Mac slept at 03:00 (launchd behavior, inferred from its man page). Lid open on a stand for heat. Keep
-  battery health management on; months at 100 % charge can swell an old battery (inferred).
+- **On by hand (owner, 2026-10-26):** the collector host is switched on and off with `~/.rargu/bin/rargu-host
+  start|stop|status`; no boot start, no `pmset` wake, no permanent launchd job. While it is on, keep the Mac awake
+  ("Prevent automatic sleeping when the display is off", or `pmset -c sleep 0` while on). Off for days means no
+  refresh and a waiting queue; the site says so (spec R5). Lid open on a stand for heat; keep battery health
+  management on (inferred).
 
 ## 12. Profile pictures
 
@@ -342,15 +343,25 @@ title ≤ 300 and `https:` URL ≤ 500), `rule_version`. Numbers must be finite.
 - Maduro, newest 1,000 rows: `taker_only=true` gave 1,000 rows with 1,000 different `transaction_hash` values.
   `taker_only=false` gave 1,000 rows with 363 different hashes. In the 363-row overlap, every taker row was also in
   the all-legs stream.
-- One transaction held two rows with equal wallet, side, token, size, price and time (`0x79cbe531…` BUY No 2,345).
+- One transaction held two rows with equal wallet, side, token, size, price and time (one wallet, BUY No 2,345 shares).
   A content key would drop a real fill.
 - Consequence (spec R7): read both streams, assign roles by matching, keep page/row order, never deduplicate by
   content. Whether a transaction can hold two taker rows is **Unverified**; the matching rule handles it (each taker
   row is used once).
 
-**Note for R22 (inferred):** the report says Vivaldi007 entered "approximately 115 hours before the largest
+**Note for R22 (inferred):** the report says its §4.2 wallet entered "approximately 115 hours before the largest
 pre-resolution spike" on US strikes Iran (report text line ~339). The R9 window is 24 h. Unless the wallet also
 bought within 24 h of some kept move, the rule will not list it, and under the owner's rule the results would not
-be published. The same holds for `0x1caa6a…46a0` (about 37 h before, report §4.3). The owner kept the 24 h look-back
-(reconciliation round). The verdict needs 2 of the 3 expected wallets, so if only the soldier wallet is listed, the
+be published. The same holds for the §4.3 wallet (about 37 h before). The owner kept the 24 h look-back
+(reconciliation round). The verdict needs 2 of the 3 expected wallets, so if only the §4.1 wallet is listed, the
 results are not published. R22 states both gaps either way.
+
+## 16. Time zones (2026-10-26)
+
+- The night runs in `OWNER_TZ` = `America/Tijuana` (owner, 2026-10-26: the Mac's zone): 03:00–05:00 Pacific, no new
+  work after 04:50. The job (`jobs/insider/lock.py`) and the Worker (`worker/insider/schedule.ts`, `OWNER_TZ` in
+  `wrangler.jsonc`) use it; the job refuses to run when the Mac's zone differs.
+- All stored and pushed times are UTC epoch seconds (results) or ms (API status). The course report's spike times
+  look like New York time: its Maduro spike "Jan 3, 2026 at 01:15" (z 33.3) matches the job's 06:15 UTC move
+  (z 35.0) (ledger T4; inferred). Any comparison with the report converts its times from America/New_York to UTC
+  first; the R22 eval compares wallets, not times.
