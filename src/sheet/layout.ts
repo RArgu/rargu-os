@@ -22,8 +22,9 @@ export const LAYOUT: Slot[] = [
     w: 620,
     // 003 T1: the wide layout at 40 px cells under the 27 px menu row;
     // 003 T8: the window ends at the status bar (no strip under it)
-    // 015 R6: -23 px, the blurb is two lines now
-    h: 631,
+    // 015 R6: -23.25 px (one blurb line at 15 px / 23.25 px); not an integer, so
+    // the status bar to window bottom gap stays 0.38 to 1.02 px in every engine
+    h: 630.75,
     demoH: 427,
     bar: "castlesiege — vs. bot",
   },

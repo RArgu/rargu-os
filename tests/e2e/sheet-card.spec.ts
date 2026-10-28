@@ -143,6 +143,7 @@ const atHome = (page: Page) =>
 
 test("015 R3.b the Email link is built at start-up: href, name, Tab, no page error", async ({
   page,
+  browserName,
 }) => {
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
@@ -157,7 +158,7 @@ test("015 R3.b the Email link is built at start-up: href, name, Tab, no page err
   expect(src).not.toContain("test@example.invalid");
   expect(src).toContain('data-d="example.invalid"');
   await page.getByRole("link", { name: "LinkedIn" }).focus();
-  await page.keyboard.press("Tab");
+  await page.keyboard.press(browserName === "webkit" ? "Alt+Tab" : "Tab");
   await expect(mail).toBeFocused();
   expect(errors).toEqual([]);
 });

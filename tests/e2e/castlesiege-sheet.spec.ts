@@ -170,7 +170,8 @@ async function wideLayout(page: Page): Promise<void> {
   expect(unseen, "cells and reference entries not shown").toEqual([]);
   // 003 T8: the window ends at the status bar, in window px: no strip under
   // it, nothing cut off. Integer h 654 leaves 0.38 px (Chromium), 0.95
-  // (WebKit), 1.02 (Firefox: its about block is 0.65 px shorter)
+  // (WebKit), 1.02 (Firefox: its about block is 0.65 px shorter);
+  // 015: h 630.75 keeps these, the two-line blurb is 23.25 px shorter
   const gap = await win.evaluate((w) => {
     const k = w.getBoundingClientRect().width / (w as HTMLElement).offsetWidth;
     const inner =

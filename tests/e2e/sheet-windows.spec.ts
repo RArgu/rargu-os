@@ -431,7 +431,7 @@ for (const [name, to] of [
       HOME.castlesiege[0] + last[1],
       HOME.castlesiege[1] + last[2],
     ];
-    const want = landing(release, moves, up.ts, [620, 631]);
+    const want = landing(release, moves, up.ts, [620, 630.75]);
     const p = await rest(page, "castlesiege");
     expect(
       Math.abs(p.x - want[0]),
@@ -444,7 +444,7 @@ for (const [name, to] of [
     expect(p.x).toBeGreaterThanOrEqual(0);
     expect(p.y).toBeGreaterThanOrEqual(0);
     expect(p.x).toBeLessThanOrEqual(3000 - 620);
-    expect(p.y).toBeLessThanOrEqual(1640 - 631);
+    expect(p.y).toBeLessThanOrEqual(1640 - 630.75);
   });
 }
 
@@ -717,7 +717,7 @@ test("R8 a zoom during a drag does not change the release velocity", async ({
   const up = await seen(page, "pointerup");
   const release = await pose(page, "castlesiege");
   const samples = path(await events(page), (e) => (e.x <= 660 ? 1 : 1.25));
-  const want = landing([release.x, release.y], samples, up.ts, [620, 631]);
+  const want = landing([release.x, release.y], samples, up.ts, [620, 630.75]);
   await clock(page, true);
   const p = await rest(page, "castlesiege");
   expect(Math.abs(p.x - want[0]), `x ${p.x} vs ${want[0]}`).toBeLessThanOrEqual(
