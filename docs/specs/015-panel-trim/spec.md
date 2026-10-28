@@ -1,6 +1,6 @@
 # 015: Panel trim, hidden email, short window copy, yellow Notes
 
-**Status:** Critiqued · **Owner approval:** none yet · **Gates needed:** none (G-deploy, G-push stay with the owner)
+**Status:** Approved (2026-10-27) · **Owner approval:** 2026-10-27, answers below · **Gates needed:** none (G-deploy, G-push stay with the owner)
 **Related:** spec 001 (the card, R11), 013 (project windows), 014 (chips); approved mock `docs/mockups/rargu-os-v0.8.html`;
 `docs/OWNER_QUESTIONS.md:25` (card row); base: branch `integration` at `2ebb4d8`.
 
@@ -297,6 +297,24 @@ Five need the owner (`interview` skill, step 3). Each has a recommended answer.
 Codex (`gpt-6.1-sol`, high, read-only) gave 14 findings. Output and dispositions:
 `docs/review/spec-015-critique-codex.md`.
 
+## Owner answers
+
+Owner approved this spec on 2026-10-27 (relayed by the coordinator). Answers to Q1 to Q5 and the Notes confirmation:
+
+1. Panel width: 150 px, 2 px borders. Height half.
+2. Keyboard hint: label `Sheet` plus a non-visible `aria-describedby` text "Arrow keys pan the sheet". Nothing visible.
+3. Name: removed from the side panel, and the `Drawn by R. Arguello` title block (`index.html:18`) is hidden too.
+   Hide or comment out, do not delete. Page title, metadata, resume and in-app mentions stay. (Found while
+   implementing: the panel's `aria-label="About Rodrigo"`, `index.html:11`, also names him. It becomes `Side panel`.)
+4. Email on the resume and the correction notice: the same runtime-built link on both. With JavaScript off the text
+   is "Email needs JavaScript". The printed resume shows the address, filled in by the script. The address string is
+   not in `dist/`.
+5. Copy table approved as written. Lowering the four window heights by 23 px is approved.
+6. Notes: whole window yellow. Colors approved as proposed (`#fff3a8` body, `#f4dc6b` title bar, `#e8cf55`
+   chrome and corner, `#3b2a14` text, `#5c4423` dim text, hard offset shadow kept).
+
+Q1 changes R2.a: width 150 px (not 140 to 150).
+
 ## Approval record
 
-None yet.
+2026-10-27: Approved with the answers above. No gate (deploy, push, PR) is approved.

@@ -78,3 +78,6 @@ Decisions the owner made outside a spec. Newest last. A spec that goes against a
 | 2026-10-24 | Merge into `main` | **Owner:** fast-forward (spec 010 R6). |
 | 2026-10-24 | Deploy (007 T12) | **Owner:** "G-deploy OK", for the commit that passes all checks (spec 010 R5). |
 | 2026-10-24 | Cloudflare Web Analytics beacon on rargu.dev (G-net) | **Owner:** allow it (spec 010 R9): `static.cloudflareinsights.com/beacon.min.js` and `cloudflareinsights.com/cdn-cgi/rum`, added by Cloudflare at the edge. No other third-party call. |
+| 2026-10-27 | Public email on the site | **Owner (spec 015 R3, reverses the 2026-10-22 card row):** no address as visible text or in the served files. An `Email` link builds the `mailto:` address at runtime from parts. Same on the resume and the correction notice. |
+| 2026-10-27 | Side panel (spec 015) | **Owner:** 150 px wide, half height; no "On this sheet", no drag hint, no name, title or blurb, no "Drawn by" block (hidden, not deleted); keyboard hint only as non-visible `aria-describedby`. |
+| 2026-10-27 | Project window text and Notes (spec 015 R6, R7) | **Owner:** window descriptions 20 words or fewer, two lines (table in the spec); Notes window post-it yellow. |
