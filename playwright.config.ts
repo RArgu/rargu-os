@@ -20,6 +20,8 @@ export default defineConfig({
         // the host's fixture apps; `npm run build` (production) never does
         command: `npm run build -- --mode e2e --outDir dist-e2e && npx vite preview --outDir dist-e2e --port ${PORT} --strictPort`,
         url: `http://localhost:${PORT}`,
+        // 015 R9.a: the resume step of the test build uses the fake address too
+        env: { DPOS_EMAIL: "tests/fixtures/sheet-content/email.json" },
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,
       },

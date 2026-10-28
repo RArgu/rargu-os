@@ -33,7 +33,23 @@ const ratio = (a: string, b: string): number => {
   return (hi + 0.05) / (lo + 0.05);
 };
 
+/** colours (any property) of the first rule `sel` after `from` in the file */
+function after(from: string, sel: string): Record<string, string> {
+  const at = css.indexOf(`${sel} {`, css.indexOf(from));
+  expect(at, `${from} ${sel}`).toBeGreaterThan(css.indexOf(from));
+  const body = css.slice(css.indexOf("{", at) + 1, css.indexOf("}", at));
+  return Object.fromEntries(
+    [...body.matchAll(/([a-z-]+):\s*(#[0-9a-f]{6})/g)].map((m) => [m[1], m[2]]),
+  );
+}
+
 const win = props('.sheet-win[data-win="notes"]');
+// the dark ring override, inside the scheme query after the Notes block
+const dark = after(
+  "015 R7: the Notes window is a post-it",
+  '@media (prefers-color-scheme: dark) {\n  .sheet-win[data-win="notes"]',
+);
+
 const root = props('.sheet-win[data-win="notes"] .host-root');
 
 describe("015 R7.a Notes colors", () => {
@@ -64,5 +80,17 @@ describe("015 R7.a Notes colors", () => {
       ratio(root["--t-chrome-dark"], root["--t-chrome"]),
     ).toBeGreaterThanOrEqual(3);
     expect(ratio(win["--focus"], win["--win-bg"])).toBeGreaterThanOrEqual(3);
+  });
+  it("the dark ring is 3:1 on the yellow and on the dark paper #111a33", () => {
+    expect(dark["--focus"]).toBe("#7f6b3a");
+    expect(ratio(dark["--focus"], win["--win-bg"])).toBeGreaterThanOrEqual(3);
+    expect(ratio(dark["--focus"], "#111a33")).toBeGreaterThanOrEqual(3);
+  });
+  it("the status bar is set apart: body yellow, dim text (R7.b)", () => {
+    expect(root["--t-status-bg"]).toBe("#fff3a8");
+    expect(root["--t-status-text"]).toBe("#5c4423");
+    expect(
+      ratio(root["--t-status-text"], root["--t-status-bg"]),
+    ).toBeGreaterThanOrEqual(4.5);
   });
 });

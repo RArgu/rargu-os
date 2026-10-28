@@ -10,6 +10,12 @@
   overflow: auto;
   tab-size: 2;
 }
+/* 015 R7.b: a host can give the status bar its own colours (Notes on the
+   sheet sets them); with none set it keeps the chrome colours */
+.writer .statusbar {
+  background: var(--t-status-bg, var(--chrome));
+  color: var(--t-status-text, inherit);
+}
 .writer textarea.nowrap {
   white-space: pre;
 }

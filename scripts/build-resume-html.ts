@@ -3,6 +3,7 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parseFrontmatter, renderMarkdown } from "../src/apps/resume/doc.ts";
+import { readEmail } from "./email-parts.ts";
 
 const root = resolve(import.meta.dirname, "..");
 const contentDir = process.env.DPOS_CONTENT ?? join(root, "content");
@@ -33,17 +34,13 @@ const { body } = parseFrontmatter(md);
 const doc = renderMarkdown(body);
 // 015 R3: the address is not in resume.md or in the page. {{email}} becomes an
 // Email link that src/sheet/email-init.ts fills in (the text shows the address)
-const emailFile =
-  process.env.DPOS_EMAIL ?? join(contentDir, "private/email.local.json");
-const parts = existsSync(emailFile)
-  ? (JSON.parse(readFileSync(emailFile, "utf8")) as { emailParts?: string[] })
-      .emailParts
-  : undefined;
+const parts = readEmail(
+  process.env.DPOS_EMAIL ?? join(contentDir, "private/email.local.json"),
+);
 // the token carries its " · " separator; no local file: no link, no separator
-const mail =
-  parts?.length === 2
-    ? `<a data-mail="show" data-u="${esc(parts[0])}" data-d="${esc(parts[1])}" hidden>Email</a><noscript>Email needs JavaScript</noscript> · `
-    : "";
+const mail = parts
+  ? `<a data-mail="show" data-u="${esc(parts[0])}" data-d="${esc(parts[1])}" hidden>Email</a><noscript>Email needs JavaScript</noscript> · `
+  : "";
 doc.html = doc.html.replace(/\{\{email\}\}/g, () => mail);
 const title = `${doc.title ?? identity.name ?? "Resume"} - Resume`;
 const description = identity.tagline ?? identity.title ?? "Resume";

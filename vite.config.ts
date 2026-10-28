@@ -5,6 +5,7 @@ import type { Plugin } from "vite";
 import { castlewarsFrames } from "./scripts/castlewars-frames.ts";
 import { hostResources } from "./scripts/host-resources.ts";
 import { sheetContent } from "./scripts/sheet-content.ts";
+import { noEmailLeak } from "./scripts/check-no-email.ts";
 import { writeupPages } from "./scripts/p-pages.ts";
 import { hostChunks } from "./scripts/host-chunks.ts";
 import { hostCss } from "./scripts/host-css.ts";
@@ -76,6 +77,8 @@ export default defineConfig(({ mode }) => ({
     }),
     // 013 R12: /p/<id>/ for each write-up
     writeupPages(writeups(mode)),
+    // 015 R3.a, R9.a: every build fails on the real address in its output
+    noEmailLeak({ fixture: mode === "e2e" }),
     castlewarsFrames(),
     hostResources(),
     {

@@ -7,6 +7,7 @@ import type { Plugin } from "vite";
 import { parseFrontmatter } from "../src/apps/resume/doc.ts";
 import { LAYOUT } from "../src/sheet/layout.ts";
 import { UNITS } from "./castlewars-frames.ts";
+import { EMAIL_FILE, readEmail } from "./email-parts.ts";
 import { requireSheetPage, SHEET_PAGE } from "./sheet-guard.ts";
 import { writeup, type Writeup } from "./writeup.ts";
 import { STAGES } from "../src/sheet/stages.ts";
@@ -229,19 +230,7 @@ function readIdentity(path: string): Identity {
  * file (content/private/email.local.json: {"emailParts": ["local", "domain"]}).
  * No file: no Email link (the build still works). A file with bad parts
  * fails the build. */
-export const EMAIL_FILE = join(root, "content/private/email.local.json");
-export function readEmail(path: string): [string, string] | null {
-  if (!existsSync(path)) return null;
-  const p = (JSON.parse(readFileSync(path, "utf8")) as { emailParts?: unknown })
-    .emailParts;
-  if (
-    !Array.isArray(p) ||
-    p.length !== 2 ||
-    p.some((x) => typeof x !== "string" || !x.trim())
-  )
-    throw new Error(`${basename(path)}: bad or missing "emailParts"`);
-  return [p[0], p[1]];
-}
+export { EMAIL_FILE, readEmail };
 
 /** 015 R3: the Email link. The address is never in the page: its two parts
  * are separate data attributes and src/sheet/email.ts joins them at start-up

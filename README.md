@@ -1,8 +1,8 @@
 # RArgu OS
 
 The personal site of Rodrigo Arguello at https://rargu.dev. It is one blueprint sheet that the visitor pans and
-zooms. Each project is a live window on the sheet, and the visitor can drag, throw and pin the windows. An overlay
-card on the left gives the name, the links and the resume.
+zooms. Each project is a live window on the sheet, and the visitor can drag, throw and pin the windows. A small panel
+on the left gives the links (Resume, GitHub, LinkedIn, Email) and the list of windows.
 
 The sheet has eight windows:
 
@@ -89,7 +89,12 @@ object and an in-memory filesystem that `scripts/host-resources.ts` fills from `
 
 The site text about the owner is in `content/`:
 
-- `identity.json`: name, title, tagline, links. The overlay card uses it.
+- `identity.json`: name, title, tagline, links. The panel shows the links; the name, title and tagline are hidden
+  in the panel (spec 015) but stay in the page title and metadata.
+- `private/email.local.json`: the public email, kept out of git (spec 015 R9). Format:
+  `{"emailParts": ["local", "domain"]}`. Each build machine needs its own copy. With no file the site builds with no
+  Email link; a bad file fails the build. The address is never in the built files: the page joins the two parts at
+  start-up. The e2e build uses `tests/fixtures/sheet-content/email.json` (`test@example.invalid`) instead.
 - `projects/*.md`: one file for each project window. `scripts/sheet-content.ts` has the list and the order.
 - `resume.md`: the resume. It becomes the static page `/resume`.
 
@@ -104,6 +109,9 @@ Edit a file, then run `npm run dev` to see the change.
   card, each hosted app and demo, accessibility and performance checks.
 - `npm run e2e:routing`: the `public/_redirects` rules and the 404 page.
 - `E2E_BASE_URL=https://rargu.dev npx playwright test …` runs the e2e tests against the live site.
+- Every build fails if the real email address is in its output (`noEmailLeak` in `scripts/check-no-email.ts`). To
+  check by hand: `node scripts/check-no-email.ts dist README.md` prints `clean`, `LEAK` with file names, or `ERROR`;
+  add `--tracked` to also scan every file git tracks.
 
 ## Deploy
 

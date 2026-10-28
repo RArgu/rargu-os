@@ -724,6 +724,10 @@ a[data-mail][hidden] {
   --t-selection-fg: #fff3a8;
   --t-hover: #f4dc6b;
   --t-highlight: #f4dc6b;
+  /* the status bar shares --chrome with the menus, so it is set apart: body
+     yellow and dim text (spec table, R7.b; read by the Writer's styles.css) */
+  --t-status-bg: #fff3a8;
+  --t-status-text: #5c4423;
 }
 .sheet-win[data-win="notes"]::after {
   content: "";

@@ -6,20 +6,14 @@
 // is never printed. A read error is an error, not `clean`.
 import { execFileSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { basename, join, resolve } from "node:path";
+import type { Plugin } from "vite";
+import { EMAIL_FILE, readEmail } from "./email-parts.ts";
 
 /** The address from the local file's `emailParts`; throws on bad parts. */
 export function addressFrom(emailPath: string): string {
-  const id = JSON.parse(readFileSync(emailPath, "utf8")) as {
-    emailParts?: unknown;
-  };
-  const p = id.emailParts;
-  if (
-    !Array.isArray(p) ||
-    p.length !== 2 ||
-    p.some((x) => typeof x !== "string" || !x.trim())
-  )
-    throw new Error(`${emailPath}: bad or missing "emailParts"`);
+  const p = readEmail(emailPath);
+  if (!p) throw new Error(`${basename(emailPath)}: missing`);
   return `${p[0]}@${p[1]}`;
 }
 
@@ -37,6 +31,31 @@ export function scan(paths: string[], ...needles: string[]): string[] {
   });
 }
 
+/** 015 R3.a, R9.a: a Vite plugin that runs the scan on every build. The real
+ * address must not be in the output; a test build (`fixture: true`) must not
+ * hold its local part either (its links use the fake address). */
+export function noEmailLeak({
+  fixture = false,
+  emailFile = EMAIL_FILE,
+} = {}): Plugin {
+  let outDir = "dist";
+  return {
+    name: "no-email-leak",
+    apply: "build",
+    configResolved: (c) => void (outDir = resolve(c.root, c.build.outDir)),
+    closeBundle() {
+      if (!existsSync(emailFile)) return;
+      const address = addressFrom(emailFile);
+      const needles = fixture ? [address, address.split("@")[0]] : [address];
+      const hits = scan([outDir], ...needles);
+      if (hits.length)
+        throw new Error(
+          `email LEAK in ${hits.length} built file(s): ${hits.join(", ")}`,
+        );
+    },
+  };
+}
+
 if (import.meta.url === `file://${process.argv[1]}`) {
   try {
     const args = process.argv.slice(2);
@@ -44,10 +63,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       const at = args.indexOf(flag);
       return at >= 0 ? args.splice(at, 2)[1] : undefined;
     };
-    const emailPath = resolve(
-      take("--email") ??
-        join(import.meta.dirname, "../content/private/email.local.json"),
-    );
+    const emailPath = resolve(take("--email") ?? EMAIL_FILE);
     const tracked = args.includes("--tracked");
     const paths = args.filter((a) => a !== "--tracked");
     if (!tracked && !paths.length) throw new Error("no paths given");
