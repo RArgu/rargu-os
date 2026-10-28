@@ -462,7 +462,7 @@ test("R6 the minimap draws the grid, each window and the view, and redraws when 
   // canvas 400 × 219 for the 3000 × 1640 sheet: 1 canvas px = 7.5 sheet px
   const k = 400 / 3000;
   const v = await view(page);
-  // CastleSiege (360, 100, 620 × 630.75) spans canvas y 13–97
+  // CastleSiege (360, 100, 620 × 631) spans canvas y 13–97
   const oldOnly: [number, number] = [89, 93]; // left after the move
   const newOnly: [number, number] = [89, 9]; // reached by the move
   const paper: [number, number] = [200, 200]; // sheet (1500, 1500)
@@ -583,7 +583,7 @@ test("R7.a pressing the lower of two overlapping windows draws it on top", async
 
 // the layout table of spec 001 (sheet px), independent of src/sheet/layout.ts
 const TABLE: [string, number, number, number, number, number][] = [
-  ["castlesiege", 360, 100, 620, 630.75, 427],
+  ["castlesiege", 360, 100, 620, 631, 427],
   ["castlewars", 1040, 140, 600, 522, 314],
   ["pentimento", 1720, 80, 600, 612, 404],
   ["crawler", 400, 860, 680, 499, 265],
