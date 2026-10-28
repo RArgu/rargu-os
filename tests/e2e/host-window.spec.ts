@@ -251,10 +251,11 @@ const ROLES = {
 };
 for (const scheme of ["light", "dark"] as const)
   test(`R4 R14 (${scheme}) a dialog's button and a child window have the scoped widget styles and the ${scheme === "dark" ? "night" : "default"} roles`, async ({
+    // 015: Notes has its own yellow roles, so this runs in Paint
     page,
   }) => {
     await page.emulateMedia({ colorScheme: scheme });
-    await run(page, "notes", sheet("?host=notes:fx-dialogs"));
+    await run(page, "paint", sheet("?host=paint:fx-dialogs"));
     const look = (sel: string) =>
       page.locator(sel).evaluate((b) => {
         const cs = getComputedStyle(b);
@@ -266,10 +267,10 @@ for (const scheme of ["light", "dark"] as const)
         };
       });
     const roles = ROLES[scheme];
-    await press(page, win(page, "notes").locator(".fx-confirm"));
+    await press(page, win(page, "paint").locator(".fx-confirm"));
     // Cancel: OK has the focus, and the focus ring draws its own shadow
     const ok = await look(
-      '[data-win="notes"] .host-panel .dialog .btn:not([data-primary])',
+      '[data-win="paint"] .host-panel .dialog .btn:not([data-primary])',
     );
     expect(ok.bg).toBe(roles.chrome);
     expect(ok.color).toBe(roles.text);
@@ -279,14 +280,14 @@ for (const scheme of ["light", "dark"] as const)
     await page.keyboard.press("Escape");
 
     // a child window's root: the app's chrome background, its size kept
-    await press(page, win(page, "notes").locator(".fx-child"));
-    const root = panel(page, "notes").locator(".host-root");
+    await press(page, win(page, "paint").locator(".fx-child"));
+    const root = panel(page, "paint").locator(".host-root");
     const r = await root.evaluate((el) => {
       const cs = getComputedStyle(el);
       return { bg: cs.backgroundColor, w: cs.width, h: cs.height };
     });
     expect(r).toEqual({ bg: roles.chrome, w: "190px", h: "132px" });
-    await panel(page, "notes").locator(".fx-cancel").click();
+    await panel(page, "paint").locator(".fx-cancel").click();
   });
 
 // ---- Codex 002 T4 review: #2 focus into a child, #3 background child, #7 fit

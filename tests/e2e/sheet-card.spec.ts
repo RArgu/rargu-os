@@ -152,7 +152,10 @@ test("015 R3.b the Email link is built at start-up: href, name, Tab, no page err
   await expect(mail).toHaveAccessibleName("Email");
   // the e2e build uses the fixture address (tests/fixtures/sheet-content)
   await expect(mail).toHaveAttribute("href", "mailto:test@example.invalid");
-  expect(await page.content()).not.toContain('test@example.invalid"');
+  // the page source (not the DOM) has the parts only
+  const src = await (await page.request.get(page.url())).text();
+  expect(src).not.toContain("test@example.invalid");
+  expect(src).toContain('data-d="example.invalid"');
   await page.getByRole("link", { name: "LinkedIn" }).focus();
   await page.keyboard.press("Tab");
   await expect(mail).toBeFocused();

@@ -715,6 +715,9 @@ test.describe("visibility follows the window's own moves", () => {
   test("Alt+Arrow moves it out of the view and it stops; dragged in, Home sends it out and it stops", async ({
     page,
   }) => {
+    // 015: the card is narrower, so the view's left inset is 190 px: the
+    // window's home (x 1040) is out of the view only when the view is narrower
+    await page.setViewportSize({ width: 1100, height: 800 });
     await open(page);
     await loaded(page);
     expect(await timers(page)).toBe(1);
@@ -746,14 +749,16 @@ test.describe("visibility follows the window's own moves", () => {
     expect(await inView(page)).toBe(true);
     expect(await timers(page)).toBe(1);
 
-    // drag it 300 px left, held still before letting go (no throw)
+    // drag it 330 px left (015: with the narrower card the 4 px the old 300 px
+    // left over is not enough to put its home out of view), held still before
+    // letting go (no throw)
     const bar = (await win(page).locator(".bar .t").boundingBox())!;
     const y = bar.y + bar.height / 2;
     await page.mouse.move(bar.x + 30, y);
     await page.mouse.down();
     for (let i = 1; i <= 10; i++) {
       await page.clock.runFor(16);
-      await page.mouse.move(bar.x + 30 - 30 * i, y);
+      await page.mouse.move(bar.x + 30 - 33 * i, y);
     }
     await page.clock.runFor(200);
     await page.mouse.up();

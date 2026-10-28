@@ -703,6 +703,13 @@ a[data-mail][hidden] {
   --ink-dim: #5c4423;
   --focus: #1d2b53;
 }
+/* dark: the ring sits between the yellow and the dark paper, so it needs 3:1
+   on both (#7f6b3a: 4.6 on #fff3a8, 3.3 on #111a33) */
+@media (prefers-color-scheme: dark) {
+  .sheet-win[data-win="notes"] {
+    --focus: #7f6b3a;
+  }
+}
 .sheet-win[data-win="notes"] .host-root {
   --t-document: #fff3a8;
   --t-document-text: #3b2a14;

@@ -420,13 +420,14 @@ test("R14.a dark scheme: Paint uses the night roles; a change to light recolours
   expect((await middle(page)).rgba).toBe(drawn);
 });
 
+// 015: Notes has its own yellow roles, so this runs in Paint
 test("R14 sys.theme.get follows the scheme, sys:theme is published on a change, icons refresh, set does nothing", async ({
   page,
 }) => {
   await page.emulateMedia({ colorScheme: "dark" });
-  await page.goto(sheet("?host=notes:fx-theme"));
-  await page.locator('[data-go="notes"]').click();
-  await running(page, "notes");
+  await page.goto(sheet("?host=paint:fx-theme"));
+  await page.locator('[data-go="paint"]').click();
+  await running(page, "paint");
   const log = () =>
     page.evaluate(
       () =>
@@ -449,7 +450,7 @@ test("R14 sys.theme.get follows the scheme, sys:theme is published on a change, 
   // the role variables are on the host root
   const roles = await page.evaluate(() => {
     const r = document.querySelector(
-      '[data-win="notes"] .host-root:not(.host-bar)',
+      '[data-win="paint"] .host-root:not(.host-bar)',
     )!;
     const cs = getComputedStyle(r);
     return [cs.getPropertyValue("--t-chrome"), cs.color];

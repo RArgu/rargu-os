@@ -151,25 +151,34 @@ for (const c of CASES)
     }) => {
       await open(page, c.phone);
       const fit = await zoom(page);
-      // the middle of the title bar: zooms about it keep it in place
-      const b0 = await box(page);
-      const bar: Pt = [
-        Math.round(b0.x + b0.width / 2),
-        Math.round(b0.y + 12 * fit),
-      ];
       // 0 in a path: back to the start zoom
-      for (const z of c.path) await zoomTo(page, z || fit, bar);
+      // 015: each zoom is about the bar's middle where it is now (the card is
+      // narrower, so a zoom out and in about a fixed point can end with the
+      // window off the left edge)
+      for (const z of c.path) {
+        const bb = await box(page);
+        const zn = await zoom(page);
+        await zoomTo(page, z || fit, [
+          Math.round(Math.min(Math.max(bb.x + bb.width / 2, 60), 1000)),
+          Math.round(bb.y + 12 * zn),
+        ]);
+      }
       // the bar's middle now (a zoom near the sheet's edge may shift it)
       const b = await box(page);
       const z = await zoom(page);
+      const v = (await page.locator("#vp").boundingBox())!;
+      // 015: the card is narrower, so the view's left inset is smaller and the
+      // bar's middle can land inside the left edge zone; press on the bar,
+      // clear of the 56 px edge zones
+      const lo = Math.max(b.x + 8, v.x + 60);
+      const hi = Math.min(b.x + b.width - 8, v.x + v.width - 60);
       const press: Pt = [
-        Math.round(b.x + b.width / 2),
+        Math.round(Math.min(hi, Math.max(lo, b.x + b.width / 2))),
         Math.round(b.y + 12 * z),
       ];
       const vp = page.viewportSize()!;
       const moved: Pt = [press[0] + 30, press[1] + 24];
       // both ends clear of the 56 px edge zones (no auto-scroll, R10)
-      const v = (await page.locator("#vp").boundingBox())!;
       for (const p of [press, moved]) {
         expect(p[0]).toBeGreaterThan(v.x + 56);
         expect(p[0]).toBeLessThan(v.x + v.width - 56);

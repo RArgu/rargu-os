@@ -263,7 +263,7 @@ test("R22 a flick against the scroll limit schedules no glide frames", async ({
   // down cannot move it; paper below CastleSiege, clear of the minimap
   await page.locator("#vp").evaluate((vp) => vp.scrollTo(0, 0));
   const at = await view(page);
-  expect(at.left).toBeLessThan(-300);
+  expect(at.left).toBeLessThan(-150);
   await page.mouse.move(700, 740);
   await page.mouse.down();
   for (let i = 1; i <= 5; i++)
@@ -462,8 +462,8 @@ test("R6 the minimap draws the grid, each window and the view, and redraws when 
   // canvas 400 × 219 for the 3000 × 1640 sheet: 1 canvas px = 7.5 sheet px
   const k = 400 / 3000;
   const v = await view(page);
-  // CastleSiege (360, 100, 620 × 631) spans canvas y 13–101
-  const oldOnly: [number, number] = [89, 98]; // left after the move
+  // CastleSiege (360, 100, 620 × 631) spans canvas y 13–97
+  const oldOnly: [number, number] = [89, 93]; // left after the move
   const newOnly: [number, number] = [89, 9]; // reached by the move
   const paper: [number, number] = [200, 200]; // sheet (1500, 1500)
   const grid: [number, number] = [191, 200]; // the line at sheet x 1440
