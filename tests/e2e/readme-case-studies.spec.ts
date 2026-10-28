@@ -42,7 +42,9 @@ test("R18.a: the notice comes first; the cases load once when Origin is in view"
   await expect(notice).toContainText("We reply within 7 days");
   await expect(notice).toContainText("A market can be hidden at once");
   await expect(notice).toContainText("removed with the next site update");
+  // 015 R3: the Email link gets its href at start-up (fixture address)
   await expect(notice.locator('a[href^="mailto:"]')).toHaveCount(1);
+  await expect(notice.locator("a[data-mail]")).toHaveAccessibleName("Email");
   expect(
     await notice.evaluate(
       (n) =>

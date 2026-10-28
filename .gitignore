@@ -21,3 +21,6 @@ plan/
 tools/
 docs/archive/
 docs/handoffs/
+
+# 015: the public email, kept out of the repo (one file per build machine)
+content/private/

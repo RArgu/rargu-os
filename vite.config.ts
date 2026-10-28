@@ -65,7 +65,15 @@ export default defineConfig(({ mode }) => ({
     // 002 R13: the hosted apps' and widgets' CSS under the host root
     hostCss(),
     // 013: the e2e build shows fixture write-ups (no real one ships yet)
-    sheetContent(writeups(mode)),
+    sheetContent({
+      ...writeups(mode),
+      // 015: the e2e build uses a fake address, never the local file
+      ...(mode === "e2e"
+        ? {
+            emailFile: resolve(root, "tests/fixtures/sheet-content/email.json"),
+          }
+        : {}),
+    }),
     // 013 R12: /p/<id>/ for each write-up
     writeupPages(writeups(mode)),
     castlewarsFrames(),

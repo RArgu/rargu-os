@@ -10,7 +10,11 @@ const src = join(contentDir, "resume.md");
 const md = existsSync(src)
   ? readFileSync(src, "utf8")
   : "<!-- TODO(content): replace -->\n# Resume\n\nPlaceholder. The owner has not supplied a resume yet.\n";
-let identity: { name?: string; title?: string; tagline?: string } = {};
+let identity: {
+  name?: string;
+  title?: string;
+  tagline?: string;
+} = {};
 try {
   identity = JSON.parse(
     readFileSync(join(contentDir, "identity.json"), "utf8"),
@@ -27,6 +31,20 @@ const esc = (s: string): string =>
     .replace(/"/g, "&quot;");
 const { body } = parseFrontmatter(md);
 const doc = renderMarkdown(body);
+// 015 R3: the address is not in resume.md or in the page. {{email}} becomes an
+// Email link that src/sheet/email-init.ts fills in (the text shows the address)
+const emailFile =
+  process.env.DPOS_EMAIL ?? join(contentDir, "private/email.local.json");
+const parts = existsSync(emailFile)
+  ? (JSON.parse(readFileSync(emailFile, "utf8")) as { emailParts?: string[] })
+      .emailParts
+  : undefined;
+// the token carries its " · " separator; no local file: no link, no separator
+const mail =
+  parts?.length === 2
+    ? `<a data-mail="show" data-u="${esc(parts[0])}" data-d="${esc(parts[1])}" hidden>Email</a><noscript>Email needs JavaScript</noscript> · `
+    : "";
+doc.html = doc.html.replace(/\{\{email\}\}/g, () => mail);
 const title = `${doc.title ?? identity.name ?? "Resume"} - Resume`;
 const description = identity.tagline ?? identity.title ?? "Resume";
 
@@ -52,6 +70,7 @@ const html = `<!doctype html>
     <main>
 ${doc.html.replace(/<img data-src=/g, "<img src=")}
     </main>
+    <script type="module" src="/src/sheet/email-init.ts"></script>
   </body>
 </html>
 `;

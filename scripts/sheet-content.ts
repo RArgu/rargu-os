@@ -203,7 +203,6 @@ interface Identity {
   name: string;
   title: string;
   tagline: string;
-  email: string;
   links: { github: string; linkedin: string };
 }
 
@@ -213,7 +212,6 @@ function readIdentity(path: string): Identity {
     ["name", id.name],
     ["title", id.title],
     ["tagline", id.tagline],
-    ["email", id.email],
     ["links.github", id.links?.github],
     ["links.linkedin", id.links?.linkedin],
   ] as [string, unknown][]) {
@@ -227,7 +225,43 @@ function readIdentity(path: string): Identity {
   return id as Identity;
 }
 
-function card(id: Identity, projects: Project[]): string {
+/** 015: the public email is not in the repo. It is two parts in a git-ignored
+ * file (content/private/email.local.json: {"emailParts": ["local", "domain"]}).
+ * No file: no Email link (the build still works). A file with bad parts
+ * fails the build. */
+export const EMAIL_FILE = join(root, "content/private/email.local.json");
+export function readEmail(path: string): [string, string] | null {
+  if (!existsSync(path)) return null;
+  const p = (JSON.parse(readFileSync(path, "utf8")) as { emailParts?: unknown })
+    .emailParts;
+  if (
+    !Array.isArray(p) ||
+    p.length !== 2 ||
+    p.some((x) => typeof x !== "string" || !x.trim())
+  )
+    throw new Error(`${basename(path)}: bad or missing "emailParts"`);
+  return [p[0], p[1]];
+}
+
+/** 015 R3: the Email link. The address is never in the page: its two parts
+ * are separate data attributes and src/sheet/email.ts joins them at start-up
+ * (it sets the href and shows the link). `show` also writes the address as
+ * the link text (the printed resume). `nojs` is the text with JavaScript off. */
+export function mailLink(
+  parts: [string, string] | null,
+  { cls = "", show = false, nojs = "" } = {},
+): string {
+  if (!parts) return "";
+  const c = cls ? ` class="${cls}"` : "";
+  const n = nojs ? `<noscript>${esc(nojs)}</noscript>` : "";
+  return `<a data-mail${show ? '="show"' : ""} data-u="${esc(parts[0])}" data-d="${esc(parts[1])}"${c} hidden>Email</a>${n}`;
+}
+
+function card(
+  id: Identity,
+  projects: Project[],
+  email: [string, string] | null,
+): string {
   const ext = 'target="_blank" rel="noopener"';
   const go = projects
     .map(
@@ -241,19 +275,20 @@ function card(id: Identity, projects: Project[]): string {
         `<button type="button" class="app" data-go="${s.id}"><img src="/sheet/${s.id}.png" alt="" width="32" height="32" />${esc(s.tool!)}</button>`,
     )
     .join("");
+  // 015 R5: the name, title and tagline are hidden, not deleted. To bring them
+  // back, put this in the "more" div, above ".cta":
+  //   <div class="who"><b>${esc(id.name)}</b><small>${esc(id.title)}</small></div>
+  //   <p class="tag">${esc(id.tagline)}</p>
   return `<div class="railtop"><h1 class="logo">RArgu<span>OS</span></h1></div>
       <div class="more">
-        <div class="who"><b>${esc(id.name)}</b><small>${esc(id.title)}</small></div>
-        <p class="tag">${esc(id.tagline)}</p>
         <div class="cta">
           <a class="btn primary" href="/resume" ${ext}>Resume ↗</a>
           <a class="btn" href="${esc(id.links.github)}" ${ext}>GitHub</a>
           <a class="btn" href="${esc(id.links.linkedin)}" ${ext}>LinkedIn</a>
+          ${mailLink(email, { cls: "btn" })}
         </div>
-        <div><span class="email" id="email">${esc(id.email)}</span> <button type="button" class="btn small" id="copy">copy</button></div>
-        <nav class="index" aria-label="Go to"><h2>On this sheet</h2>${go}</nav>
+        <nav class="index" aria-label="Go to">${go}</nav>
         <div class="index"><h2>Quick tools</h2><div class="apps">${tools}</div></div>
-        <p class="hint">Drag the paper to look around, pinch or ⌘/Ctrl-scroll to zoom. Throw any window anywhere; double-click its title bar to send it home.</p>
         <button type="button" class="btn" id="reset">↺ Reset page</button>
       </div>`;
 }
@@ -341,14 +376,14 @@ const DEMO: Record<string, (demoH: number) => string> = {
  * Hidden until its tab opens it (main.ts) or a /p/ page shows it. */
 /** 013 R18, R19: the notice above the case studies (in the page HTML) and
  * their container; case-studies.ts loads them, with JavaScript only. */
-function casesHtml(id: string, email: string): string {
-  const mail = `<a href="mailto:${esc(email)}">${esc(email)}</a>`;
-  return `<div class="cases-wrap"><p class="cs-notice"><strong>These wallets were candidates from our course project's heuristics, not proof of insider trading.</strong> Figures are from our final report (2026-05-18). A market can be hidden at once. A case study below is removed with the next site update. We reply within 7 days. To ask for a correction or removal, email ${mail}. Copies already saved by others cannot be recalled.</p><div class="cases" data-nosnippet data-src="/p/${id}/case-studies.json"><p class="cases-state">The case studies need JavaScript.</p></div></div>`;
+function casesHtml(id: string, email: [string, string] | null): string {
+  const mail = mailLink(email, { nojs: "Email needs JavaScript" });
+  return `<div class="cases-wrap"><p class="cs-notice"><strong>These wallets were candidates from our course project's heuristics, not proof of insider trading.</strong> Figures are from our final report (2026-05-18). A market can be hidden at once. A case study below is removed with the next site update. We reply within 7 days. ${mail ? `To ask for a correction or removal, use this link: ${mail}.` : ""} Copies already saved by others cannot be recalled.</p><div class="cases" data-nosnippet data-src="/p/${id}/case-studies.json"><p class="cases-state">The case studies need JavaScript.</p></div></div>`;
 }
 
 export function readPanel(
   p: Project & { writeup: Writeup },
-  email: string,
+  email: [string, string] | null,
 ): string {
   const ext = 'target="_blank" rel="noopener"';
   const w = p.writeup;
@@ -381,7 +416,7 @@ function tabs(p: Project): string {
 // R7 / R14: the eight windows at their home positions. The inline transform
 // shows the layout without JS; windows.ts owns it after start. R9: each title
 // bar has a Home control.
-function windows(projects: Project[], email: string): string {
+function windows(projects: Project[], email: [string, string] | null): string {
   const ext = 'target="_blank" rel="noopener"';
   return LAYOUT.map((s) => {
     const p = projects.find((p) => p.id === s.id);
@@ -407,6 +442,7 @@ export function sheetContent({
   identity = join(root, "content/identity.json"),
   projects = join(root, "content/projects"),
   overlay = undefined as string | undefined,
+  emailFile = EMAIL_FILE,
 } = {}): Plugin {
   return {
     name: "sheet-content",
@@ -427,11 +463,12 @@ export function sheetContent({
       if (!ctx.filename.endsWith(`/${SHEET_PAGE}`)) return html;
       const list = loadProjects(projects, overlay);
       const id = readIdentity(identity);
+      const email = readEmail(emailFile);
       return (
         html
           // callbacks: a replacement string would expand $' and $& in content
-          .replace("<!-- card -->", () => card(id, list))
-          .replace("<!-- windows -->", () => windows(list, id.email))
+          .replace("<!-- card -->", () => card(id, list, email))
+          .replace("<!-- windows -->", () => windows(list, email))
       );
     },
   };

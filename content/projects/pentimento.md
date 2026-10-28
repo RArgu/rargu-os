@@ -5,7 +5,7 @@ year: 2026
 stack: [Swift 6, AppKit, Metal, TypeScript, Claude Agent SDK]
 links: []
 status: planning
-summary: A native macOS raster editor in the spirit of Paint.NET, built so AI agents can drive it with real tools. It follows PaintDotMac, a Swift/Metal prototype whose compositor matched Paint.NET pixel for pixel.
+summary: A planned macOS raster editor in the spirit of Paint.NET, designed so AI agents can drive it with real tools.
 ---
 
 # Pentimento

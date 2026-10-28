@@ -22,7 +22,8 @@ export const LAYOUT: Slot[] = [
     w: 620,
     // 003 T1: the wide layout at 40 px cells under the 27 px menu row;
     // 003 T8: the window ends at the status bar (no strip under it)
-    h: 654,
+    // 015 R6: -23 px, the blurb is two lines now
+    h: 631,
     demoH: 427,
     bar: "castlesiege — vs. bot",
   },
@@ -41,7 +42,7 @@ export const LAYOUT: Slot[] = [
     y: 80,
     w: 600,
     // 005 option C: the mock's height after a run, so all five lines show
-    h: 635,
+    h: 612,
     demoH: 404,
     bar: "pentimento — the workflow it's built for",
   },
@@ -51,7 +52,7 @@ export const LAYOUT: Slot[] = [
     y: 860,
     w: 680,
     // 006 T3: the mock's lists and footer under the real project text
-    h: 522,
+    h: 499,
     demoH: 265,
     bar: 'crawl — topic: "protein structure prediction"',
   },
@@ -61,7 +62,7 @@ export const LAYOUT: Slot[] = [
     y: 800,
     w: 680,
     // 006 T4: the mock's four flagged cards beside the chart, and the note
-    h: 551,
+    h: 528,
     demoH: 320,
     bar: "spike-scan — example market",
   },

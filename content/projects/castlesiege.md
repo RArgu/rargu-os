@@ -6,7 +6,7 @@ stack: [TypeScript, React Native, Expo, Node.js, WebSocket, PostgreSQL, Web Work
 links: [https://castlesiege.fly.dev]
 app: castlesiege
 status: playable
-summary: Two-player turn-based strategy on a 7×9 board. Fewer pieces than chess, with mismatched move and attack ranges. Online with ranked matchmaking, or against a bot that runs in your browser.
+summary: Two-player strategy on a 7×9 board with mismatched move and attack ranges. Play online or against a browser bot.
 ---
 
 # CastleSiege

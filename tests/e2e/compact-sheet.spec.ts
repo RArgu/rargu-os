@@ -420,7 +420,7 @@ test("R15.a at 390 × 844 the card is a bar and CastleSiege's full width is on s
   const toggle = page.locator("#card button[aria-expanded]");
   await expect(toggle).toBeVisible();
   await expect(toggle).toHaveAttribute("aria-expanded", "false");
-  await expect(page.locator("#email")).toBeHidden();
+  await expect(page.locator("#card a[data-mail]")).toBeHidden();
   const card = (await page.locator("#card").boundingBox())!;
   expect(card.height).toBeLessThan(90);
   // zoomed out from 100 % so the window fits
@@ -436,13 +436,13 @@ test("R15 the about toggle opens the card; Escape closes it and returns focus to
   const toggle = page.locator("#card button[aria-expanded]");
   await toggle.tap();
   await expect(toggle).toHaveAttribute("aria-expanded", "true");
-  await expect(page.locator("#email")).toBeVisible();
+  await expect(page.locator("#card a[data-mail]")).toBeVisible();
   await expect(page.getByRole("link", { name: "GitHub" })).toBeVisible();
   // focus inside the card, away from the toggle
   await page.getByRole("link", { name: "GitHub" }).focus();
   await page.keyboard.press("Escape");
   await expect(toggle).toHaveAttribute("aria-expanded", "false");
-  await expect(page.locator("#email")).toBeHidden();
+  await expect(page.locator("#card a[data-mail]")).toBeHidden();
   await expect(toggle).toBeFocused();
 });
 

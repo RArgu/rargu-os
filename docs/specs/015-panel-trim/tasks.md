@@ -7,6 +7,10 @@ Ordered by dependency. Check a box only after its verification has run.
   - Acceptance: R3.a to R3.f
   - Verify: `npm test`; `node scripts/check-no-email.ts dist README.md` prints `clean` on production and fixture builds
   - Files: `content/identity.json`, `scripts/sheet-content.ts`, `src/sheet/email.ts`, `src/sheet/main.ts`, `scripts/build-resume-html.ts`
+- [ ] **T1b** Email out of the repo: local git-ignored file, fixture file, mocks/ledger placeholder, hash update (R9)
+  - Acceptance: R9.a to R9.c
+  - Verify: `node scripts/check-no-email.ts dist --tracked`; `git grep -n -i` on the address and its local part prints nothing; `npm test`
+  - Files: `.gitignore`, `scripts/sheet-content.ts`, `scripts/build-resume-html.ts`, `scripts/check-no-email.ts`, `docs/mockups/*`, `docs/ledger/*`
 - [ ] **T2** Panel: delete heading and hint, hide name/title/tagline and title block, aria changes, 150 px layout (R1, R2, R4, R5)
   - Acceptance: R1.a, R1.b, R2.a to R2.c, R4.a, R4.b, R5.a, R5.b
   - Verify: `npm run e2e` (card and compact specs) at the spec's viewports

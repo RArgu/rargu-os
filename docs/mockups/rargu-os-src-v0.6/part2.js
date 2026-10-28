@@ -7,7 +7,7 @@ const $=s=>document.querySelector(s);
 let toastT;
 function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),2600)}
 
-$("#copy").onclick=()=>{const e="r.arguello.h@gmail.com";(navigator.clipboard?navigator.clipboard.writeText(e):Promise.reject()).then(()=>toast("Email copied")).catch(()=>{const r=document.createRange();r.selectNodeContents($("#email"));const s=getSelection();s.removeAllRanges();s.addRange(r);toast("Selected; press ⌘C")})};
+$("#copy").onclick=()=>{const e="email@example.invalid";(navigator.clipboard?navigator.clipboard.writeText(e):Promise.reject()).then(()=>toast("Email copied")).catch(()=>{const r=document.createRange();r.selectNodeContents($("#email"));const s=getSelection();s.removeAllRanges();s.addRange(r);toast("Selected; press ⌘C")})};
 const closeRail=()=>{$("#rail").classList.remove("open");$("#railToggle").setAttribute("aria-expanded","false");$("#railToggle").textContent="about ▾"};
 $("#railToggle").onclick=e=>{const o=$("#rail").classList.toggle("open");e.currentTarget.setAttribute("aria-expanded",o);e.currentTarget.textContent=o?"close ▴":"about ▾"};
 

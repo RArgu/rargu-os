@@ -40,7 +40,7 @@ const PARTS = {
   body: "body",
   card: "#card",
   "card logo": "#card .logo",
-  "card button": "#copy",
+  "card button": "#reset",
   grid: "#world",
   frame: '[data-win="castlesiege"]',
   bar: '[data-win="castlesiege"] .bar',

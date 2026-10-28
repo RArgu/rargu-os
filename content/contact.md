@@ -1,6 +1,6 @@
 # Contact
 
-The best way to reach me is email: [r.arguello.h@gmail.com](mailto:r.arguello.h@gmail.com).
+The best way to reach me is email (use the Email link on the sheet at rargu.dev).
 
 - GitHub: [github.com/RArgu](https://github.com/RArgu)
 - LinkedIn: [linkedin.com/in/rodrigo-arguello](https://linkedin.com/in/rodrigo-arguello)

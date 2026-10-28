@@ -6,7 +6,7 @@ stack: [Python, asyncio, Anthropic API, Ollama, scikit-learn, Pandas, Matplotlib
 links: [https://github.com/MacroMozilla/WSEProject, https://github.com/RArgu/CS-GY-6913-GeneralizedCrawler]
 future_app: true
 status: demo-coming
-summary: Give it a topic and four strategies crawl side by side: URL keywords, static similarity, adaptive similarity, and an LLM judge. One evaluator scores precision, domain diversity, and overlap. I built the LLM strategy and the evaluation layer.
+summary: Four crawl strategies compete on one topic, scored by one evaluator. I built the LLM strategy and the evaluator.
 ---
 
 # Generalized Focused Web Crawler

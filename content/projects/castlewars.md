@@ -5,7 +5,7 @@ year: 2026
 stack: [Aseprite, TypeScript, Canvas]
 links: []
 status: in-progress
-summary: An auto-battler set in CastleSiege's world. The units are hand-animated pixel art; the battle engine is next. These are the real sprite sheets.
+summary: An auto-battler set in CastleSiege's world. The hand-animated pixel-art units are done. The battle engine is next.
 ---
 
 # Castle Wars

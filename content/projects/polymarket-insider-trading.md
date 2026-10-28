@@ -5,7 +5,7 @@ year: 2026
 stack: [Python, PySpark, Spark SQL, Spark MLlib, BigQuery, GraphQL]
 links: [https://github.com/RArgu/CS-GY6513-FinalProject]
 status: demo-coming
-summary: A PySpark pipeline over 226K+ on-chain fills across 6 geopolitical markets ($240M+ volume). It finds sharp price moves, traces the wallets that bet big just before them, and scores those wallets against a GDELT news timeline. It flags candidates; it doesn't prove anything.
+summary: A PySpark pipeline over 226K+ Polymarket fills. It flags wallets that bet big before sharp price moves. Candidates, not proof.
 ---
 
 # Insider Trading Detection on Polymarket

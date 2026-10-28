@@ -20,7 +20,7 @@ const root = resolve(import.meta.dirname, "../..");
 const projects = join(root, "content/projects");
 
 describe("R11.a card HTML from identity.json", () => {
-  it("shows the test name and escapes the tagline", async () => {
+  it("hides the name, title and tagline; links and Email parts are there", async () => {
     const out = (await build({
       configFile: false,
       logLevel: "silent",
@@ -28,6 +28,7 @@ describe("R11.a card HTML from identity.json", () => {
       plugins: [
         sheetContent({
           identity: join(root, "tests/fixtures/sheet-content/identity.json"),
+          emailFile: join(root, "tests/fixtures/sheet-content/email.json"),
         }),
         // the sheet entry imports the Castle Wars frame data (005) and,
         // lazily, the app host's resource table (002)
@@ -42,15 +43,29 @@ describe("R11.a card HTML from identity.json", () => {
     })) as Rollup.RollupOutput;
     const html = out.output.find((f) => f.fileName === "index.html");
     const src = html?.type === "asset" ? String(html.source) : "";
-    expect(src).toContain("Test Person");
-    expect(src).toContain("Test Role");
-    expect(src).toContain(
-      "Builds &lt;b&gt;things&lt;/b&gt; &amp; &quot;stuff&quot;",
-    );
-    expect(src).not.toContain("<b>things</b>");
+    // 015 R5: hidden, not deleted (the markup is a source comment)
+    expect(src).not.toContain("Test Person");
+    expect(src).not.toContain("Test Role");
+    expect(src).not.toContain("stuff");
+    // 015 R1: no heading, no hint
+    expect(src).not.toMatch(/On this sheet|Drag the paper/);
     expect(src).toContain('href="https://github.com/test"');
     expect(src).toContain('href="https://linkedin.com/in/test"');
-    expect(src).toContain("test@example.com");
+    // 015 R3: two parts, never the address; hidden until src/sheet/email.ts
+    expect(src).toMatch(
+      /<a data-mail data-u="test" data-d="example.invalid" class="btn" hidden>Email<\/a>/,
+    );
+    expect(src).not.toContain("test@example.invalid");
+    expect(src).not.toContain('id="copy"');
+  });
+
+  it("shows no Email link when the local email file is missing", async () => {
+    const src = await buildSheet({
+      identity: join(root, "tests/fixtures/sheet-content/identity.json"),
+      emailFile: join(tmpdir(), "no-such-015-email.json"),
+    });
+    expect(src).toContain('class="btn primary"');
+    expect(src).not.toContain("data-mail");
   });
 });
 
@@ -225,7 +240,7 @@ describe("R7 / R14 window HTML", () => {
     );
     const src = await buildSheet({
       projects: dir,
-      identity: identityWith({ tagline: "Tag $' and $& end" }),
+      emailFile: join(root, "tests/fixtures/sheet-content/email.json"),
     });
     expect(src.match(/<section class="sheet-win"/g)).toHaveLength(8);
     expect(src).toContain("transform:translate(360px, 100px)");
@@ -233,7 +248,6 @@ describe("R7 / R14 window HTML", () => {
     expect(src).toContain(`<h2>${title}</h2>`);
     expect(src).toContain(`aria-label="${title}"`);
     expect(src).toContain("Costs $240M, $&amp; and $$ too.");
-    expect(src).toContain("Tag $' and $&amp; end");
     expect(src).not.toContain("<i>x</i>");
   });
 });

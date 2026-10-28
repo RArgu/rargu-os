@@ -1,4 +1,4 @@
-// Spec 001 T6 on desktop: the card's Copy fallback (R11.b), navigation to a
+// Spec 001 T6 on desktop: the card's Email link (015 R3), navigation to a
 // window's current position (R12), nearest marking (R12.b) and Reset (R13),
 // also with reduced motion (R17). Positions are read from the DOM only.
 import type { Page } from "@playwright/test";
@@ -139,51 +139,24 @@ const atHome = (page: Page) =>
       ),
     );
 
-// ---- R11.b ----
+// ---- 015 R3 ----
 
-test("R11.b Copy with the clipboard refused selects the address and says ⌘C or Ctrl+C", async ({
+test("015 R3.b the Email link is built at start-up: href, name, Tab, no page error", async ({
   page,
 }) => {
-  await page.addInitScript(() => {
-    Object.defineProperty(Navigator.prototype, "clipboard", {
-      configurable: true,
-      get: () => ({
-        writeText: () =>
-          Promise.reject(new DOMException("refused", "NotAllowedError")),
-      }),
-    });
-  });
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
   await open(page);
-  const email = (await page.locator("#email").textContent())!;
-  await page.click("#copy");
-  await expect(
-    page.getByRole("status").filter({ hasText: "⌘C or Ctrl+C" }),
-  ).toBeVisible();
-  expect(await page.evaluate(() => getSelection()!.toString())).toBe(email);
-});
-
-test("R11 Copy writes the address and says so @live", async ({ page }) => {
-  await page.addInitScript(() => {
-    const w = window as unknown as { __copied: string[] };
-    w.__copied = [];
-    Object.defineProperty(Navigator.prototype, "clipboard", {
-      configurable: true,
-      get: () => ({
-        writeText: (s: string) => (w.__copied.push(s), Promise.resolve()),
-      }),
-    });
-  });
-  await open(page);
-  const email = (await page.locator("#email").textContent())!;
-  await page.click("#copy");
-  await expect(
-    page.getByRole("status").filter({ hasText: /copied/i }),
-  ).toBeVisible();
-  expect(
-    await page.evaluate(
-      () => (window as unknown as { __copied: string[] }).__copied,
-    ),
-  ).toEqual([email]);
+  const mail = page.locator("#card a[data-mail]");
+  await expect(mail).toBeVisible();
+  await expect(mail).toHaveAccessibleName("Email");
+  // the e2e build uses the fixture address (tests/fixtures/sheet-content)
+  await expect(mail).toHaveAttribute("href", "mailto:test@example.invalid");
+  expect(await page.content()).not.toContain('test@example.invalid"');
+  await page.getByRole("link", { name: "LinkedIn" }).focus();
+  await page.keyboard.press("Tab");
+  await expect(mail).toBeFocused();
+  expect(errors).toEqual([]);
 });
 
 // ---- R12 ----

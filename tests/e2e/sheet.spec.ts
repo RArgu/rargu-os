@@ -76,7 +76,6 @@ const identity = JSON.parse(
   name: string;
   title: string;
   tagline: string;
-  email: string;
   links: { github: string; linkedin: string };
 };
 
@@ -90,14 +89,10 @@ test.describe("R3.a card without JavaScript", () => {
       await page.setViewportSize({ width, height });
       await page.goto(sheet());
       const card = page.locator("#card");
-      for (const text of [
-        identity.name,
-        identity.title,
-        identity.tagline,
-        identity.email,
-      ]) {
-        await expect(card.getByText(text, { exact: true })).toBeVisible();
-      }
+      // 015 R5, R3.c: no name, title or tagline; no Email link without JS
+      for (const text of [identity.name, identity.title, identity.tagline])
+        await expect(card.getByText(text, { exact: true })).toHaveCount(0);
+      await expect(card.locator("a[data-mail]")).toBeHidden();
       const links: [string, string][] = [
         ["Resume", "/resume"],
         ["GitHub", identity.links.github],
@@ -467,7 +462,7 @@ test("R6 the minimap draws the grid, each window and the view, and redraws when 
   // canvas 400 × 219 for the 3000 × 1640 sheet: 1 canvas px = 7.5 sheet px
   const k = 400 / 3000;
   const v = await view(page);
-  // CastleSiege (360, 100, 620 × 654) spans canvas y 13–101
+  // CastleSiege (360, 100, 620 × 631) spans canvas y 13–101
   const oldOnly: [number, number] = [89, 98]; // left after the move
   const newOnly: [number, number] = [89, 9]; // reached by the move
   const paper: [number, number] = [200, 200]; // sheet (1500, 1500)
@@ -588,18 +583,18 @@ test("R7.a pressing the lower of two overlapping windows draws it on top", async
 
 // the layout table of spec 001 (sheet px), independent of src/sheet/layout.ts
 const TABLE: [string, number, number, number, number, number][] = [
-  ["castlesiege", 360, 100, 620, 654, 427],
+  ["castlesiege", 360, 100, 620, 631, 427],
   ["castlewars", 1040, 140, 600, 522, 314],
-  ["pentimento", 1720, 80, 600, 635, 404],
-  ["crawler", 400, 860, 680, 522, 265],
-  ["insider", 1160, 800, 680, 551, 320],
+  ["pentimento", 1720, 80, 600, 612, 404],
+  ["crawler", 400, 860, 680, 499, 265],
+  ["insider", 1160, 800, 680, 528, 320],
   // 004 T2: the Quick tools at mock v0.7's rectangles (owner, 2026-10-24)
   ["paint", 1920, 760, 434, 350, 313],
   ["music", 2400, 700, 556, 348, 311],
   ["notes", 1920, 1150, 424, 364, 327],
 ];
 
-// 005 option C: Pentimento grew to the mock's after-run height (635); at home
+// 005 option C: Pentimento grew to the mock's after-run height (612, 015); at home
 // its bottom stays above the windows below it
 test("R7.b Pentimento at home ends above Paint and Insider", async ({
   page,

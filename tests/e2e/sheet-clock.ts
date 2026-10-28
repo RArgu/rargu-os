@@ -182,6 +182,6 @@ export async function throwIt(page: Page): Promise<Pt | null> {
   const clamp = (x: number, max: number) => Math.min(max, Math.max(0, x));
   return [
     clamp(360 + last.x - 500 + v[0] * k * cap, 3000 - 620),
-    clamp(100 + last.y - 112 + v[1] * k * cap, 1640 - 654),
+    clamp(100 + last.y - 112 + v[1] * k * cap, 1640 - 631),
   ];
 }

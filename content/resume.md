@@ -1,6 +1,6 @@
 # Rodrigo Arguello
 
-Software Engineer · [rargu.dev](https://rargu.dev) · [r.arguello.h@gmail.com](mailto:r.arguello.h@gmail.com) · [github.com/RArgu](https://github.com/RArgu) · [linkedin.com/in/rodrigo-arguello](https://linkedin.com/in/rodrigo-arguello)
+Software Engineer · [rargu.dev](https://rargu.dev) · {{email}}[github.com/RArgu](https://github.com/RArgu) · [linkedin.com/in/rodrigo-arguello](https://linkedin.com/in/rodrigo-arguello)
 
 ## Experience
 

@@ -51,8 +51,21 @@ Command: Playwright script reading `.rail` `getBoundingClientRect()` on `vite pr
 | R6 | Each project window description is 20 words or fewer and fits in two lines. `line-clamp: 2` is a safety net only. | [Prop] | unit + e2e | none |
 | R7 | The Notes window is post-it yellow, with a darker yellow title bar and dark text (WCAG AA) in light and dark mode. | [Prop] | unit + e2e | none |
 | R8 | Tests, docs and the owner-question log match the new behavior. | [Prop] | unit | none |
+| R9 | The public email is in no tracked file (owner scope addition 2026-10-27). The build reads it from a git-ignored local file. | [Prop] | unit + build | none |
 
 ### Acceptance
+
+- **R9.a** The address comes from `content/private/email.local.json` (`{"emailParts": ["local", "domain"]}`, git-ignored
+  through `content/private/`). The file is missing: the build succeeds and shows no Email link (panel, notice, resume).
+  The file has bad parts: the build fails. The e2e build (`--mode e2e`) uses `tests/fixtures/sheet-content/email.json`
+  (`test@example.invalid`), never the local file. The resume build reads the same local file (`DPOS_EMAIL` overrides).
+- **R9.b** `node scripts/check-no-email.ts dist --tracked` prints `clean`: it scans `dist/` and every tracked file for
+  the address, and the tracked files also for its local part. With no local file it prints
+  `clean (no local email file: nothing to look for)`.
+- **R9.c** The address is replaced in `docs/ledger/2026-10-24-spec-010.md` and in every mock source and file under
+  `docs/mockups/` by `email@example.invalid`. A local-part-only match in `docs/ledger/2026-10-22.md` (an account folder
+  name) is replaced by `<account>`. Mock hashes in `docs/mockups/README.md` are updated. The three `build.py` commands
+  reproduce the new hashes (observed 2026-10-27). The mocks are HTML text, so no image holds the address.
 
 - **R1.a** Given the built page (`dist/index.html`, the rail text, every accessible name), then `On this sheet`,
   `Drag the paper` and `look around` appear nowhere. The heading and the hint are deleted, not commented out (the owner
@@ -257,14 +270,14 @@ Fixture: `tests/fixtures/sheet-content/identity.json:5`.
 `grep -rlF` on tracked files finds the address in `content/identity.json:5`, `content/resume.md:3`,
 `content/contact.md:3`, `docs/ledger/2026-10-24-spec-010.md`, and the mock files under `docs/mockups/`. In `dist/` it is
 in `index.html` (panel and case-study notice) and `resume.html`. The repository is public (`rargu-os`), so the address
-stays readable in git and its history. This spec hides it from the served site only. It reverses the earlier owner
+stays readable in old commits. R1 to R8 hide it from the served site. R9 (owner scope addition, 2026-10-27) removes it from the tracked files too, but history is not rewritten. This reverses the earlier owner
 decision to show the public email (`docs/OWNER_QUESTIONS.md:25`: "email with copy"; recorded in the owner's memory as an
 approved content decision). Task last adds a row to `docs/OWNER_QUESTIONS.md`: 2026-10-27, email hidden behind an
 `Email` link, built at runtime.
 
 ## Out of scope
 
-- A new mock (v0.9). Restoring the name, title or blurb. Removing the address from git history.
+- A new mock (v0.9). Restoring the name, title or blurb. Rewriting git history (the address stays in old commits; open with the owner).
 - Changing page title, `og:*` or the meta description. Changing the phone bar's size.
 - Text of write-ups or the Read panel.
 
@@ -314,6 +327,12 @@ Owner approved this spec on 2026-10-27 (relayed by the coordinator). Answers to 
    chrome and corner, `#3b2a14` text, `#5c4423` dim text, hard offset shadow kept).
 
 Q1 changes R2.a: width 150 px (not 140 to 150).
+
+### Change after approval: 2026-10-27, owner scope addition (R9)
+
+7. The public email is removed from the repo too, not only from the served site. No tracked file on `spec-015-panel`
+   may hold the address or its local part. Git history is not rewritten and nothing is pushed. The orchestrator asks
+   the owner about history separately.
 
 ## Approval record
 

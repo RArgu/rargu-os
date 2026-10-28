@@ -309,6 +309,12 @@ button {
 .blurb {
   margin: 0;
   font-size: 15px;
+  /* 015 R6: the copy is written to fit; the clamp is only a safety net */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
 }
 .meta {
   display: flex;
@@ -591,25 +597,6 @@ button {
 .railtoggle {
   display: none;
 }
-.toast {
-  position: fixed;
-  z-index: 9999;
-  left: 50%;
-  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
-  max-width: calc(100% - 32px);
-  transform: translate(-50%, 120px);
-  background: var(--ink);
-  color: var(--paper);
-  font-family: var(--font-display);
-  font-size: 17px;
-  padding: 8px 14px;
-  border: 2px solid var(--outline);
-  transition: transform 0.25s;
-}
-.toast.show {
-  transform: translate(-50%, 0);
-}
-
 /* phone: the card is a bar with an about toggle (R15). It folds only once
    main.ts has added the toggle (.folds), so without JS it stays whole (R3). */
 @media (max-width: 760px) {
@@ -640,11 +627,106 @@ button {
   }
 }
 
+/* 015 R2, R4: the desktop panel is half size (150 px wide). Row budget at
+   10 px text: 3 buttons = 97 text + 3 x 10 (border 4, padding 6) + 2 x 3 gap
+   = 133 px, inner width 150 - 4 - 12 = 134 px. Email takes the next line. */
+@media (min-width: 761px) {
+  .rail {
+    width: 150px;
+    padding: 14px 6px 8px;
+    gap: 7px;
+  }
+  .logo {
+    font-size: 20px;
+    margin: 4px 0 0;
+  }
+  .cta {
+    gap: 3px;
+  }
+  .rail .btn:where(:not(.host-root *)) {
+    font-size: 10px;
+    padding: 0 3px;
+    line-height: 1.5;
+    box-shadow: 2px 2px 0 var(--shadow);
+  }
+  .rail .btn:hover:where(:not(.host-root *)) {
+    box-shadow: 3px 3px 0 var(--shadow);
+  }
+  .index {
+    padding-top: 6px;
+  }
+  .index h2,
+  .index em {
+    font-size: 10px;
+  }
+  .index button {
+    padding: 1px 4px;
+    margin-inline: -4px;
+    font-size: 10px;
+  }
+  .apps {
+    gap: 6px;
+  }
+  .index .app {
+    width: 36px;
+    padding: 4px 0 3px;
+    font-size: 10px;
+  }
+  .app img {
+    width: 24px;
+    height: 24px;
+  }
+}
+/* the Email link is shown by src/sheet/email.ts; .btn would override [hidden] */
+a[data-mail][hidden] {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation: none !important;
     transition: none !important;
   }
+}
+
+/* 015 R7: the Notes window is a post-it, in light and dark mode. Pairs (WCAG
+   2, checked by tests/unit/notes-contrast.test.ts): text #3b2a14 on body
+   #fff3a8 12.2, on title bar #f4dc6b 10.0, on chrome #e8cf55 8.8; dim
+   #5c4423 on body 8.1, on chrome 5.9. The host writes its --t-* roles on every
+   .host-root (the app root and the menu row), so those are set on them. */
+.sheet-win[data-win="notes"] {
+  --win-bg: #fff3a8;
+  --accent: #f4dc6b;
+  --title-ink: #3b2a14;
+  --chrome: #e8cf55;
+  --ink: #3b2a14;
+  --ink-dim: #5c4423;
+  --focus: #1d2b53;
+}
+.sheet-win[data-win="notes"] .host-root {
+  --t-document: #fff3a8;
+  --t-document-text: #3b2a14;
+  --t-text: #3b2a14;
+  --t-text-inverse: #fff3a8;
+  --t-text-dim: #5c4423;
+  --t-chrome: #e8cf55;
+  --t-chrome-dark: #7a5c14;
+  --t-chrome-light: #fff8cc;
+  --t-title-active: #3b2a14;
+  --t-selection-bg: #3b2a14;
+  --t-selection-fg: #fff3a8;
+  --t-hover: #f4dc6b;
+  --t-highlight: #f4dc6b;
+}
+.sheet-win[data-win="notes"]::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 14px;
+  height: 14px;
+  background: linear-gradient(135deg, transparent 50%, #e8cf55 50%);
+  pointer-events: none;
 }
 
 /* 002 R2: an app's content stays in its demo area */

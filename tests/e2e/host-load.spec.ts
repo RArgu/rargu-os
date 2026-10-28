@@ -112,7 +112,7 @@ test.describe("R11.a at 1440 × 900", () => {
     expect(strayAssets(urls, owned, apps)).toEqual([]);
 
     // the view moves to Music by a scroll, with the focus on the card
-    await page.locator("#copy").focus();
+    await page.locator("#reset").focus();
     const at = await scrollTo(page, "music");
     await expect
       .poll(async () => (await mainCounts(page)).tracker ?? 0)
@@ -128,7 +128,7 @@ test.describe("R11.a at 1440 × 900", () => {
     const now = (await eligible(page)).map((id) => HOSTED[id]);
     expect(now).toContain("tracker");
     expect(strayAssets(urls, owned, now)).toEqual([]);
-    expect(await page.evaluate(() => document.activeElement?.id)).toBe("copy");
+    expect(await page.evaluate(() => document.activeElement?.id)).toBe("reset");
     expect(await scrollPos(page)).toEqual(at);
   });
 });
@@ -290,10 +290,10 @@ test.describe("R11 activation while a background start is pending", () => {
     });
     const a = area(page, "castlesiege");
     await expect(a).toHaveAttribute("data-host", "starting");
-    await page.locator("#copy").focus();
+    await page.locator("#reset").focus();
     release();
     await expect(a).toHaveAttribute("data-host", "running");
-    await expect(page.locator("#copy")).toBeFocused();
+    await expect(page.locator("#reset")).toBeFocused();
     expect(await g<{ log: boolean[] }>(page, "__fxFocus")).toEqual({
       log: [],
     });

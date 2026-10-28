@@ -27,6 +27,7 @@ import * as castlewars from "./demos/castlewars";
 import * as crawler from "./demos/crawler";
 import * as insider from "./demos/insider";
 import { createVisibility } from "./demos/visibility";
+import { initMail } from "./email";
 
 const $ = <T extends HTMLElement>(s: string) => document.querySelector<T>(s)!;
 
@@ -93,31 +94,8 @@ $("#vp").addEventListener("focusin", () => {
   if (card.classList.contains("open") && matchMedia(PHONE).matches) fold(false);
 });
 
-// R11: Copy, or select the address when the clipboard is refused
-const toast = document.createElement("div");
-toast.className = "toast";
-toast.setAttribute("role", "status");
-document.body.append(toast);
-let toastT = 0;
-const say = (msg: string) => {
-  toast.textContent = msg;
-  toast.classList.add("show");
-  clearTimeout(toastT);
-  toastT = window.setTimeout(() => toast.classList.remove("show"), 2600);
-};
-const email = $("#email");
-$("#copy").addEventListener("click", async () => {
-  try {
-    await navigator.clipboard.writeText(email.textContent!);
-    say("Email copied");
-  } catch {
-    const r = document.createRange();
-    r.selectNodeContents(email);
-    getSelection()!.removeAllRanges();
-    getSelection()!.addRange(r);
-    say("Selected. Press ⌘C or Ctrl+C to copy.");
-  }
-});
+// 015 R3: the Email links get their address at start-up (src/sheet/email.ts)
+initMail();
 
 /** 004 R11: a Quick tools icon's activation still to come (startApp). */
 let pending: { w: HTMLElement } | null = null;
