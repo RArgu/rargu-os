@@ -104,9 +104,11 @@ Command: Playwright script reading `.rail` `getBoundingClientRect()` on `vite pr
 - **R3.f** Removing `#copy` also removes its handler (`src/sheet/main.ts:113`, which runs unguarded and would stop
   start-up if the button is missing) and the now-unused message code. Acceptance: the page loads with no page error;
   navigation buttons and Reset still work.
-- **R4.a** Given 1440x900, then the three links sit on one row (equal `top`), with button font 10 px or more.
-- **R4.b** Given the row has room for `Email`, then it sits on the same row. Given no room, then it has its own line.
-  No wrapping inside a button.
+- **R4.a** Given 1440x900, then Resume and GitHub sit on the top row and LinkedIn and Email on the row below (equal
+  `top` in each row), with button font 10 px or more. (Changed by the owner 2026-10-28: see answer 8.)
+- **R4.b** Given any desktop or phone size, then the four links are a symmetric 2 x 2 grid: two columns of equal width,
+  equal `left` in each column, every button as wide as its cell. No wrapping inside a button. Without JavaScript the
+  Email cell is empty (R3.c).
 - **R5.a** Given the built page, then `.who` and `.tag` are not rendered, and `Rodrigo Arguello`, `Software Engineer`
   and the tagline do not appear in the panel. The markup stays in `card()` as a source comment (outside the returned HTML, with
   a `TODO(owner): restore` note), and the CSS rules stay.
@@ -333,6 +335,12 @@ Q1 changes R2.a: width 150 px (not 140 to 150).
 7. The public email is removed from the repo too, not only from the served site. No tracked file on `spec-015-panel`
    may hold the address or its local part. Git history is not rewritten and nothing is pushed. The orchestrator asks
    the owner about history separately.
+
+### Change after approval: 2026-10-28, owner request (R4)
+
+8. The link buttons are "symmetrical": as many on the top row as on the bottom, as many left as right. A 2 x 2 grid,
+   sizes adjusted to fit (owner, from a screenshot of the preview). Implemented: `.cta` is a two-column grid of equal
+   cells on desktop and phone; on desktop the link text is 12 px (was 10 px), Reset page stays 10 px.
 
 ## Approval record
 

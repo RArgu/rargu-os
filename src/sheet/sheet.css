@@ -473,10 +473,16 @@ button {
   margin: 0;
   font-size: 15px;
 }
+/* 015 (owner 2026-10-28): the links are a symmetric 2 x 2 grid of equal
+   buttons, Resume and GitHub on top, LinkedIn and Email below */
 .cta {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
+}
+.cta .btn:where(:not(.host-root *)) {
+  justify-content: center;
+  white-space: nowrap;
 }
 /* the card's buttons; an app's .btn is its own (002 R13). :where keeps
    the specificity of .btn */
@@ -627,9 +633,10 @@ button {
   }
 }
 
-/* 015 R2, R4: the desktop panel is half size (150 px wide). Row budget at
-   10 px text: 3 buttons = 97 text + 3 x 10 (border 4, padding 6) + 2 x 3 gap
-   = 133 px, inner width 150 - 4 - 12 = 134 px. Email takes the next line. */
+/* 015 R2, R4: the desktop panel is half size (150 px wide), inner width
+   150 - 4 - 12 = 134 px. The links are a 2 x 2 grid (owner 2026-10-28): each
+   cell (134 - 3) / 2 = 65.5 px; the widest label, "Resume ↗", is 48 px at
+   12 px text, + 10 (border 4, padding 6) = 58 px. */
 @media (min-width: 761px) {
   .rail {
     width: 150px;
@@ -651,6 +658,9 @@ button {
   }
   .rail .btn:hover:where(:not(.host-root *)) {
     box-shadow: 3px 3px 0 var(--shadow);
+  }
+  .rail .cta .btn:where(:not(.host-root *)) {
+    font-size: 12px;
   }
   .index {
     padding-top: 6px;

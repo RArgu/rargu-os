@@ -1,6 +1,6 @@
 // Spec 015 R2.b on the phone: at 390 × 844 and 320 × 568, light and dark, the
 // folded bar and the opened panel fit the screen width, with no wrapped
-// project item or button.
+// project item or button; R4.b: the open panel's links are a 2 x 2 grid.
 import type { Page } from "@playwright/test";
 import { expect, test } from "./helpers";
 import { sheet } from "./sheet-base";
@@ -25,7 +25,19 @@ const fit = (page: Page) =>
         boxes.every((c) => b.top < c.bottom && c.top < b.bottom),
       );
     };
+    const cta = [...rail.querySelectorAll<HTMLElement>(".cta .btn")]
+      .filter((e) => e.getClientRects().length)
+      .map((e) => {
+        const b = e.getBoundingClientRect();
+        return {
+          t: e.textContent!.trim(),
+          top: b.top,
+          left: b.left,
+          w: b.width,
+        };
+      });
     return {
+      cta,
       left: r.left,
       right: r.right,
       vw: document.documentElement.clientWidth,
@@ -61,5 +73,22 @@ for (const [w, h] of [
         expect(f.right, state).toBeLessThanOrEqual(f.vw + 0.5);
         expect(f.scroll, state).toBeLessThanOrEqual(0);
         expect(f.wrapped, state).toEqual([]);
+        if (state === "open") {
+          const [a, b, c, d] = f.cta;
+          expect(f.cta.map((x) => x.t)).toEqual([
+            "Resume ↗",
+            "GitHub",
+            "LinkedIn",
+            "Email",
+          ]);
+          expect(
+            Math.abs(a.top - b.top) + Math.abs(c.top - d.top),
+          ).toBeLessThanOrEqual(1);
+          expect(c.top).toBeGreaterThan(a.top);
+          expect(
+            Math.abs(a.left - c.left) + Math.abs(b.left - d.left),
+          ).toBeLessThanOrEqual(1);
+          for (const x of f.cta) expect(x.w, x.t).toBeCloseTo(a.w, 0);
+        }
       }
     });

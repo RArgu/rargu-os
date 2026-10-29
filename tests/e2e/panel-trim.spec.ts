@@ -1,4 +1,4 @@
-// Spec 015 on desktop: the panel's size and fit (R2.a–c), the link row (R4.a–b),
+// Spec 015 on desktop: the panel's size and fit (R2.a–c), the 2 x 2 link grid (R4.a–b, owner 2026-10-28),
 // two-line descriptions with the clamp removed (R6.b), the fixture address in
 // every Email link (R9.a) and the Notes colours as the browser draws them
 // (R7.a, R7.d). Rectangles and colours are read from the DOM.
@@ -110,9 +110,6 @@ const railFacts = (page: Page) =>
         };
       },
     );
-    const ctaBox = rail.querySelector(".cta")!.getBoundingClientRect();
-    const gap =
-      parseFloat(getComputedStyle(rail.querySelector(".cta")!).columnGap) || 0;
     return {
       w: r.width,
       h: r.height,
@@ -124,28 +121,48 @@ const railFacts = (page: Page) =>
       clipped,
       multiLine,
       cta,
-      ctaRight: ctaBox.right,
-      gap,
     };
   });
 
+/** R4.b: a symmetric 2 x 2 grid: two per row, equal columns, equal widths. */
+function expectGrid(
+  cta: { t: string; top: number; bottom: number; left: number; w: number }[],
+) {
+  expect(cta.map((b) => b.t)).toEqual([
+    "Resume ↗",
+    "GitHub",
+    "LinkedIn",
+    "Email",
+  ]);
+  const [a, b, c, d] = cta;
+  const near = (x: number, y: number) => Math.abs(x - y) <= 0.5;
+  expect(near(a.top, b.top) && near(c.top, d.top), "rows").toBe(true);
+  expect(c.top, "second row below the first").toBeGreaterThanOrEqual(
+    a.bottom - 0.5,
+  );
+  expect(near(a.left, c.left) && near(b.left, d.left), "columns").toBe(true);
+  for (const x of cta) expect(x.w, x.t).toBeCloseTo(a.w, 0);
+}
+
 for (const dark of [false, true]) {
   const theme = dark ? "dark" : "light";
-  test(`015 R2.a, R4.a (${theme}) at 1440 × 900 the panel is 150 px wide, at most 396 px high, links on one row`, async ({
+  test(`015 R2.a, R4.a (${theme}) at 1440 × 900 the panel is 150 px wide, at most 396 px high, links in two rows of two`, async ({
     page,
   }) => {
     await open(page, 1440, 900, dark);
     const f = await railFacts(page);
     expect(f.w).toBeCloseTo(150, 0);
     expect(f.h).toBeLessThanOrEqual(396);
-    const [resume, github, linkedin] = f.cta;
-    expect([resume.t, github.t, linkedin.t]).toEqual([
+    const [resume, github, linkedin, email] = f.cta;
+    expect(f.cta.map((b) => b.t)).toEqual([
       "Resume ↗",
       "GitHub",
       "LinkedIn",
+      "Email",
     ]);
     expect(Math.abs(github.top - resume.top)).toBeLessThanOrEqual(0.5);
-    expect(Math.abs(linkedin.top - resume.top)).toBeLessThanOrEqual(0.5);
+    expect(Math.abs(email.top - linkedin.top)).toBeLessThanOrEqual(0.5);
+    expect(linkedin.top).toBeGreaterThanOrEqual(resume.bottom - 0.5);
     for (const b of f.cta) expect(b.font, b.t).toBeGreaterThanOrEqual(10);
   });
 
@@ -161,13 +178,7 @@ for (const dark of [false, true]) {
       expect(f.inside, "outside the panel").toEqual([]);
       expect(f.clipped, "clipped text").toEqual([]);
       expect(f.multiLine, "wrapped items or buttons").toEqual([]);
-      // R4.b: Email on the row when it fits, else on its own line
-      const linkedin = f.cta.find((b) => b.t === "LinkedIn")!;
-      const email = f.cta.find((b) => b.t === "Email")!;
-      const fits = linkedin.right + f.gap + email.w <= f.ctaRight + 0.5;
-      if (fits)
-        expect(Math.abs(email.top - linkedin.top)).toBeLessThanOrEqual(0.5);
-      else expect(email.top).toBeGreaterThanOrEqual(linkedin.bottom - 0.5);
+      expectGrid(f.cta);
     });
 }
 
